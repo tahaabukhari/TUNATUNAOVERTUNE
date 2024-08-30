@@ -38,10 +38,9 @@ class TitleScene extends Phaser.Scene {
             { fontSize: '32px', fill: '#FFF' }
         )
         .setOrigin(0.5)
-        .setInteractive();
-
-        optionsButton.on('pointerdown', () => {
-            this.showoptions(title, playButton, optionsButton);
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.showoptions(title, playButton, optionsButton); // Use this.showoptions to call the method in the current context
         });
 
         // subtitle tips
@@ -172,7 +171,7 @@ class TitleScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
-            // Destroy options menu elements
+            
             if (this.optionsTitle) this.optionsTitle.destroy();
             if (keyBindingButton) keyBindingButton.destroy();
             if (soundVolumeButton) soundVolumeButton.destroy();
