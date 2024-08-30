@@ -97,7 +97,7 @@ class LevelScene extends Phaser.Scene {
                 }
             }
         });
-        this.laneColors = [0xff8a65, 0xffd54f, 0x4caf50, 0x8bc34a];
+        this.laneColors = [0x00b8ff, 0x32cd32, 0x00719c, 0x228b22];
         this.isPaused = false;  // Initialize isPaused flag
         this.pauseMenu = null;  // Initialize pauseMenu container
         this.music = null;
@@ -700,17 +700,22 @@ class LevelScene extends Phaser.Scene {
 }
 
 const config = {
-    type: Phaser.AUTO,
-    width: 650,
-    height: 450,
-    scene: [TitleScene, LevelScene],
-    physics: {
-        default: 'matter',
-        matter: {
-            gravity: { y: 0.5 },
-            debug: true
-        }
+  type: Phaser.AUTO,
+  width: 650, // Game width
+  height: 450, // Game height
+  parent: 'game', // Parent div where the game is injected
+  scale: {
+    mode: Phaser.Scale.FIT, // Scale the game to fit the screen
+    autoCenter: Phaser.Scale.CENTER_BOTH // Center the game horizontally and vertically
+  },
+  scene: [TitleScene, LevelScene],
+  physics: {
+    default: 'matter',
+    matter: {
+      gravity: { y: 0.5 },
+      debug: true
     }
+  }
 };
         
 const game = new Phaser.Game(config);

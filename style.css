@@ -1,4 +1,3 @@
-/* style.css */
 body, html {
   margin: 0;
   padding: 0;
@@ -6,13 +5,25 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+#game-container {
+  display: flex; /* Apply flexbox to the container itself */
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 #game {
-  width: 100%;
-  height: 100vh; /* Full height of the viewport */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  display: block;
+  width: 100%; /* Ensure the game scales to the container's size */
+  max-width: 650px; /* Limit the game to a maximum width of 650px */
+  max-height: 450px; /* Limit the game to a maximum height of 450px */
+  background-color: #000; /* Optional: Set a background color for the game area */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }

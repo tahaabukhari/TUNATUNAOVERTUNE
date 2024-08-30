@@ -8,36 +8,36 @@
     body, html {
       margin: 0;
       padding: 0;
-      background: black;
+      background: #030303; /* Optional: Set background color */
       display: flex;
       justify-content: center;
       align-items: center;
       width: 100%;
       height: 100%;
-      overflow: hidden;
+      overflow: hidden; /* Prevent scrolling */
     }
 
     #game-container {
-      display: flex;
+      display: flex; /* Apply flexbox to center content */
       justify-content: center;
       align-items: center;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
     }
 
     #game {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      width: 100%;
+      max-width: 650px; /* Limit the width to 650px */
+      height: 100%;
+      max-height: 450px; /* Limit the height to 450px */
+      background-color: #000; /* Optional: Set a background color for the game area */
     }
 
     #game canvas {
-      display: block;
-      max-width: 100%;
-      max-height: 100%;
-      margin: auto;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Ensure the canvas scales appropriately */
     }
   </style>
 </head>
