@@ -12,8 +12,8 @@ class TitleScene extends Phaser.Scene {
         const title = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 100, 
-            'PEAK GAME 3', 
-            { fontSize: '32px', fill: '#FFF' }
+            'TUNATUNAOVERTUNE', 
+            { fontSize: '46px', fill: '#FFF' }
         )
         .setOrigin(0.5)
         .setShadow(2, 2, '#000', 2, true, true);
@@ -87,9 +87,23 @@ class TitleScene extends Phaser.Scene {
 
 class LevelScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'LevelScene' });
-        this.laneColors = [0xff0000, 0xffff00, 0x00ff00, 0x0000ff];
+        super({
+            key: 'LevelScene',
+            physics: {
+                default: 'matter',
+                arcade: {
+                    gravity: { y: 300 },
+                    debug: false
+                }
+            }
+        });
+        this.laneColors = [0x00b8ff, 0x009bd6, 0x00719c, 0x00415a];
+        this.isPaused = false;  // Initialize isPaused flag
+        this.pauseMenu = null;  // Initialize pauseMenu container
+        this.music = null;
+        this.musicStarted = false;
     }
+
 
     preload() {
         this.load.audio('demomusic', 'DEMO ST.mp3');
@@ -100,6 +114,18 @@ class LevelScene extends Phaser.Scene {
     }
 
     create() {
+
+        this.isPaused = false;
+        this.time.timeScale = 1;
+        this.matter.world.resume();
+        // Ensure the previous music instance is stopped if already playing
+        if (this.music && this.music.isPlaying) {
+            this.music.stop();
+        }
+
+        // Reset musicStarted flag to ensure music starts only when the first note hits
+        this.musicStarted = false;
+
         const platformWidth = this.cameras.main.width / 1.5;
         const platformHeight = 20;
         const platformY = this.cameras.main.height - 100;
@@ -113,12 +139,60 @@ class LevelScene extends Phaser.Scene {
         }
 
         this.player = this.matter.add.rectangle(partWidth / 2, platformY - 25, partWidth, 10, { isStatic: true });
+        this.physics.world.setBounds(0, 0, this.cameras.main.width, this.cameras.main.height);
 
-        this.input.keyboard.on('keydown-A', () => this.movePlayerTo(0));
-        this.input.keyboard.on('keydown-S', () => this.movePlayerTo(1));
-        this.input.keyboard.on('keydown-D', () => this.movePlayerTo(2));
-        this.input.keyboard.on('keydown-F', () => this.movePlayerTo(3));
+        // Music Handling
+        if (!this.music) {
+            this.music = this.sound.add('demomusic');
+        }
 
+        // Input listeners for moving the player and changing character texture
+        this.input.keyboard.on('keydown-A', () => {
+            this.movePlayerTo(0);
+            this.character.setTexture('characterImage1');
+        });
+        this.input.keyboard.on('keydown-S', () => {
+            this.movePlayerTo(1);
+            this.character.setTexture('characterImage3');
+        });
+        this.input.keyboard.on('keydown-D', () => {
+            this.movePlayerTo(2);
+            this.character.setTexture('characterImage2');
+        });
+        this.input.keyboard.on('keydown-F', () => {
+            this.movePlayerTo(3);
+            this.character.setTexture('characterImage4');
+        });
+
+        // Add touch input listener for mobile and touch devices
+        this.input.on('pointerdown', (pointer) => {
+            const platformWidth = this.platform.displayWidth;
+            const sectionWidth = platformWidth / 4; // Assuming 4 sections
+
+            // Calculate which section of the platform was clicked/touched
+            const section = Math.floor(pointer.x / sectionWidth);
+
+            // Move the player to the corresponding section and change the character texture
+            switch (section) {
+                case 0:
+                    this.movePlayerTo(0);
+                    this.character.setTexture('characterImage1');
+                    break;
+                case 1:
+                    this.movePlayerTo(1);
+                    this.character.setTexture('characterImage3');
+                    break;
+                case 2:
+                    this.movePlayerTo(2);
+                    this.character.setTexture('characterImage2');
+                    break;
+                case 3:
+                    this.movePlayerTo(3);
+                    this.character.setTexture('characterImage4');
+                    break;
+            }
+        });
+        
         this.score = 0;
         this.streak = 0;
 
@@ -131,14 +205,8 @@ class LevelScene extends Phaser.Scene {
             .setInteractive()
             .on('pointerdown', () => this.pauseGame());
 
-        this.game.events.on('blur', () => this.pauseGame());
-
-        this.input.keyboard.on('keydown-A', () => this.character.setTexture('characterImage1'));
-        this.input.keyboard.on('keydown-S', () => this.character.setTexture('characterImage3'));
-        this.input.keyboard.on('keydown-D', () => this.character.setTexture('characterImage2'));
-        this.input.keyboard.on('keydown-F', () => this.character.setTexture('characterImage4'));
-
         const beatInterval = 705.6;
+
         this.beatmap = [
           { time: 0 * beatInterval, lane: 0 },
           { time: 1 * beatInterval, lane: 1 },
@@ -155,6 +223,7 @@ class LevelScene extends Phaser.Scene {
           { time: 12 * beatInterval, lane: 2 },
           { time: 13 * beatInterval, lane: 2 },
           { time: 14 * beatInterval, lane: 3 },
+          { time: 15 * beatInterval, lane: 2 },
           { time: 17 * beatInterval, lane: 0 },
           { time: 17.5 * beatInterval, lane: 1 },
           { time: 18 * beatInterval, lane: 0 },
@@ -217,139 +286,282 @@ class LevelScene extends Phaser.Scene {
           { time: 51.5 * beatInterval, lane: 3 },
           { time: 52 * beatInterval, lane: 0 },
           { time: 53 * beatInterval, lane: 0 },
-          { time: 54 * beatInterval, lane: 2 },
-          { time: 55 * beatInterval, lane: 0 },
-          { time: 55.5 * beatInterval, lane: 2 },
-          { time: 56.5 * beatInterval, lane: 1 },
-          { time: 57.5 * beatInterval, lane: 1 },
+          { time: 54 * beatInterval, lane: 0 },
+          { time: 54.5 * beatInterval, lane: 2 },
+          { time: 55 * beatInterval, lane: 2 },
+          { time: 56 * beatInterval, lane: 1 },
+          { time: 57 * beatInterval, lane: 1 },
+          { time: 57.5 * beatInterval, lane: 3 },
+          { time: 58 * beatInterval, lane: 1 },
           { time: 58.5 * beatInterval, lane: 3 },
-          { time: 59.5 * beatInterval, lane: 1 },
-          { time: 60 * beatInterval, lane: 3 },
-          { time: 61 * beatInterval, lane: 2 },
-          { time: 62 * beatInterval, lane: 2 },
-          { time: 63 * beatInterval, lane: 0 },
-          { time: 64 * beatInterval, lane: 2 },
-          { time: 64.5 * beatInterval, lane: 0 },
-          { time: 69 * beatInterval, lane: 2 },
-          { time: 70 * beatInterval, lane: 3 },
-          { time: 71 * beatInterval, lane: 2 },
-          { time: 72 * beatInterval, lane: 4 },
+          { time: 59 * beatInterval, lane: 2 },
+          { time: 59.5 * beatInterval, lane: 2 },
+          { time: 60 * beatInterval, lane: 2 },
+          { time: 60.5 * beatInterval, lane: 0 },
+          { time: 62 * beatInterval, lane: 0 },
+          { time: 62.5 * beatInterval, lane: 1 },
+          { time: 63 * beatInterval, lane: 2 },
+          { time: 63.5 * beatInterval, lane: 2 },
+          { time: 63.7 * beatInterval, lane: 3 },
+          { time: 65 * beatInterval, lane: 1 },
+          { time: 66 * beatInterval, lane: 0 },
+          { time: 67 * beatInterval, lane: 1 },
+          { time: 68 * beatInterval, lane: 0 },
+          { time: 69 * beatInterval, lane: 1 },
+          { time: 70 * beatInterval, lane: 1 },
+          { time: 71 * beatInterval, lane: 0 },
+          { time: 72 * beatInterval, lane: 0 },
           { time: 73 * beatInterval, lane: 1 },
           { time: 74 * beatInterval, lane: 0 },
-          { time: 75 * beatInterval, lane: 3 },
-          { time: 76 * beatInterval, lane: 2 },
-          { time: 77 * beatInterval, lane: 4 },
+          { time: 75 * beatInterval, lane: 1 },
+          { time: 76 * beatInterval, lane: 1 },
+          { time: 77 * beatInterval, lane: 0 },
           { time: 78 * beatInterval, lane: 1 },
-          { time: 79 * beatInterval, lane: 0 },
-          { time: 80 * beatInterval, lane: 3 },
+          { time: 79 * beatInterval, lane: 1 },
+          { time: 80 * beatInterval, lane: 1 },
           { time: 81 * beatInterval, lane: 2 },
-          { time: 82 * beatInterval, lane: 4 },
-          { time: 83 * beatInterval, lane: 1 },
-          { time: 84 * beatInterval, lane: 0 },
-          { time: 85 * beatInterval, lane: 3 },
+          { time: 82 * beatInterval, lane: 3 },
+          { time: 83 * beatInterval, lane: 2 },
+          { time: 84 * beatInterval, lane: 3 },
+          { time: 85 * beatInterval, lane: 2 },
           { time: 86 * beatInterval, lane: 2 },
-          { time: 87 * beatInterval, lane: 4 },
-          { time: 88 * beatInterval, lane: 1 },
+          { time: 87 * beatInterval, lane: 3 },
+          { time: 88 * beatInterval, lane: 3 },
           { time: 89 * beatInterval, lane: 2 },
           { time: 90 * beatInterval, lane: 3 },
           { time: 91 * beatInterval, lane: 2 },
-          { time: 92 * beatInterval, lane: 4 },
-          { time: 93 * beatInterval, lane: 1 },
-          { time: 94 * beatInterval, lane: 0 },
-          { time: 95 * beatInterval, lane: 3 },
+          { time: 92 * beatInterval, lane: 2 },
+          { time: 93 * beatInterval, lane: 3 },
+          { time: 94 * beatInterval, lane: 2 },
+          { time: 95 * beatInterval, lane: 2 },
           { time: 96 * beatInterval, lane: 2 },
-          { time: 97 * beatInterval, lane: 4 },
-          { time: 98 * beatInterval, lane: 1 },
+          { time: 97 * beatInterval, lane: 1 },
+          { time: 97.5 * beatInterval, lane: 2 },
+          { time: 98 * beatInterval, lane: 3 },
+          { time: 98.5 * beatInterval, lane: 0 },
           { time: 99 * beatInterval, lane: 0 },
-          { time: 99 * beatInterval, lane: 1 },
-          { time: 100 * beatInterval, lane: 3 },
-          { time: 101 * beatInterval, lane: 2 },
-          { time: 102 * beatInterval, lane: 4 },
+          { time: 99.5 * beatInterval, lane: 1 },
+          { time: 100 * beatInterval, lane: 2 },
+          { time: 100.5 * beatInterval, lane: 3 },
+          { time: 101 * beatInterval, lane: 0 },
+          { time: 101.5 * beatInterval, lane: 0 },
+          { time: 102 * beatInterval, lane: 1 },
+          { time: 102.5 * beatInterval, lane: 2 },
           { time: 103 * beatInterval, lane: 0 },
+          { time: 103.5 * beatInterval, lane: 1 },
           { time: 104 * beatInterval, lane: 2 },
-          { time: 105 * beatInterval, lane: 1 },
-          { time: 106 * beatInterval, lane: 2 },
+          { time: 104.5 * beatInterval, lane: 1 },
+          { time: 105 * beatInterval, lane: 2 },
+          { time: 105.5 * beatInterval, lane: 0 },
+          { time: 106 * beatInterval, lane: 1 },
+          { time: 106.5 * beatInterval, lane: 2 },
           { time: 107 * beatInterval, lane: 3 },
+          { time: 107.5 * beatInterval, lane: 0 },
           { time: 108 * beatInterval, lane: 0 },
+          { time: 108.5 * beatInterval, lane: 1 },
           { time: 109 * beatInterval, lane: 2 },
-          { time: 110 * beatInterval, lane: 1 },
-          { time: 111 * beatInterval, lane: 4 },
+          { time: 109.5 * beatInterval, lane: 3 },
+          { time: 110 * beatInterval, lane: 0 },
+          { time: 110.5 * beatInterval, lane: 0 },
+          { time: 111 * beatInterval, lane: 1 },
+          { time: 111.5 * beatInterval, lane: 2 },
           { time: 112 * beatInterval, lane: 3 },
+          { time: 112.5 * beatInterval, lane: 0 },
+          { time: 112.5 * beatInterval, lane: 3 },
           { time: 113 * beatInterval, lane: 0 },
-          { time: 114 * beatInterval, lane: 2 },
-          { time: 115 * beatInterval, lane: 1 },
-          { time: 116 * beatInterval, lane: 4 },
-          { time: 117 * beatInterval, lane: 3 },
-          { time: 118 * beatInterval, lane: 0 },
+          { time: 113.5 * beatInterval, lane: 3 },
+          { time: 114 * beatInterval, lane: 0 },
+          { time: 114.5 * beatInterval, lane: 3 },
+          { time: 115 * beatInterval, lane: 0 },
+          { time: 115.5 * beatInterval, lane: 3 },
+          { time: 116 * beatInterval, lane: 0 },
+          { time: 116.5 * beatInterval, lane: 1 },
+          { time: 117 * beatInterval, lane: 2 },
+          { time: 117.5 * beatInterval, lane: 1 },
+          { time: 118 * beatInterval, lane: 2 },
+          { time: 118.5 * beatInterval, lane: 1 },
           { time: 119 * beatInterval, lane: 2 },
-          { time: 120 * beatInterval, lane: 1 },
-          { time: 121 * beatInterval, lane: 4 },
-          { time: 122 * beatInterval, lane: 3 },
-          { time: 123 * beatInterval, lane: 1 },
-          { time: 124 * beatInterval, lane: 2 },
+          { time: 119.5 * beatInterval, lane: 1 },
+          { time: 120 * beatInterval, lane: 2 },
+          { time: 120.5 * beatInterval, lane: 0 },
+          { time: 121 * beatInterval, lane: 3 },
+          { time: 121.5 * beatInterval, lane: 3 },
+          { time: 122 * beatInterval, lane: 0 },
+          { time: 122.5 * beatInterval, lane: 3 },
+          { time: 123 * beatInterval, lane: 3 },
+          { time: 123.5 * beatInterval, lane: 3 },
+          { time: 124 * beatInterval, lane: 0 },
+          { time: 124.5 * beatInterval, lane: 2 },
           { time: 125 * beatInterval, lane: 1 },
-          { time: 126 * beatInterval, lane: 4 },
-          { time: 127 * beatInterval, lane: 3 },
+          { time: 125.5 * beatInterval, lane: 1 },
+          { time: 126 * beatInterval, lane: 1 },
+          { time: 126.5 * beatInterval, lane: 0 },
+          { time: 127 * beatInterval, lane: 0 },
+          { time: 127.5 * beatInterval, lane: 3 },
           { time: 128 * beatInterval, lane: 0 },
-          { time: 129 * beatInterval, lane: 2 },
-          { time: 130 * beatInterval, lane: 1 },
-          { time: 131 * beatInterval, lane: 4 },
-          { time: 132 * beatInterval, lane: 3 },
-          { time: 133 * beatInterval, lane: 0 },
+          { time: 128.5 * beatInterval, lane: 3 },
+          { time: 129 * beatInterval, lane: 0 },
+          { time: 129.5 * beatInterval, lane: 3 },
+          { time: 130 * beatInterval, lane: 2 },
+          { time: 130.5 * beatInterval, lane: 1 },
+          { time: 131 * beatInterval, lane: 2 },
+          { time: 131.5 * beatInterval, lane: 1 },
+          { time: 132 * beatInterval, lane: 2 },
+          { time: 132.5 * beatInterval, lane: 1 },
+          { time: 133 * beatInterval, lane: 2 },
+          { time: 133.5 * beatInterval, lane: 1 },
           { time: 134 * beatInterval, lane: 2 },
-          { time: 135 * beatInterval, lane: 1 },
-          { time: 136 * beatInterval, lane: 4 },
-          { time: 137 * beatInterval, lane: 3 },
+          { time: 134.5 * beatInterval, lane: 3 },
+          { time: 135 * beatInterval, lane: 0 },
+          { time: 135.5 * beatInterval, lane: 0 },
+          { time: 136 * beatInterval, lane: 3 },
+          { time: 136.5 * beatInterval, lane: 0 },
+          { time: 137 * beatInterval, lane: 1 },
+          { time: 137.5 * beatInterval, lane: 3 },
           { time: 138 * beatInterval, lane: 0 },
+          { time: 138.5 * beatInterval, lane: 1 },
           { time: 139 * beatInterval, lane: 2 },
-          { time: 140 * beatInterval, lane: 1 },
-          { time: 141 * beatInterval, lane: 4 },
+          { time: 139.5 * beatInterval, lane: 1 },
+          { time: 140 * beatInterval, lane: 0 },
+          { time: 140.5 * beatInterval, lane: 3 },
+          { time: 141 * beatInterval, lane: 0 },
+          { time: 141.5 * beatInterval, lane: 0 },
           { time: 142 * beatInterval, lane: 3 },
+          { time: 142.5 * beatInterval, lane: 0 },
           { time: 143 * beatInterval, lane: 0 },
-          { time: 144 * beatInterval, lane: 2 },
-          { time: 145 * beatInterval, lane: 1 },
-          { time: 146 * beatInterval, lane: 4 },
-          { time: 147 * beatInterval, lane: 3 },
+          { time: 143.5 * beatInterval, lane: 0 },
+          { time: 144 * beatInterval, lane: 0 },
+          { time: 144.5 * beatInterval, lane: 3 },
+          { time: 145 * beatInterval, lane: 0 },
+          { time: 145.5 * beatInterval, lane: 3 },
+          { time: 146 * beatInterval, lane: 0 },
+          { time: 146.5 * beatInterval, lane: 3 },
+          { time: 147 * beatInterval, lane: 0 },
+          { time: 147.5 * beatInterval, lane: 3 },
           { time: 148 * beatInterval, lane: 0 },
-          { time: 149 * beatInterval, lane: 2 },
-          { time: 150 * beatInterval, lane: 1 },
-          { time: 151 * beatInterval, lane: 4 },
-          { time: 152 * beatInterval, lane: 3 },
+          { time: 148.5 * beatInterval, lane: 3 },
+          { time: 149 * beatInterval, lane: 0 },
+          { time: 149.5 * beatInterval, lane: 3 },
+          { time: 150 * beatInterval, lane: 0 },
+          { time: 150.5 * beatInterval, lane: 3 },
+          { time: 151 * beatInterval, lane: 0 },
+          { time: 151.5 * beatInterval, lane: 3 },
+          { time: 152 * beatInterval, lane: 0 },
+          { time: 152.5 * beatInterval, lane: 3 },
           { time: 153 * beatInterval, lane: 0 },
-          { time: 154 * beatInterval, lane: 3 },
-          { time: 155 * beatInterval, lane: 1 },
-          { time: 156 * beatInterval, lane: 4 },
-          { time: 157 * beatInterval, lane: 3 },
+          { time: 153.5 * beatInterval, lane: 3 },
+          { time: 154 * beatInterval, lane: 0 },
+          { time: 154.5 * beatInterval, lane: 3 },
+          { time: 155 * beatInterval, lane: 0 },
+          { time: 155.5 * beatInterval, lane: 3 },
+          { time: 156 * beatInterval, lane: 0 },
+          { time: 156.5 * beatInterval, lane: 3 },
+          { time: 157 * beatInterval, lane: 0 },
+          { time: 157.5 * beatInterval, lane: 3 },
           { time: 158 * beatInterval, lane: 0 },
-          { time: 159 * beatInterval, lane: 2 },
+          { time: 158.5 * beatInterval, lane: 3 },
+          { time: 159 * beatInterval, lane: 0 },
+          { time: 159.5 * beatInterval, lane: 3 },
+          { time: 160 * beatInterval, lane: 0 },
           { time: 160 * beatInterval, lane: 1 },
-          { time: 161 * beatInterval, lane: 4 },
-          { time: 162 * beatInterval, lane: 3 },
+          { time: 160.5 * beatInterval, lane: 3 },
+          { time: 161 * beatInterval, lane: 0 },
+          { time: 161 * beatInterval, lane: 2 },
+          { time: 161.5 * beatInterval, lane: 3 },
+          { time: 162 * beatInterval, lane: 0 },
+          { time: 162 * beatInterval, lane: 1 },
+          { time: 162.5 * beatInterval, lane: 3 },
           { time: 163 * beatInterval, lane: 0 },
-          { time: 164 * beatInterval, lane: 2 },
+          { time: 163 * beatInterval, lane: 2 },
+          { time: 163.5 * beatInterval, lane: 3 },
+          { time: 164 * beatInterval, lane: 0 },
+          { time: 164 * beatInterval, lane: 1 },
+          { time: 164.5 * beatInterval, lane: 3 },
+          { time: 165 * beatInterval, lane: 0 },
           { time: 165 * beatInterval, lane: 1 },
-          { time: 166 * beatInterval, lane: 4 },
-          { time: 167 * beatInterval, lane: 3 },
+          { time: 165.5 * beatInterval, lane: 3 },
+          { time: 166 * beatInterval, lane: 0 },
+          { time: 166 * beatInterval, lane: 2 },
+          { time: 166.5 * beatInterval, lane: 3 },
+          { time: 167 * beatInterval, lane: 0 },
+          { time: 167 * beatInterval, lane: 1 },
+          { time: 167.5 * beatInterval, lane: 3 },
           { time: 168 * beatInterval, lane: 0 },
+          { time: 168 * beatInterval, lane: 1 },
+          { time: 168.5 * beatInterval, lane: 3 },
+          { time: 169 * beatInterval, lane: 0 },
           { time: 169 * beatInterval, lane: 2 },
-          { time: 170 * beatInterval, lane: 1 },
-          { time: 171 * beatInterval, lane: 4 },
+          { time: 169.5 * beatInterval, lane: 3 },
+          { time: 170 * beatInterval, lane: 0 },
+          { time: 170 * beatInterval, lane: 2 },
+          { time: 170.5 * beatInterval, lane: 3 },
+          { time: 171 * beatInterval, lane: 0 },
+          { time: 171 * beatInterval, lane: 1 },
+          { time: 171.5 * beatInterval, lane: 3 },
           { time: 172 * beatInterval, lane: 3 },
-          { time: 173 * beatInterval, lane: 0 },
+          { time: 172 * beatInterval, lane: 1 },
+          { time: 172.5 * beatInterval, lane: 0 },
+          { time: 173 * beatInterval, lane: 2 },
           { time: 174 * beatInterval, lane: 2 },
-          { time: 175 * beatInterval, lane: 2 }
+          { time: 175 * beatInterval, lane: 2 },
         ];
-        
-        let musicStarted = false;
 
+        this.notes = [];
+        this.highestStreak = 0; // Track the highest streak
+        this.currentStreak = 0; // Track the current streak
+        
+        // Add notes to the timeline
         this.beatmap.forEach((note, index) => {
             this.time.addEvent({
                 delay: note.time,
                 callback: () => {
-                    this.spawnNote(note);
-                }
-            });
-        });
+                    const spawnedNote = this.spawnNote(note);
+                    this.notes.push(spawnedNote); // Store the spawned note in the array
+
+                    if (!this.musicStarted && index === 0) {
+
+                        this.time.delayedCall(2000, () => {
+                            this.music.play();
+                        });
+                        this.musicStarted = true;
+                    }
+                    
+                    if (index === this.beatmap.length - 1) {
+                                    this.time.delayedCall(5000, () => {
+                                        this.checkLevelCompletion();
+                                    });
+                                }
+                            }
+                        });
+                    });
+    }
+
+    updateStreak(isSuccessfulHit) {
+        if (isSuccessfulHit) {
+            this.currentStreak++;
+            if (this.currentStreak > this.highestStreak) {
+                this.highestStreak = this.currentStreak;
+            }
+        } else {
+            this.currentStreak = 0;
+        }
+    }
+
+    checkLevelCompletion() {
+        const activeNotes = this.notes.filter(note => note && note.active);
+
+        // If no active notes remain, show the Level Clear menu
+        if (activeNotes.length === 0) {
+            this.showLevelClearMenu();
+        }
+    }
+    
+    movePlayerTo(lane) {
+        const platformWidth = this.cameras.main.width / 1.5;
+        const partWidth = platformWidth / 4;
+        const targetX = partWidth * lane + partWidth / 2;
+        
+        this.matter.body.setPosition(this.player, { x: targetX, y: this.player.position.y });
     }
 
     spawnNote(noteData) {
@@ -367,11 +579,6 @@ class LevelScene extends Phaser.Scene {
             paused: this.isPaused,
             onComplete: () => {
                 this.checkNoteHit(noteData.lane, note);
-                if (!this.musicStarted && noteData === this.beatmap[0]) {
-                    this.music = this.sound.add('demomusic');
-                    this.music.play();
-                    this.musicStarted = true;
-                }
             }
         });
     }
@@ -382,10 +589,17 @@ class LevelScene extends Phaser.Scene {
         const playerX = this.player.position.x;
         const playerLane = Math.floor(playerX / partWidth);
 
+        // If the note is hit correctly
         if (playerLane === lane && note.y >= this.cameras.main.height - 100) {
             this.score++;
             this.streak++;
             this.updateScoreAndStreak();
+
+            // Start the music when the first note is hit
+            if (!this.musicStarted && note === this.beatmap[0]) {
+                this.music.play();
+                this.musicStarted = true;
+            }
         } else {
             this.streak = 0;
             this.updateScoreAndStreak();
@@ -403,12 +617,14 @@ class LevelScene extends Phaser.Scene {
         if (this.isPaused) return;
 
         this.isPaused = true;
-        this.scene.pause();
-        this.music?.pause();
-
+        this.physics.world.isPaused = true; // Pause physics
+        this.music?.pause(); // Pause music
+        this.time.timeScale = 0;
+        this.matter.world.pause();
         this.pauseMenu = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
 
         const menuBackground = this.add.rectangle(0, 0, 200, 150, 0x000000, 0.7).setOrigin(0.5);
+
         const resumeButton = this.add.text(0, -40, 'Resume', { fontSize: '24px', fill: '#FFF' })
             .setOrigin(0.5)
             .setInteractive()
@@ -419,20 +635,71 @@ class LevelScene extends Phaser.Scene {
             .setInteractive()
             .on('pointerdown', () => {
                 this.music?.stop();
-                this.scene.stop();
-                this.scene.start('MenuScene');
+                this.music = null;
+                this.scene.stop('LevelScene'); // Stop the current LevelScene
+                this.scene.start('TitleScene'); // Start the MenuScene
             });
 
         this.pauseMenu.add([menuBackground, resumeButton, backButton]);
+        this.children.bringToTop(this.pauseMenu); // Ensure the pause menu is on top
     }
 
     resumeGame() {
         this.isPaused = false;
-        this.scene.resume();
+        this.physics.world.isPaused = false;
+        this.time.timeScale = 1;
+        this.matter.world.resume();
         this.music?.resume();
+    
         this.pauseMenu.destroy();
     }
 
+    showLevelClearMenu() {
+        // Stop the music and game updates
+        this.music.stop();
+        this.physics.pause();
+        this.isPaused = true;
+
+        // Create the Level Clear menu
+        const levelClearMenu = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
+
+        const menuBackground = this.add.rectangle(0, 0, 300, 200, 0x000000, 0.8).setOrigin(0.5);
+
+        const titleText = this.add.text(0, -70, 'Level Cleared!', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+
+        const rankText = this.add.text(0, -20, `RANK: ${this.calculateRank()}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
+        const scoreText = this.add.text(0, 20, `SCORE: ${this.score}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
+        const streakText = this.add.text(0, 60, `STREAK: ${this.highestStreak}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
+
+        const backButton = this.add.text(0, 100, 'Back', { fontSize: '24px', fill: '#FFF' })
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.music?.stop();
+                this.music = null;
+                this.scene.stop('LevelScene');
+                this.scene.start('TitleScene');
+            });
+
+        levelClearMenu.add([menuBackground, titleText, rankText, scoreText, streakText, backButton]);
+        this.children.bringToTop(levelClearMenu); // Ensure the menu is on top
+    }
+
+    calculateRank() {
+        // Simplified rank calculation
+        if (this.score >= 200) {
+            return 'S';
+        } else if (this.score >= 170) {
+            return 'A';
+        } else if (this.score >= 150) {
+            return 'B';
+        } else if (this.score >= 130) {
+            return 'C';
+        } else {
+            return 'D';
+        }
+    }
+    
     update() {
         if (this.isPaused) return;
     }
