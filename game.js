@@ -4,7 +4,7 @@ class TitleScene extends Phaser.Scene {
     }
 
     preload() {
-        // Load any assets here if necessary (e.g., background image)
+        this.load.image('usagiflap', 'usagiflap.jpg');
     }
 
     create() {
@@ -88,22 +88,22 @@ class TitleScene extends Phaser.Scene {
     if (this.subtext) this.subtext.destroy(); // Destroy subtext if it exists
 
     // Add the LEVEL SELECTOR title
-    title = this.add.text(400, 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+    title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
 
-    const previewImage = this.add.image(400, 225, 'previewImageKey').setOrigin(0.5);
+    const previewImage = this.add.image(this.cameras.main.centerX, 210, 'usagiflap').setOrigin(0.5).setScale(0.3);;
 
     // Add the subtitle under the preview image
-    const subtitle = this.add.text(400, 300, 'DEMO Stage', { fontSize: '24px', fill: '#AAA' }).setOrigin(0.5);
+    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
 
     // Add the PLAY button under the subtitle
-    playButton = this.add.text(400, 350, 'PLAY', { fontSize: '28px', fill: '#FFF' })
+    playButton = this.add.text(this.cameras.main.centerX, 400, 'PLAY', { fontSize: '32px', fill: '#FFF' })
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
             // Start the level or game logic here
             this.startGame();
         });
-        const backButton = this.add.text(200, 100, 'BACK', { fontSize: '28px', fill: '#FFF' })
+        const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
                     .setOrigin(0.5)
                     .setInteractive()
                     .on('pointerdown', () => {
