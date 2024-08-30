@@ -39,13 +39,53 @@ class TitleScene extends Phaser.Scene {
         )
         .setOrigin(0.5)
         .setInteractive();
-    }
+
+        // Array of subtext sentences
+        const subtextOptions = [
+            'waow grape game!',
+            'moosic gaem',
+            'INDEV',
+            'bit bugged',
+            'MINECRAFT TEXT'
+        ];
+
+        // Randomly select a sentence
+        const randomSubtext = Phaser.Utils.Array.GetRandom(subtextOptions);
+
+        // Subtext below the title
+        this.subtext = this.add.text(
+            this.cameras.main.centerX + 240, 
+            this.cameras.main.centerY - 130, 
+            randomSubtext, 
+            {
+                fontSize: '20px', 
+                fill: '#FFD700',
+                fontFamily: 'Courier New',
+                fontStyle: 'bold'
+            }
+        )
+        .setOrigin(0.5)
+        .setAngle(40)
+        .setShadow(2, 2, '#000', 2, true, true);
+
+        // Tween for popping effect
+        this.tweens.add({
+            targets: this.subtext,
+            scaleX: 1.2, // Scale up
+            scaleY: 1.2, // Scale up
+            ease: 'Quad.easeInOut',
+            duration: 500, // Duration of the pop
+            yoyo: true, // Shrink back down
+            repeat: -1 // Infinite loop
+        }
+    );}
 
     showlevelselector(title, playButton, optionsButton) {
     // Destroy previous elements if they exist
     if (title) title.destroy();
     if (playButton) playButton.destroy();
     if (optionsButton) optionsButton.destroy();
+    if (this.subtext) this.subtext.destroy(); // Destroy subtext if it exists
 
     // Add the LEVEL SELECTOR title
     title = this.add.text(400, 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
