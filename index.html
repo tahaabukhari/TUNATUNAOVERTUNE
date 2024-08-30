@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-adsense-account" content="ca-pub-9343960883915686">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>tunatunaovertune</title>
@@ -13,20 +12,32 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      width: 100%;
       height: 100%;
+      overflow: hidden;
     }
 
     #game-container {
-      width: 200%;
-      height: 200%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #game {
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     #game canvas {
+      display: block;
       max-width: 100%;
       max-height: 100%;
+      margin: auto;
+      object-fit: contain;
     }
   </style>
 </head>

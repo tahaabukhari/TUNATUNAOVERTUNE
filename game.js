@@ -68,10 +68,10 @@ class TitleScene extends Phaser.Scene {
                     .setInteractive()
                     .on('pointerdown', () => {
                         // Destroy level selector elements
-                        selectorTitle.destroy();
+                        title.destroy();
                         previewImage.destroy();
                         subtitle.destroy();
-                        levelPlayButton.destroy();
+                        playButton.destroy();
                         backButton.destroy();
 
                         // Return to title screen
@@ -97,7 +97,7 @@ class LevelScene extends Phaser.Scene {
                 }
             }
         });
-        this.laneColors = [0x00b8ff, 0x009bd6, 0x00719c, 0x00415a];
+        this.laneColors = [0xff8a65, 0xffd54f, 0x4caf50, 0x8bc34a];
         this.isPaused = false;  // Initialize isPaused flag
         this.pauseMenu = null;  // Initialize pauseMenu container
         this.music = null;
@@ -146,7 +146,7 @@ class LevelScene extends Phaser.Scene {
             this.music = this.sound.add('demomusic');
         }
 
-        // Input listeners for moving the player and changing character texture
+        // Input listeners for moving the player and changing character texture based on keyboard input
         this.input.keyboard.on('keydown-A', () => {
             this.movePlayerTo(0);
             this.character.setTexture('characterImage1');
@@ -166,30 +166,24 @@ class LevelScene extends Phaser.Scene {
 
         // Add touch input listener for mobile and touch devices
         this.input.on('pointerdown', (pointer) => {
-            const platformWidth = this.platform.displayWidth;
-            const sectionWidth = platformWidth / 4; // Assuming 4 sections
+            const sectionWidth = this.scale.width / 4; // Divide screen into 4 sections based on game width
 
-            // Calculate which section of the platform was clicked/touched
+            // Calculate which section of the screen was clicked/touched
             const section = Math.floor(pointer.x / sectionWidth);
 
             // Move the player to the corresponding section and change the character texture
-            switch (section) {
-                case 0:
-                    this.movePlayerTo(0);
-                    this.character.setTexture('characterImage1');
-                    break;
-                case 1:
-                    this.movePlayerTo(1);
-                    this.character.setTexture('characterImage3');
-                    break;
-                case 2:
-                    this.movePlayerTo(2);
-                    this.character.setTexture('characterImage2');
-                    break;
-                case 3:
-                    this.movePlayerTo(3);
-                    this.character.setTexture('characterImage4');
-                    break;
+            if (section === 0) {
+                this.movePlayerTo(0);
+                this.character.setTexture('characterImage1');
+            } else if (section === 1) {
+                this.movePlayerTo(1);
+                this.character.setTexture('characterImage3');
+            } else if (section === 2) {
+                this.movePlayerTo(2);
+                this.character.setTexture('characterImage2');
+            } else if (section === 3) {
+                this.movePlayerTo(3);
+                this.character.setTexture('characterImage4');
             }
         });
         
