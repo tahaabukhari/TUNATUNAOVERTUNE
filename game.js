@@ -40,7 +40,11 @@ class TitleScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setInteractive();
 
-        // Array of subtext sentences
+        optionsButton.on('pointerdown', () => {
+            this.showoptions(title, playButton, optionsButton);
+        });
+
+        // subtitle tips
         const subtextOptions = [
             'waow grape game!',
             'moosic gaem',
@@ -49,10 +53,8 @@ class TitleScene extends Phaser.Scene {
             'MINECRAFT TEXT'
         ];
 
-        // Randomly select a sentence
         const randomSubtext = Phaser.Utils.Array.GetRandom(subtextOptions);
 
-        // Subtext below the title
         this.subtext = this.add.text(
             this.cameras.main.centerX + 240, 
             this.cameras.main.centerY - 130, 
@@ -68,60 +70,123 @@ class TitleScene extends Phaser.Scene {
         .setAngle(40)
         .setShadow(2, 2, '#000', 2, true, true);
 
-        // Tween for popping effect
         this.tweens.add({
             targets: this.subtext,
-            scaleX: 1.2, // Scale up
-            scaleY: 1.2, // Scale up
+            scaleX: 1.2,
+            scaleY: 1.2,
             ease: 'Quad.easeInOut',
-            duration: 500, // Duration of the pop
-            yoyo: true, // Shrink back down
-            repeat: -1 // Infinite loop
-        }
-    );}
+            duration: 500,
+            yoyo: true,
+            repeat: -1
+        });
+    }
 
     showlevelselector(title, playButton, optionsButton) {
-    // Destroy previous elements if they exist
     if (title) title.destroy();
     if (playButton) playButton.destroy();
     if (optionsButton) optionsButton.destroy();
-    if (this.subtext) this.subtext.destroy(); // Destroy subtext if it exists
+    if (this.subtext) this.subtext.destroy();
 
-    // Add the LEVEL SELECTOR title
     title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
 
     const previewImage = this.add.image(this.cameras.main.centerX, 210, 'usagiflap').setOrigin(0.5).setScale(0.3);;
 
-    // Add the subtitle under the preview image
     const subtitle = this.add.text(this.cameras.main.centerX, 340, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
 
-    // Add the PLAY button under the subtitle
     playButton = this.add.text(this.cameras.main.centerX, 400, 'PLAY', { fontSize: '32px', fill: '#FFF' })
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
-            // Start the level or game logic here
+
             this.startGame();
         });
         const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
                     .setOrigin(0.5)
                     .setInteractive()
                     .on('pointerdown', () => {
-                        // Destroy level selector elements
+                    
                         title.destroy();
                         previewImage.destroy();
                         subtitle.destroy();
                         playButton.destroy();
                         backButton.destroy();
 
-                        // Return to title screen
-                        this.create(); // Re-create the title screen elements
+                        this.create();
                     });
-            }
+                }
+    showoptions(title, playButton, optionsButton) {
 
+        if (title) title.destroy();
+        if (playButton) playButton.destroy();
+        if (optionsButton) optionsButton.destroy();
+        if (this.subtext) this.subtext.destroy();
+
+        // Options Menu Title
+        this.optionsTitle = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 150, 
+            '(these dont work rn, go back)', 
+            { fontSize: '32px', fill: '#FFF' }
+        )
+        .setOrigin(0.5);
+
+        // Options List
+        const keyBindingButton = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 60, 
+            'Key Binding', 
+            { fontSize: '28px', fill: '#FFF' }
+        )
+        .setOrigin(0.5)
+        .setInteractive();
+
+        const soundVolumeButton = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY, 
+            'Sound Volume', 
+            { fontSize: '28px', fill: '#FFF' }
+        )
+        .setOrigin(0.5)
+        .setInteractive();
+
+        const instructionsButton = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY + 60, 
+            'Instructions', 
+            { fontSize: '28px', fill: '#FFF' }
+        )
+        .setOrigin(0.5)
+        .setInteractive();
+
+        const creditsButton = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY + 120, 
+            'Credits', 
+            { fontSize: '28px', fill: '#FFF' }
+        )
+        .setOrigin(0.5)
+        .setInteractive();
+
+        // Back Button
+        const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            // Destroy options menu elements
+            if (this.optionsTitle) this.optionsTitle.destroy();
+            if (keyBindingButton) keyBindingButton.destroy();
+            if (soundVolumeButton) soundVolumeButton.destroy();
+            if (instructionsButton) instructionsButton.destroy();
+            if (creditsButton) creditsButton.destroy();
+            if (backButton) backButton.destroy();
+
+            // Show the level selector again
+            this.create();
+        });
+    }
             startGame() {
-                // Logic to start the game
-                this.scene.start('LevelScene'); // Replace 'LevelScene' with the actual scene key for the level
+            
+                this.scene.start('LevelScene');
             }
         }
 
@@ -138,8 +203,8 @@ class LevelScene extends Phaser.Scene {
             }
         });
         this.laneColors = [0x00b8ff, 0x32cd32, 0x00719c, 0x228b22];
-        this.isPaused = false;  // Initialize isPaused flag
-        this.pauseMenu = null;  // Initialize pauseMenu container
+        this.isPaused = false;
+        this.pauseMenu = null;
         this.music = null;
         this.musicStarted = false;
     }
@@ -158,12 +223,11 @@ class LevelScene extends Phaser.Scene {
         this.isPaused = false;
         this.time.timeScale = 1;
         this.matter.world.resume();
-        // Ensure the previous music instance is stopped if already playing
+        
         if (this.music && this.music.isPlaying) {
             this.music.stop();
         }
 
-        // Reset musicStarted flag to ensure music starts only when the first note hits
         this.musicStarted = false;
 
         const platformWidth = this.cameras.main.width / 1.5;
@@ -181,12 +245,10 @@ class LevelScene extends Phaser.Scene {
         this.player = this.matter.add.rectangle(partWidth / 2, platformY - 25, partWidth, 10, { isStatic: true });
         this.physics.world.setBounds(0, 0, this.cameras.main.width, this.cameras.main.height);
 
-        // Music Handling
         if (!this.music) {
             this.music = this.sound.add('demomusic');
         }
 
-        // Input listeners for moving the player and changing character texture based on keyboard input
         this.input.keyboard.on('keydown-A', () => {
             this.movePlayerTo(0);
             this.character.setTexture('characterImage1');
@@ -204,12 +266,10 @@ class LevelScene extends Phaser.Scene {
             this.character.setTexture('characterImage4');
         });
 
-        // Add touch input listener for mobile and touch devices
         this.input.on('pointerdown', (pointer) => {
-            const partWidth = this.cameras.main.width / 1.5 / 4; // Width of each platform part
-            const section = Math.floor(pointer.x / partWidth); // Calculate which section of the screen was touched
+            const partWidth = this.cameras.main.width / 1.5 / 4;
+            const section = Math.floor(pointer.x / partWidth);
 
-            // Move the player to the corresponding platform section and change the character texture
             switch (section) {
                 case 0:
                     this.movePlayerTo(0);
@@ -228,7 +288,7 @@ class LevelScene extends Phaser.Scene {
                     this.character.setTexture('characterImage4');
                     break;
                 default:
-                    // If the touch is outside the defined sections, do nothing
+                    
                     break;
             }
         });
@@ -547,16 +607,15 @@ class LevelScene extends Phaser.Scene {
         ];
 
         this.notes = [];
-        this.highestStreak = 0; // Track the highest streak
-        this.currentStreak = 0; // Track the current streak
+        this.highestStreak = 0;
+        this.currentStreak = 0; // BUGG HERE
         
-        // Add notes to the timeline
         this.beatmap.forEach((note, index) => {
             this.time.addEvent({
                 delay: note.time,
                 callback: () => {
                     const spawnedNote = this.spawnNote(note);
-                    this.notes.push(spawnedNote); // Store the spawned note in the array
+                    this.notes.push(spawnedNote);
 
                     if (!this.musicStarted && index === 0) {
 
@@ -589,8 +648,7 @@ class LevelScene extends Phaser.Scene {
 
     checkLevelCompletion() {
         const activeNotes = this.notes.filter(note => note && note.active);
-
-        // If no active notes remain, show the Level Clear menu
+        
         if (activeNotes.length === 0) {
             this.showLevelClearMenu();
         }
@@ -629,13 +687,11 @@ class LevelScene extends Phaser.Scene {
         const playerX = this.player.position.x;
         const playerLane = Math.floor(playerX / partWidth);
 
-        // If the note is hit correctly
         if (playerLane === lane && note.y >= this.cameras.main.height - 100) {
             this.score++;
             this.streak++;
             this.updateScoreAndStreak();
 
-            // Start the music when the first note is hit
             if (!this.musicStarted && note === this.beatmap[0]) {
                 this.music.play();
                 this.musicStarted = true;
@@ -657,8 +713,8 @@ class LevelScene extends Phaser.Scene {
         if (this.isPaused) return;
 
         this.isPaused = true;
-        this.physics.world.isPaused = true; // Pause physics
-        this.music?.pause(); // Pause music
+        this.physics.world.isPaused = true;
+        this.music?.pause();
         this.time.timeScale = 0;
         this.matter.world.pause();
         this.pauseMenu = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
@@ -676,12 +732,12 @@ class LevelScene extends Phaser.Scene {
             .on('pointerdown', () => {
                 this.music?.stop();
                 this.music = null;
-                this.scene.stop('LevelScene'); // Stop the current LevelScene
-                this.scene.start('TitleScene'); // Start the MenuScene
+                this.scene.stop('LevelScene');
+                this.scene.start('TitleScene');
             });
 
         this.pauseMenu.add([menuBackground, resumeButton, backButton]);
-        this.children.bringToTop(this.pauseMenu); // Ensure the pause menu is on top
+        this.children.bringToTop(this.pauseMenu);
     }
 
     resumeGame() {
@@ -695,12 +751,11 @@ class LevelScene extends Phaser.Scene {
     }
 
     showLevelClearMenu() {
-        // Stop the music and game updates
+
         this.music.stop();
         this.physics.pause();
         this.isPaused = true;
 
-        // Create the Level Clear menu
         const levelClearMenu = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
 
         const menuBackground = this.add.rectangle(0, 0, 300, 200, 0x000000, 0.8).setOrigin(0.5);
@@ -722,11 +777,11 @@ class LevelScene extends Phaser.Scene {
             });
 
         levelClearMenu.add([menuBackground, titleText, rankText, scoreText, streakText, backButton]);
-        this.children.bringToTop(levelClearMenu); // Ensure the menu is on top
+        this.children.bringToTop(levelClearMenu);
     }
 
     calculateRank() {
-        // Simplified rank calculation
+    
         if (this.score >= 200) {
             return 'S';
         } else if (this.score >= 170) {
@@ -747,12 +802,12 @@ class LevelScene extends Phaser.Scene {
 
 const config = {
   type: Phaser.AUTO,
-  width: 650, // Game width
-  height: 450, // Game height
-  parent: 'game', // Parent div where the game is injected
+  width: 650,
+  height: 450,
+  parent: 'game',
   scale: {
-    mode: Phaser.Scale.FIT, // Scale the game to fit the screen
-    autoCenter: Phaser.Scale.CENTER_BOTH // Center the game horizontally and vertically
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH
   },
   scene: [TitleScene, LevelScene],
   physics: {
