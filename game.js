@@ -166,24 +166,30 @@ class LevelScene extends Phaser.Scene {
 
         // Add touch input listener for mobile and touch devices
         this.input.on('pointerdown', (pointer) => {
-            const sectionWidth = this.scale.width / 4; // Divide screen into 4 sections based on game width
+            const partWidth = this.cameras.main.width / 1.5 / 4; // Width of each platform part
+            const section = Math.floor(pointer.x / partWidth); // Calculate which section of the screen was touched
 
-            // Calculate which section of the screen was clicked/touched
-            const section = Math.floor(pointer.x / sectionWidth);
-
-            // Move the player to the corresponding section and change the character texture
-            if (section === 0) {
-                this.movePlayerTo(0);
-                this.character.setTexture('characterImage1');
-            } else if (section === 1) {
-                this.movePlayerTo(1);
-                this.character.setTexture('characterImage3');
-            } else if (section === 2) {
-                this.movePlayerTo(2);
-                this.character.setTexture('characterImage2');
-            } else if (section === 3) {
-                this.movePlayerTo(3);
-                this.character.setTexture('characterImage4');
+            // Move the player to the corresponding platform section and change the character texture
+            switch (section) {
+                case 0:
+                    this.movePlayerTo(0);
+                    this.character.setTexture('characterImage1');
+                    break;
+                case 1:
+                    this.movePlayerTo(1);
+                    this.character.setTexture('characterImage3');
+                    break;
+                case 2:
+                    this.movePlayerTo(2);
+                    this.character.setTexture('characterImage2');
+                    break;
+                case 3:
+                    this.movePlayerTo(3);
+                    this.character.setTexture('characterImage4');
+                    break;
+                default:
+                    // If the touch is outside the defined sections, do nothing
+                    break;
             }
         });
         
