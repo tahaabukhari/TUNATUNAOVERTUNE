@@ -304,6 +304,19 @@ class LevelScene extends Phaser.Scene {
             .setInteractive()
             .on('pointerdown', () => this.pauseGame());
 
+        const redBarHeight = 10;
+
+        this.redBarMaxWidth = platformWidth;
+        this.redBarWidth = platformWidth;
+        
+        this.redBar = this.add.rectangle(
+            220,
+            390,
+            this.redBarWidth,
+            redBarHeight,
+            0xffffff
+        ).setOrigin(0.5, 0.5);
+        
         const beatInterval = 705.6;
 
         this.beatmap = [
@@ -634,6 +647,95 @@ class LevelScene extends Phaser.Scene {
                     });
     }
 
+    reduceRedBar() {
+        const reductionAmount = 20;  // Adjust this value as needed
+        this.redBarWidth -= reductionAmount;
+        if (this.redBarWidth < 0) this.redBarWidth = 0;
+
+        // Update the red bar's width directly
+        this.redBar.displayWidth = this.redBarWidth;
+
+        if (this.redBarWidth === 0) {
+            this.levelFailed();
+        }
+    }
+
+    increaseRedBar() {
+        const increaseAmount = 10;  // Adjust this value as needed
+        this.redBarWidth += increaseAmount;
+        if (this.redBarWidth > this.redBarMaxWidth) this.redBarWidth = this.redBarMaxWidth;
+
+        // Update the red bar's width directly
+        this.redBar.displayWidth = this.redBarWidth;
+    }
+
+    levelFailed() {
+        // Ensure this function only runs once
+        if (this.levelFailedTriggered) {
+            return;
+        }
+        this.levelFailedTriggered = true;
+
+        this.isPaused = true;
+        this.time.timeScale = 0;
+        this.matter.world.pause();
+        if (this.music && this.music.isPlaying) {
+            this.music.stop();
+        }
+
+        // Display "Level Failed" screen elements
+        this.levelFailedText = this.add.text(
+            this.cameras.main.width / 2, 
+            this.cameras.main.height / 3, 
+            'Level Failed', 
+            { fontSize: '48px', fill: '#ff0000' }
+        ).setOrigin(0.5);
+
+        const tips = [
+            'L bozo',
+            'git gud',
+            'noob',
+            'how did u even miss that',
+            'loser alert',
+        ];
+
+        const randomTip = Phaser.Utils.Array.GetRandom(tips);
+        this.tipText = this.add.text(
+            this.cameras.main.width / 2, 
+            this.cameras.main.height / 2, 
+            `${randomTip}`, 
+            { fontSize: '24px', fill: '#ffffff' }
+        ).setOrigin(0.5);
+
+        this.scoreText = this.add.text(
+            this.cameras.main.width / 2, 
+            this.cameras.main.height / 1.5, 
+            `Score: ${this.score}`, 
+            { fontSize: '32px', fill: '#ffffff' }
+        ).setOrigin(0.5);
+
+        this.backButton = this.add.text(
+            this.cameras.main.width / 2, 
+            this.cameras.main.height / 1.2, 
+            'Back', 
+            { fontSize: '32px', fill: '#ffffff' }
+        ).setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.cleanUpLevelFailed();
+                this.scene.start('TitleScene');
+            });
+    }
+
+    cleanUpLevelFailed() {
+        if (this.levelFailedText) this.levelFailedText.destroy();
+        if (this.tipText) this.tipText.destroy();
+        if (this.scoreText) this.scoreText.destroy();
+        if (this.backButton) this.backButton.destroy();
+
+        this.levelFailedTriggered = false;
+    }
+    
     updateStreak(isSuccessfulHit) {
         if (isSuccessfulHit) {
             this.currentStreak++;
@@ -690,6 +792,7 @@ class LevelScene extends Phaser.Scene {
             this.score++;
             this.streak++;
             this.updateScoreAndStreak();
+            this.increaseRedBar();
 
             if (!this.musicStarted && note === this.beatmap[0]) {
                 this.music.play();
@@ -698,6 +801,7 @@ class LevelScene extends Phaser.Scene {
         } else {
             this.streak = 0;
             this.updateScoreAndStreak();
+            this.reduceRedBar();
         }
 
         note.destroy();
