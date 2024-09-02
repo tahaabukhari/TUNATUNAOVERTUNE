@@ -4,7 +4,11 @@ class TitleScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('usagiflap', 'usagiflap.jpg');
+        this.load.image('usagiflap', 'Level1-cover.jpg');
+        this.load.image('crabrave', 'Level2-cover.jpg');
+        this.load.image('asimslevel', 'Level3-cover.jpg');
+        this.load.image('planetloop', 'Level4-cover.jpg');
+        this.load.image('FINALBOSS', 'Level5-cover.jpg');
     }
 
     create() {
@@ -28,28 +32,50 @@ class TitleScene extends Phaser.Scene {
         .setInteractive();
 
         playButton.on('pointerdown', () => {
-            this.showlevelselector(title, playButton, optionsButton);
+            this.showlevelselector(title, playButton, tutorialButton, optionsButton);
         });
 
-        const optionsButton = this.add.text(
+        const tutorialButton = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY + 40, 
+            'Tutorial', 
+            { fontSize: '32px', fill: '#FFF' }
+        )
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.showtutorial(title, playButton, tutorialButton, optionsButton);
+        });
+        
+        const optionsButton = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY + 100, 
             'Options', 
             { fontSize: '32px', fill: '#FFF' }
         )
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
-            this.showoptions(title, playButton, optionsButton); // Use this.showoptions to call the method in the current context
+            this.showoptions(title, playButton, tutorialButton, optionsButton);
         });
-
-        // subtitle tips
+        
         const subtextOptions = [
             'waow grape game!',
             'moosic gaem',
             'INDEV',
             'bit bugged',
-            'MINECRAFT TEXT'
+            'MINECRAFT TEXT',
+            'version 0.3!!!',
+            'tahaaagame?!?!',
+            'i am tuna',
+            'dont talk to d ranks',
+            'tunaovertime!!',
+            'brrrrr',
+            'CHATGPT HELP ME',
+            'play when??',
+            'better then before!',
+            'its rly good!',
+            'rythm game!?!'
         ];
 
         const randomSubtext = Phaser.Utils.Array.GetRandom(subtextOptions);
@@ -80,47 +106,273 @@ class TitleScene extends Phaser.Scene {
         });
     }
 
-    showlevelselector(title, playButton, optionsButton) {
-    if (title) title.destroy();
-    if (playButton) playButton.destroy();
-    if (optionsButton) optionsButton.destroy();
-    if (this.subtext) this.subtext.destroy();
+    showlevelselector(title, playButton, tutorialButton, optionsButton) {
+    
+        if (title) title.destroy();
+        if (playButton) playButton.destroy();
+        if (tutorialButton) tutorialButton.destroy();
+        if (optionsButton) optionsButton.destroy();
+        if (this.subtext) this.subtext.destroy();
 
-    title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+        title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
 
-    const previewImage = this.add.image(this.cameras.main.centerX, 210, 'usagiflap').setOrigin(0.5).setScale(0.3);;
+        const previewImage = this.add.image(this.cameras.main.centerX, 210, 'usagiflap').setOrigin(0.5).setScale(0.3);
 
-    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const subtitle = this.add.text(this.cameras.main.centerX, 340, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
 
-    playButton = this.add.text(this.cameras.main.centerX, 400, 'PLAY', { fontSize: '32px', fill: '#FFF' })
+        playButton = this.add.text(this.cameras.main.centerX, 400, 'PLAY', { fontSize: '32px', fill: '#FFF' })
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.startGame();
+            });
+
+        const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+            
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                playButton.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                this.create();
+            });
+
+        const nextButton = this.add.text(this.cameras.main.width - 100, 230, 'NEXT', { fontSize: '28px', fill: '#FFF' })
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                playButton.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                this.showLevelSelectorPage2();
+            });
+    }
+
+    showLevelSelectorPage2() {
+
+        const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+
+        const previewImage = this.add.image(this.cameras.main.centerX, 210, 'crabrave').setOrigin(0.5).setScale(0.3);
+
+        const subtitle = this.add.text(this.cameras.main.centerX, 340, 'Crab Rave', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+
+        const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
+            .setOrigin(0.5)
+
+        const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                playButton.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                this.showlevelselector();
+            });
+
+        const nextButton = this.add.text(this.cameras.main.width - 100, 230, 'NEXT', { fontSize: '28px', fill: '#FFF' })
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
 
-            this.startGame();
+            title.destroy();
+            previewImage.destroy();
+            subtitle.destroy();
+            playButton.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showLevelSelectorPage3();
         });
-        const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
-                    .setOrigin(0.5)
-                    .setInteractive()
-                    .on('pointerdown', () => {
-                    
-                        title.destroy();
-                        previewImage.destroy();
-                        subtitle.destroy();
-                        playButton.destroy();
-                        backButton.destroy();
+    }
 
-                        this.create();
-                    });
-                }
-    showoptions(title, playButton, optionsButton) {
+    showLevelSelectorPage3() {
+
+    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+
+    const previewImage = this.add.image(this.cameras.main.centerX, 210, 'asimslevel').setOrigin(0.5).setScale(0.3);
+
+    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'Asims Level', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+
+    const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
+        .setOrigin(0.5)
+
+    const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            title.destroy();
+            previewImage.destroy();
+            subtitle.destroy();
+            playButton.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showLevelSelectorPage2();
+        });
+
+        const nextButton = this.add.text(this.cameras.main.width - 100, 230, 'NEXT', { fontSize: '28px', fill: '#FFF' })
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+
+            title.destroy();
+            previewImage.destroy();
+            subtitle.destroy();
+            playButton.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showLevelSelectorPage4();
+        });
+    }
+
+    showLevelSelectorPage4() {
+
+    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+
+    const previewImage = this.add.image(this.cameras.main.centerX, 210, 'planetloop').setOrigin(0.5).setScale(0.3);
+
+    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'SUPER HARD WEEB LEVEL', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+
+    const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
+        .setOrigin(0.5)
+
+    const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            title.destroy();
+            previewImage.destroy();
+            subtitle.destroy();
+            playButton.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showLevelSelectorPage3();
+        });
+
+        const nextButton = this.add.text(this.cameras.main.width - 100, 230, 'NEXT', { fontSize: '28px', fill: '#FFF' })
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+
+            title.destroy();
+            previewImage.destroy();
+            subtitle.destroy();
+            playButton.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showLevelSelectorPage5();
+        });
+    }
+    
+    showLevelSelectorPage5() {
+
+    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+
+    const previewImage = this.add.image(this.cameras.main.centerX, 210, 'FINALBOSS').setOrigin(0.5).setScale(0.3);
+
+    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'FINALBOSS', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+
+    const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
+        .setOrigin(0.5)
+
+    const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            title.destroy();
+            previewImage.destroy();
+            subtitle.destroy();
+            playButton.destroy();
+            backButton.destroy();
+            this.showLevelSelectorPage4();
+        });
+    }
+    
+    showtutorial(title, playButton, tutorialButton, optionsButton) {
+        if (title) title.destroy();
+        if (playButton) playButton.destroy();
+        if (tutorialButton) tutorialButton.destroy();
+        if (optionsButton) optionsButton.destroy();
+        if (this.subtext) this.subtext.destroy();
+
+        this.createTutorialPage(1);
+    }
+
+    createTutorialPage(pageNumber) {
+        const tutorialPages = [
+            { image: '', text: 'How to Play - Page 1' },
+            { image: '', text: 'How to Play - Page 2' },
+            { image: '', text: 'How to Play - Page 3' }
+        ];
+
+        if (pageNumber > tutorialPages.length || pageNumber < 1) {
+            console.warn(`Page number ${pageNumber} is out of bounds.`);
+            return;
+        }
+
+        const currentPage = tutorialPages[pageNumber - 1];
+
+        const title = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 150, 
+            currentPage.text, 
+            { fontSize: '32px', fill: '#FFF' }
+        ).setOrigin(0.5);
+
+        const previewImage = this.add.image(
+            this.cameras.main.centerX, 
+            210, 
+            currentPage.image
+        ).setOrigin(0.5).setScale(0.3);
+
+        const backButton = this.add.text(
+            100, 
+            230, 
+            'BACK', 
+            { fontSize: '28px', fill: '#FFF' }
+        ).setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            title.destroy();
+            previewImage.destroy();
+            backButton.destroy();
+            if (nextButton) nextButton.destroy();
+            this.create();
+        });
+
+        const nextButton = (pageNumber < tutorialPages.length) ? this.add.text(
+            this.cameras.main.width - 100, 
+            230, 
+            'NEXT', 
+            { fontSize: '28px', fill: '#FFF' }
+        ).setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            title.destroy();
+            previewImage.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.createTutorialPage(pageNumber + 1);
+        }) : null;
+    }
+    
+    showoptions(title, playButton, tutorialButton, optionsButton) {
 
         if (title) title.destroy();
         if (playButton) playButton.destroy();
         if (optionsButton) optionsButton.destroy();
+        if (tutorialButton) tutorialButton.destroy();
         if (this.subtext) this.subtext.destroy();
 
-        // Options Menu Title
         this.optionsTitle = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 150, 
@@ -129,7 +381,6 @@ class TitleScene extends Phaser.Scene {
         )
         .setOrigin(0.5);
 
-        // Options List
         const keyBindingButton = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 60, 
@@ -166,7 +417,6 @@ class TitleScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setInteractive();
 
-        // Back Button
         const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
         .setOrigin(0.5)
         .setInteractive()
@@ -179,20 +429,18 @@ class TitleScene extends Phaser.Scene {
             if (creditsButton) creditsButton.destroy();
             if (backButton) backButton.destroy();
 
-            // Show the level selector again
             this.create();
         });
     }
             startGame() {
-            
-                this.scene.start('LevelScene');
+                this.scene.start('Usagiflap');
             }
         }
 
-class LevelScene extends Phaser.Scene {
+class Usagiflap extends Phaser.Scene {
     constructor() {
         super({
-            key: 'LevelScene',
+            key: 'Usagiflap',
             physics: {
                 default: 'matter',
                 arcade: {
@@ -210,11 +458,11 @@ class LevelScene extends Phaser.Scene {
 
 
     preload() {
-        this.load.audio('demomusic', 'DEMO ST.mp3');
-        this.load.image('characterImage1', 'image1.png');
-        this.load.image('characterImage2', 'image2.png');
-        this.load.image('characterImage3', 'image3.png');
-        this.load.image('characterImage4', 'image4.png');
+        this.load.audio('demomusic', 'Level1-track.mp3');
+        this.load.image('characterImage1', 'usagi1.png');
+        this.load.image('characterImage2', 'usagi2.png');
+        this.load.image('characterImage3', 'usagi3.png');
+        this.load.image('characterImage4', 'usagi4.png');
     }
 
     create() {
@@ -228,7 +476,7 @@ class LevelScene extends Phaser.Scene {
         }
 
         this.musicStarted = false;
-
+        
         const platformWidth = this.cameras.main.width / 1.5;
         const platformHeight = 20;
         const platformY = this.cameras.main.height - 100;
@@ -236,12 +484,20 @@ class LevelScene extends Phaser.Scene {
 
         this.platforms = [];
 
+        const platformGraphics = this.add.graphics();
+        platformGraphics.lineStyle(4, 0xFFFFFF, 1);
+        platformGraphics.fillStyle(0x0000FF, 1);
+
         for (let i = 0; i < 4; i++) {
-            const platform = this.matter.add.rectangle(partWidth * i + partWidth / 2, platformY, partWidth, platformHeight, { isStatic: true });
+            const platformX = partWidth * i + partWidth / 2;
+            
+            platformGraphics.strokeRect(platformX - partWidth / 2, platformY - platformHeight / 2, partWidth, platformHeight);
+
+            const platform = this.matter.add.rectangle(platformX, platformY, partWidth, platformHeight, { isStatic: true });
             this.platforms.push(platform);
         }
 
-        this.player = this.matter.add.rectangle(partWidth / 2, platformY - 25, partWidth, 10, { isStatic: true });
+        this.player = this.matter.add.rectangle(partWidth / 2, platformY - 25, partWidth, 5, { isStatic: true });
         this.physics.world.setBounds(0, 0, this.cameras.main.width, this.cameras.main.height);
 
         if (!this.music) {
@@ -648,11 +904,10 @@ class LevelScene extends Phaser.Scene {
     }
 
     reduceRedBar() {
-        const reductionAmount = 20;  // Adjust this value as needed
+        const reductionAmount = 20;
         this.redBarWidth -= reductionAmount;
         if (this.redBarWidth < 0) this.redBarWidth = 0;
 
-        // Update the red bar's width directly
         this.redBar.displayWidth = this.redBarWidth;
 
         if (this.redBarWidth === 0) {
@@ -661,16 +916,15 @@ class LevelScene extends Phaser.Scene {
     }
 
     increaseRedBar() {
-        const increaseAmount = 10;  // Adjust this value as needed
+        const increaseAmount = 10;
         this.redBarWidth += increaseAmount;
         if (this.redBarWidth > this.redBarMaxWidth) this.redBarWidth = this.redBarMaxWidth;
 
-        // Update the red bar's width directly
         this.redBar.displayWidth = this.redBarWidth;
     }
 
     levelFailed() {
-        // Ensure this function only runs once
+        
         if (this.levelFailedTriggered) {
             return;
         }
@@ -683,7 +937,6 @@ class LevelScene extends Phaser.Scene {
             this.music.stop();
         }
 
-        // Display "Level Failed" screen elements
         this.levelFailedText = this.add.text(
             this.cameras.main.width / 2, 
             this.cameras.main.height / 3, 
@@ -912,7 +1165,7 @@ const config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
-  scene: [TitleScene, LevelScene],
+  scene: [TitleScene, Usagiflap],
   physics: {
     default: 'matter',
     matter: {
