@@ -908,7 +908,7 @@ class Usagiflap extends Phaser.Scene {
 
         this.notes = [];
         this.highestStreak = 0;
-        this.currentStreak = 0; // BUGG FIXXEDD LESSSSSSSSSS GOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+        this.currentStreak = 0;
         
         this.beatmap.forEach((note, index) => {
             this.time.addEvent({
@@ -1097,7 +1097,8 @@ class Usagiflap extends Phaser.Scene {
             this.updateScoreAndStreak();
             this.increaseRedBar();
             this.noteScored = true;
- 
+            this.createPopEffect(lane);
+            
             if (!this.musicStarted && note === this.beatmap[0]) {
                 this.music.play();
                 this.musicStarted = true;
@@ -1112,6 +1113,36 @@ class Usagiflap extends Phaser.Scene {
         note.destroy();
     }
 
+    createPopEffect(lane) {
+        const platformWidth = this.cameras.main.width / 1.5;
+        const partWidth = platformWidth / 4;
+        const platformHeight = 40; 
+
+        const platformX = partWidth * lane + partWidth / 2;
+        const platformY = this.cameras.main.height - 100;
+
+        const popEffectGraphics = this.add.graphics();
+        popEffectGraphics.lineStyle(6, 0xFFFFFF, 1);
+
+        popEffectGraphics.strokeRect(
+            platformX - partWidth / 2, 
+            platformY - platformHeight / 2, 
+            partWidth, 
+            platformHeight
+        );
+
+        this.tweens.add({
+            targets: popEffectGraphics,
+            scaleX: 1.2,
+            scaleY: 1.2, 
+            alpha: 0,    
+            duration: 400,
+            onComplete: () => {
+                popEffectGraphics.destroy(); 
+            }
+        });
+    }
+    
     updateScoreAndStreak() {
         this.scoreText.setText('Score: ' + this.score);
         this.streakText.setText('Streak: ' + this.currentStreak);
@@ -1190,13 +1221,13 @@ class Usagiflap extends Phaser.Scene {
 
     calculateRank() {
     
-        if (this.score >= 200) {
+        if (this.score >= 250) {
             return 'S';
-        } else if (this.score >= 170) {
+        } else if (this.score >= 200) {
             return 'A';
-        } else if (this.score >= 150) {
+        } else if (this.score >= 180) {
             return 'B';
-        } else if (this.score >= 130) {
+        } else if (this.score >= 150) {
             return 'C';
         } else {
             return 'D';
