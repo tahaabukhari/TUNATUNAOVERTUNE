@@ -240,7 +240,7 @@ class TitleScene extends Phaser.Scene {
 
     const previewImage = this.add.image(this.cameras.main.centerX, 210, 'planetloop').setOrigin(0.5).setScale(0.3);
 
-    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'SUPER HARD WEEB LEVEL', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'Planet Loop', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
 
     const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
         .setOrigin(0.5)
@@ -304,34 +304,21 @@ class TitleScene extends Phaser.Scene {
         if (optionsButton) optionsButton.destroy();
         if (this.subtext) this.subtext.destroy();
 
-        this.createTutorialPage(1);
+        this.showTutorialPage1();
     }
 
-    createTutorialPage(pageNumber) {
-        const tutorialPages = [
-            { image: '', text: 'How to Play - Page 1' },
-            { image: '', text: 'How to Play - Page 2' },
-            { image: '', text: 'How to Play - Page 3' }
-        ];
-
-        if (pageNumber > tutorialPages.length || pageNumber < 1) {
-            console.warn(`Page number ${pageNumber} is out of bounds.`);
-            return;
-        }
-
-        const currentPage = tutorialPages[pageNumber - 1];
-
+    showTutorialPage1() {
         const title = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 150, 
-            currentPage.text, 
+            'How to Play - Page 1', 
             { fontSize: '32px', fill: '#FFF' }
         ).setOrigin(0.5);
 
         const previewImage = this.add.image(
             this.cameras.main.centerX, 
             210, 
-            currentPage.image
+            'imagePage1'
         ).setOrigin(0.5).setScale(0.3);
 
         const backButton = this.add.text(
@@ -345,11 +332,11 @@ class TitleScene extends Phaser.Scene {
             title.destroy();
             previewImage.destroy();
             backButton.destroy();
-            if (nextButton) nextButton.destroy();
+            nextButton.destroy();
             this.create();
         });
 
-        const nextButton = (pageNumber < tutorialPages.length) ? this.add.text(
+        const nextButton = this.add.text(
             this.cameras.main.width - 100, 
             230, 
             'NEXT', 
@@ -361,8 +348,82 @@ class TitleScene extends Phaser.Scene {
             previewImage.destroy();
             backButton.destroy();
             nextButton.destroy();
-            this.createTutorialPage(pageNumber + 1);
-        }) : null;
+            this.showTutorialPage2();
+        });
+    }
+
+    showTutorialPage2() {
+        const title = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 150, 
+            'How to Play - Page 2', 
+            { fontSize: '32px', fill: '#FFF' }
+        ).setOrigin(0.5);
+
+        const previewImage = this.add.image(
+            this.cameras.main.centerX, 
+            210, 
+            'imagePage2'
+        ).setOrigin(0.5).setScale(0.3);
+
+        const backButton = this.add.text(
+            100, 
+            230, 
+            'BACK', 
+            { fontSize: '28px', fill: '#FFF' }
+        ).setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            title.destroy();
+            previewImage.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.create();
+        });
+
+        const nextButton = this.add.text(
+            this.cameras.main.width - 100, 
+            230, 
+            'NEXT', 
+            { fontSize: '28px', fill: '#FFF' }
+        ).setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            title.destroy();
+            previewImage.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showTutorialPage3();
+        });
+    }
+
+    showTutorialPage3() {
+        const title = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 150, 
+            'How to Play - Page 3', 
+            { fontSize: '32px', fill: '#FFF' }
+        ).setOrigin(0.5);
+
+        const previewImage = this.add.image(
+            this.cameras.main.centerX, 
+            210, 
+            'imagePage3'
+        ).setOrigin(0.5).setScale(0.3);
+
+        const backButton = this.add.text(
+            100, 
+            230, 
+            'BACK', 
+            { fontSize: '28px', fill: '#FFF' }
+        ).setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+            title.destroy();
+            previewImage.destroy();
+            backButton.destroy();
+            this.create();
+        });
     }
     
     showoptions(title, playButton, tutorialButton, optionsButton) {
@@ -392,26 +453,8 @@ class TitleScene extends Phaser.Scene {
 
         const soundVolumeButton = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY, 
-            'Sound Volume', 
-            { fontSize: '28px', fill: '#FFF' }
-        )
-        .setOrigin(0.5)
-        .setInteractive();
-
-        const instructionsButton = this.add.text(
-            this.cameras.main.centerX, 
             this.cameras.main.centerY + 60, 
-            'Instructions', 
-            { fontSize: '28px', fill: '#FFF' }
-        )
-        .setOrigin(0.5)
-        .setInteractive();
-
-        const creditsButton = this.add.text(
-            this.cameras.main.centerX, 
-            this.cameras.main.centerY + 120, 
-            'Credits', 
+            'Sound Volume', 
             { fontSize: '28px', fill: '#FFF' }
         )
         .setOrigin(0.5)
@@ -425,8 +468,6 @@ class TitleScene extends Phaser.Scene {
             if (this.optionsTitle) this.optionsTitle.destroy();
             if (keyBindingButton) keyBindingButton.destroy();
             if (soundVolumeButton) soundVolumeButton.destroy();
-            if (instructionsButton) instructionsButton.destroy();
-            if (creditsButton) creditsButton.destroy();
             if (backButton) backButton.destroy();
 
             this.create();
@@ -505,20 +546,16 @@ class Usagiflap extends Phaser.Scene {
         }
 
         this.input.keyboard.on('keydown-A', () => {
-            this.movePlayerTo(0);
-            this.character.setTexture('characterImage1');
+            this.handlePlayerMove(0, 'characterImage1');
         });
         this.input.keyboard.on('keydown-S', () => {
-            this.movePlayerTo(1);
-            this.character.setTexture('characterImage3');
+            this.handlePlayerMove(1, 'characterImage3');
         });
         this.input.keyboard.on('keydown-D', () => {
-            this.movePlayerTo(2);
-            this.character.setTexture('characterImage2');
+            this.handlePlayerMove(2, 'characterImage2');
         });
         this.input.keyboard.on('keydown-F', () => {
-            this.movePlayerTo(3);
-            this.character.setTexture('characterImage4');
+            this.handlePlayerMove(3, 'characterImage4');
         });
 
         this.input.on('pointerdown', (pointer) => {
@@ -527,29 +564,24 @@ class Usagiflap extends Phaser.Scene {
 
             switch (section) {
                 case 0:
-                    this.movePlayerTo(0);
-                    this.character.setTexture('characterImage1');
+                    this.handlePlayerMove(0, 'characterImage1');
                     break;
                 case 1:
-                    this.movePlayerTo(1);
-                    this.character.setTexture('characterImage3');
+                    this.handlePlayerMove(1, 'characterImage3');
                     break;
                 case 2:
-                    this.movePlayerTo(2);
-                    this.character.setTexture('characterImage2');
+                    this.handlePlayerMove(2, 'characterImage2');
                     break;
                 case 3:
-                    this.movePlayerTo(3);
-                    this.character.setTexture('characterImage4');
+                    this.handlePlayerMove(3, 'characterImage4');
                     break;
                 default:
-                    
                     break;
             }
         });
-        
+
         this.score = 0;
-        this.streak = 0;
+        this.moveMade = false;
 
         this.scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '24px', fill: '#FFF' });
         this.streakText = this.add.text(10, 40, 'Streak: 0', { fontSize: '24px', fill: '#FFF' });
@@ -876,7 +908,7 @@ class Usagiflap extends Phaser.Scene {
 
         this.notes = [];
         this.highestStreak = 0;
-        this.currentStreak = 0; // BUGG HERE
+        this.currentStreak = 0; // BUGG FIXXEDD LESSSSSSSSSS GOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
         
         this.beatmap.forEach((note, index) => {
             this.time.addEvent({
@@ -903,8 +935,7 @@ class Usagiflap extends Phaser.Scene {
                     });
     }
 
-    reduceRedBar() {
-        const reductionAmount = 20;
+    reduceRedBar(reductionAmount = 20) {
         this.redBarWidth -= reductionAmount;
         if (this.redBarWidth < 0) this.redBarWidth = 0;
 
@@ -943,7 +974,7 @@ class Usagiflap extends Phaser.Scene {
             'Level Failed', 
             { fontSize: '48px', fill: '#ff0000' }
         ).setOrigin(0.5);
-
+        
         const tips = [
             'L bozo',
             'git gud',
@@ -966,7 +997,7 @@ class Usagiflap extends Phaser.Scene {
             `Score: ${this.score}`, 
             { fontSize: '32px', fill: '#ffffff' }
         ).setOrigin(0.5);
-
+        
         this.backButton = this.add.text(
             this.cameras.main.width / 2, 
             this.cameras.main.height / 1.2, 
@@ -1035,6 +1066,21 @@ class Usagiflap extends Phaser.Scene {
         });
     }
 
+    handlePlayerMove(lane, characterImage) {
+        this.movePlayerTo(lane);
+        this.character.setTexture(characterImage);
+        this.moveMade = true;
+        
+        this.time.delayedCall(0, () => {
+            if (!this.noteScored) {
+                this.currentStreak = 0;
+                this.reduceRedBar(10);
+                this.updateScoreAndStreak();
+            }
+            this.moveMade = false;
+        });
+    }
+    
     checkNoteHit(lane, note) {
         const platformWidth = this.cameras.main.width / 1.5;
         const partWidth = platformWidth / 4;
@@ -1043,18 +1089,24 @@ class Usagiflap extends Phaser.Scene {
 
         if (playerLane === lane && note.y >= this.cameras.main.height - 100) {
             this.score++;
-            this.streak++;
+            this.currentStreak++;
+            if (this.currentStreak > this.highestStreak) {
+                this.highestStreak = this.currentStreak;
+            }
+            
             this.updateScoreAndStreak();
             this.increaseRedBar();
-
+            this.noteScored = true;
+ 
             if (!this.musicStarted && note === this.beatmap[0]) {
                 this.music.play();
                 this.musicStarted = true;
             }
         } else {
-            this.streak = 0;
+            this.currentStreak = 0;
             this.updateScoreAndStreak();
             this.reduceRedBar();
+            this.noteScored = false;
         }
 
         note.destroy();
@@ -1062,7 +1114,7 @@ class Usagiflap extends Phaser.Scene {
 
     updateScoreAndStreak() {
         this.scoreText.setText('Score: ' + this.score);
-        this.streakText.setText('Streak: ' + this.streak);
+        this.streakText.setText('Streak: ' + this.currentStreak);
     }
 
     pauseGame() {
