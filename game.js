@@ -1108,6 +1108,7 @@ class Usagiflap extends Phaser.Scene {
             this.updateScoreAndStreak();
             this.reduceRedBar();
             this.noteScored = false;
+            this.createMissEffect(lane);
         }
 
         note.destroy();
@@ -1139,6 +1140,36 @@ class Usagiflap extends Phaser.Scene {
             duration: 400,
             onComplete: () => {
                 popEffectGraphics.destroy(); 
+            }
+        });
+    }
+
+    createMissEffect(lane) {
+        const platformWidth = this.cameras.main.width / 1.5;
+        const partWidth = platformWidth / 4;
+        const platformY = this.cameras.main.height - 100;
+
+        const platformX = partWidth * lane + partWidth / 2;
+
+        const missText = this.add.text(
+            platformX, 
+            platformY - 50,
+            'MISS', 
+            {
+                fontSize: '32px', 
+                fill: '#FF0000', 
+                fontFamily: 'PixelFont',
+            }
+        ).setOrigin(0.5);
+
+        this.tweens.add({
+            targets: missText,
+            y: platformY - 100,
+            alpha: 0,
+            duration: 500,
+            ease: 'Power1',
+            onComplete: () => {
+                missText.destroy();
             }
         });
     }
