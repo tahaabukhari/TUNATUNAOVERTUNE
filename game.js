@@ -262,7 +262,7 @@ class TitleScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
-
+            
             title.destroy();
             previewImage.destroy();
             subtitle.destroy();
@@ -442,34 +442,108 @@ class TitleScene extends Phaser.Scene {
         )
         .setOrigin(0.5);
 
-        const keyBindingButton = this.add.text(
-            this.cameras.main.centerX, 
-            this.cameras.main.centerY - 60, 
-            'Key Binding', 
-            { fontSize: '28px', fill: '#FFF' }
-        )
-        .setOrigin(0.5)
-        .setInteractive();
 
         const soundVolumeButton = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY + 60, 
+            this.cameras.main.centerY - 60, 
             'Sound Volume', 
             { fontSize: '28px', fill: '#FFF' }
         )
         .setOrigin(0.5)
         .setInteractive();
 
+        let gamevolume = 1;
+        let barWidth = 200;
+        let barHeight = 10;
+        let sphereRadius = 10;
+        let lastDragX = 0;
+        let lastDragTime = 0;
+        let speedThreshold = 0.5;
+        let isSphereOutOfBounds = false;
+
+        let soundBar = this.add.graphics();
+        soundBar.fillStyle(0xFFFFFF, 1);
+        soundBar.fillRect(this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerY, barWidth, barHeight);
+
+        let sphere = this.add.circle(this.cameras.main.centerX, this.cameras.main.centerY + barHeight / 2, sphereRadius, 0xFFD700).setInteractive();
+        this.input.setDraggable(sphere);
+
+        let volumeText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 50, `Volume: ${gamevolume * 100}%`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
+
+        sphere.on('dragstart', (pointer, gameObject) => {
+            lastDragX = gameObject.x;
+            lastDragTime = this.time.now;
+        });
+
+        sphere.on('drag', (pointer, dragX, dragY) => {
+            dragX = Phaser.Math.Clamp(dragX, 0, this.cameras.main.width);
+            dragY = Phaser.Math.Clamp(dragY, 0, this.cameras.main.height);
+
+            let currentTime = this.time.now;
+            let deltaTime = currentTime - lastDragTime;
+            let deltaX = dragX - lastDragX;
+            let dragSpeed = Math.abs(deltaX) / (deltaTime || 1);
+
+            if (!isSphereOutOfBounds && dragSpeed > speedThreshold) {
+                isSphereOutOfBounds = true;
+                let direction = deltaX > 0 ? 1 : -1;
+                let popOutX = sphere.x + direction * 50;
+                popOutX = Phaser.Math.Clamp(popOutX, 0, this.cameras.main.width);
+                this.tweens.add({
+                    targets: sphere,
+                    x: popOutX,
+                    y: sphere.y + 50,
+                    duration: 300,
+                    ease: 'Power2'
+                });
+            }
+
+            if (!isSphereOutOfBounds) {
+                if (dragX >= this.cameras.main.centerX - barWidth / 2 && dragX <= this.cameras.main.centerX + barWidth / 2) {
+                    sphere.x = dragX;
+                    gamevolume = (dragX - (this.cameras.main.centerX - barWidth / 2)) / barWidth;
+                    volumeText.setText(`Volume: ${Math.round(gamevolume * 100)}%`);
+                }
+            } else {
+                sphere.x = dragX;
+                sphere.y = dragY;
+            }
+
+            lastDragX = dragX;
+            lastDragTime = currentTime;
+        });
+
+        sphere.on('dragend', () => {
+            if (isSphereOutOfBounds) {
+                let onBar = (sphere.x >= this.cameras.main.centerX - barWidth / 2 && sphere.x <= this.cameras.main.centerX + barWidth / 2 &&
+                             sphere.y >= this.cameras.main.centerY && sphere.y <= this.cameras.main.centerY + barHeight);
+                if (onBar) {
+                    this.tweens.add({
+                        targets: sphere,
+                        x: Phaser.Math.Clamp(sphere.x, this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerX + barWidth / 2),
+                        y: this.cameras.main.centerY + barHeight / 2,
+                        duration: 500,
+                        ease: 'Power2',
+                        onComplete: () => {
+                            isSphereOutOfBounds = false;
+                        }
+                    });
+                }
+            }
+        });
+        
         const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
         .setOrigin(0.5)
         .setInteractive()
         .on('pointerdown', () => {
             
             if (this.optionsTitle) this.optionsTitle.destroy();
-            if (keyBindingButton) keyBindingButton.destroy();
             if (soundVolumeButton) soundVolumeButton.destroy();
             if (backButton) backButton.destroy();
-
+            if (soundBar) soundBar.destroy();
+            if (sphere) sphere.destroy();
+            if (volumeText) volumeText.destroy();
+            
             this.create();
         });
     }
