@@ -490,7 +490,7 @@ class Usagiflap extends Phaser.Scene {
                 }
             }
         });
-        this.laneColors = [0x00b8ff, 0x32cd32, 0x00719c, 0x228b22];
+        this.laneColors = [0x00b8ff, 0x32cd32, 0x00719c, 0x5500FF];
         this.isPaused = false;
         this.pauseMenu = null;
         this.music = null;
@@ -539,6 +539,22 @@ class Usagiflap extends Phaser.Scene {
         }
 
         this.player = this.matter.add.rectangle(partWidth / 2, platformY - 25, partWidth, 5, { isStatic: true });
+
+        let playerGraphics = this.add.rectangle(
+            partWidth / 2, 
+            platformY - 25, 
+            partWidth, 
+            5, 
+            0x8206FF
+        );
+
+        playerGraphics.setStrokeStyle(2, 0x800080); 
+
+        this.matter.world.on('beforeupdate', () => {
+            playerGraphics.x = this.player.position.x;
+            playerGraphics.y = this.player.position.y;
+        });
+        
         this.physics.world.setBounds(0, 0, this.cameras.main.width, this.cameras.main.height);
 
         if (!this.music) {
@@ -583,9 +599,13 @@ class Usagiflap extends Phaser.Scene {
         this.score = 0;
         this.moveMade = false;
 
-        this.scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '24px', fill: '#FFF' });
-        this.streakText = this.add.text(10, 40, 'Streak: 0', { fontSize: '24px', fill: '#FFF' });
+        this.scoreText = this.add.text(15, 10, 'Score: ', { fontSize: '24px', fill: '#FFF' });
+        this.streakText = this.add.text(15, 60, 'Streak: ', { fontSize: '24px', fill: '#FFF' });
 
+        this.scoreNumber = this.add.text(120, 8, '0', { fontSize: '28px', fill: '#FFF' });
+        this.streakNumber = this.add.text(140, 58, '0', { fontSize: '28px', fill: '#FFF' });
+
+        
         this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.3);
 
         this.pauseButton = this.add.text(this.cameras.main.width - 80, 20, 'Pause', { fontSize: '24px', fill: '#FFF' })
@@ -1097,7 +1117,7 @@ class Usagiflap extends Phaser.Scene {
             this.updateScoreAndStreak();
             this.increaseRedBar();
             this.noteScored = true;
-            this.createPopEffect(lane);
+            this.createLanePop(lane);
             
             if (!this.musicStarted && note === this.beatmap[0]) {
                 this.music.play();
@@ -1114,7 +1134,7 @@ class Usagiflap extends Phaser.Scene {
         note.destroy();
     }
 
-    createPopEffect(lane) {
+    createLanePop(lane) {
         const platformWidth = this.cameras.main.width / 1.5;
         const partWidth = platformWidth / 4;
         const platformHeight = 40; 
@@ -1144,6 +1164,49 @@ class Usagiflap extends Phaser.Scene {
         });
     }
 
+    createSparkles(textObject, xposition = 0, yposition = 0, speed = 1000) {
+        for (let i = 0; i < 10; i++) {
+            let x = textObject.x + xposition + Phaser.Math.Between(-30, 30);
+            let y = textObject.y + yposition + Phaser.Math.Between(-30, 30);
+
+            let sparkle = this.add.graphics();
+            sparkle.fillStyle(0xFFD700, 1);
+            sparkle.fillCircle(0, 0, 2);
+
+            sparkle.setPosition(textObject.x + xposition, textObject.y + yposition);
+
+            let angle = Phaser.Math.FloatBetween(-Math.PI / 4, Math.PI / 4);
+            let distance = Phaser.Math.Between(20, 50);
+
+            let targetX = x + distance * Math.cos(angle);
+            let targetY = y + distance * Math.sin(angle);
+
+            this.add.existing(sparkle);
+
+            this.tweens.add({
+                targets: sparkle,
+                x: targetX,
+                y: targetY,
+                alpha: { from: 1, to: 0 },
+                duration: speed,
+                ease: 'Power3',
+                onComplete: () => {
+                    sparkle.destroy();
+                }
+            });
+        }
+    }
+
+    createSparkleLoop(textObject, xposition = 0, yposition = 0, delay = 1000) {
+        this.time.addEvent({
+            delay: delay,
+            callback: () => {
+                this.createSparkles(textObject, xposition, yposition);
+            },
+            loop: true
+        });
+    }
+    
     createMissEffect(lane) {
         const platformWidth = this.cameras.main.width / 1.5;
         const partWidth = platformWidth / 4;
@@ -1158,7 +1221,7 @@ class Usagiflap extends Phaser.Scene {
             {
                 fontSize: '32px', 
                 fill: '#FF0000', 
-                fontFamily: 'PixelFont',
+                fontFamily: 'Courier New',
             }
         ).setOrigin(0.5);
 
@@ -1166,7 +1229,7 @@ class Usagiflap extends Phaser.Scene {
             targets: missText,
             y: platformY - 100,
             alpha: 0,
-            duration: 700,
+            duration: 1000,
             ease: 'Power1',
             onComplete: () => {
                 missText.destroy();
@@ -1175,8 +1238,28 @@ class Usagiflap extends Phaser.Scene {
     }
     
     updateScoreAndStreak() {
-        this.scoreText.setText('Score: ' + this.score);
-        this.streakText.setText('Streak: ' + this.currentStreak);
+        this.scoreNumber.setText(this.score);
+        this.streakNumber.setText(this.currentStreak);
+
+        this.createPoptext.call(this, this.scoreNumber);
+        this.createPoptext.call(this, this.streakNumber);
+
+        if (this.currentStreak > 77) {
+            this.streakNumber.setFill('#FFD700');
+            this.createSparkles.call(this, this.streakNumber, 0, 15, 3000);
+        } else if (this.currentStreak > 47) {
+            this.streakNumber.setFill('#FFD700');
+            this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
+        } else if (this.currentStreak > 17) {
+            this.streakNumber.setFill('#FFD700');
+        } else if (this.currentStreak > 7) {
+            this.streakNumber.setFill('#FFFFE0');
+        } else if (this.currentStreak < 1) {
+            this.streakNumber.setFill('#FF0000');
+        }
+        else {
+            this.streakNumber.setFill('#FFF');
+        }
     }
 
     pauseGame() {
@@ -1232,7 +1315,14 @@ class Usagiflap extends Phaser.Scene {
 
         const titleText = this.add.text(0, -70, 'Level Cleared!', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
 
-        const rankText = this.add.text(0, -20, `RANK: ${this.calculateRank()}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
+        const rankLabel = this.add.text(0, -20, 'RANK: ', { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
+        
+        const rankGrade = this.add.text(rankLabel.x + rankLabel.width / 2, -20, this.calculateRank(), { 
+            fontSize: '24px', 
+            fill: '#FFF' 
+        }).setOrigin(0, 0.5);
+        this.updateRankText.call(this, rankGrade);
+        
         const scoreText = this.add.text(0, 20, `SCORE: ${this.score}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
         const streakText = this.add.text(0, 60, `STREAK: ${this.highestStreak}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
 
@@ -1246,10 +1336,23 @@ class Usagiflap extends Phaser.Scene {
                 this.scene.start('TitleScene');
             });
 
-        levelClearMenu.add([menuBackground, titleText, rankText, scoreText, streakText, backButton]);
+        levelClearMenu.add([menuBackground, titleText, rankLabel, rankGrade, scoreText, streakText, backButton]);
         this.children.bringToTop(levelClearMenu);
     }
 
+    createPoptext(textObject) {
+        this.tweens.add({
+            targets: textObject,
+            scaleX: 1.2,
+            scaleY: 1.2,
+            duration: 100,
+            yoyo: true,
+            onComplete: () => {
+                textObject.setScale(1);
+            }
+        });
+    }
+    
     calculateRank() {
     
         if (this.score >= 250) {
@@ -1262,6 +1365,31 @@ class Usagiflap extends Phaser.Scene {
             return 'C';
         } else {
             return 'D';
+        }
+    }
+
+    updateRankText(rankGrade) {
+        const rank = this.calculateRank();
+
+        switch (rank) {
+            case 'S':
+                rankGrade.setFill('#FFD700');
+                break;
+            case 'A':
+                rankGrade.setFill('#90EE90');
+                break;
+            case 'B':
+                rankGrade.setFill('#ADD8E6');
+                break;
+            case 'C':
+                rankGrade.setFill('#FFA07A');
+                break;
+            case 'D':
+                rankGrade.setFill('#FF6347');
+                break;
+            default:
+                rankGrade.setFill('#FFF');
+                break;
         }
     }
     
