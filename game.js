@@ -1233,7 +1233,7 @@ class Usagiflap extends Phaser.Scene {
 
     playerpop() {
         const originalScale = 0.3; 
-        const popScale = 0.315;
+        const popScale = 0.31;
 
         this.tweens.add({
             targets: this.character,
