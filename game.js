@@ -475,6 +475,11 @@ class TitleScene extends Phaser.Scene {
             lastDragTime = this.time.now;
         });
 
+        sphere.on('dragstart', (pointer, gameObject) => {
+            lastDragX = gameObject.x;
+            lastDragTime = this.time.now;
+        });
+
         sphere.on('drag', (pointer, dragX, dragY) => {
             dragX = Phaser.Math.Clamp(dragX, 0, this.cameras.main.width);
             dragY = Phaser.Math.Clamp(dragY, 0, this.cameras.main.height);
@@ -502,6 +507,7 @@ class TitleScene extends Phaser.Scene {
                 if (dragX >= this.cameras.main.centerX - barWidth / 2 && dragX <= this.cameras.main.centerX + barWidth / 2) {
                     sphere.x = dragX;
                     gamevolume = (dragX - (this.cameras.main.centerX - barWidth / 2)) / barWidth;
+                    this.registry.set('gamevolume', gamevolume);
                     volumeText.setText(`Volume: ${Math.round(gamevolume * 100)}%`);
                 }
             } else {
@@ -515,8 +521,12 @@ class TitleScene extends Phaser.Scene {
 
         sphere.on('dragend', () => {
             if (isSphereOutOfBounds) {
-                let onBar = (sphere.x >= this.cameras.main.centerX - barWidth / 2 && sphere.x <= this.cameras.main.centerX + barWidth / 2 &&
-                             sphere.y >= this.cameras.main.centerY && sphere.y <= this.cameras.main.centerY + barHeight);
+                let onBar = (
+                    sphere.x >= this.cameras.main.centerX - barWidth / 2 &&
+                    sphere.x <= this.cameras.main.centerX + barWidth / 2 &&
+                    sphere.y >= this.cameras.main.centerY &&
+                    sphere.y <= this.cameras.main.centerY + barHeight
+                );
                 if (onBar) {
                     this.tweens.add({
                         targets: sphere,
@@ -573,7 +583,10 @@ class Usagiflap extends Phaser.Scene {
 
 
     preload() {
-        this.load.audio('demomusic', 'Level1-track.mp3');
+        this.load.audio('SRANKSOUND', 'Sranksound.mp3');
+        this.load.audio('ARANKSOUND', 'Aranksound.mp3');
+        this.load.audio('gamemusic', 'Level1-track.mp3');
+        this.load.audio('LevelFailed', 'LEVELFAILED.mp3');
         this.load.image('characterImage1', 'usagi1.png');
         this.load.image('characterImage2', 'usagi2.png');
         this.load.image('characterImage3', 'usagi3.png');
@@ -631,8 +644,15 @@ class Usagiflap extends Phaser.Scene {
         
         this.physics.world.setBounds(0, 0, this.cameras.main.width, this.cameras.main.height);
 
+        let gamevolume = this.registry.get('gamevolume') || 1;
+
+        this.sRankSound = this.sound.add('SRANKSOUND');
+        this.aRankSound = this.sound.add('ARANKSOUND');
+
+        this.FAILURESOUND = this.sound.add('LevelFailed');
+        
         if (!this.music) {
-            this.music = this.sound.add('demomusic');
+            this.music = this.sound.add('gamemusic', {volume: gamevolume});
         }
 
         this.input.keyboard.on('keydown-A', () => {
@@ -1085,6 +1105,8 @@ class Usagiflap extends Phaser.Scene {
             { fontSize: '24px', fill: '#ffffff' }
         ).setOrigin(0.5);
 
+        this.FAILURESOUND.play();
+        
         this.scoreText = this.add.text(
             this.cameras.main.width / 2, 
             this.cameras.main.height / 1.5, 
@@ -1183,6 +1205,7 @@ class Usagiflap extends Phaser.Scene {
 
         if (playerLane === lane && note.y >= this.cameras.main.height - 100) {
             this.score++;
+            this.playerpop();
             this.currentStreak++;
             if (this.currentStreak > this.highestStreak) {
                 this.highestStreak = this.currentStreak;
@@ -1208,6 +1231,23 @@ class Usagiflap extends Phaser.Scene {
         note.destroy();
     }
 
+    playerpop() {
+        const originalScale = 0.3; 
+        const popScale = 0.315;
+
+        this.tweens.add({
+            targets: this.character,
+            scaleX: popScale,
+            scaleY: popScale,
+            duration: 100, 
+            yoyo: true,     
+            ease: 'Power1',
+            onComplete: () => {
+                this.character.setScale(originalScale);
+            }
+        });
+    }
+    
     createLanePop(lane) {
         const platformWidth = this.cameras.main.width / 1.5;
         const partWidth = platformWidth / 4;
@@ -1448,9 +1488,11 @@ class Usagiflap extends Phaser.Scene {
         switch (rank) {
             case 'S':
                 rankGrade.setFill('#FFD700');
+                this.sRankSound.play();
                 break;
             case 'A':
                 rankGrade.setFill('#90EE90');
+                this.aRankSound.play();
                 break;
             case 'B':
                 rankGrade.setFill('#ADD8E6');
