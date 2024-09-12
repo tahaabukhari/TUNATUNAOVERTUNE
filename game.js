@@ -114,13 +114,17 @@ class TitleScene extends Phaser.Scene {
         if (optionsButton) optionsButton.destroy();
         if (this.subtext) this.subtext.destroy();
 
-        title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+        title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 170, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+        
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 350, 'Difficulty:', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
 
-        const previewImage = this.add.image(this.cameras.main.centerX, 210, 'usagiflap').setOrigin(0.5).setScale(0.3);
+        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 350, 'EASY', { fontSize: '28px', fill: '#90EE90', fontFamily: 'Courier New' }).setOrigin(0.5);
 
-        const subtitle = this.add.text(this.cameras.main.centerX, 340, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const previewImage = this.add.image(this.cameras.main.centerX, 190, 'usagiflap').setOrigin(0.5).setScale(0.3);
 
-        playButton = this.add.text(this.cameras.main.centerX, 400, 'PLAY', { fontSize: '32px', fill: '#FFF' })
+        const subtitle = this.add.text(this.cameras.main.centerX, 300, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+
+        playButton = this.add.text(this.cameras.main.centerX, 405, 'PLAY', { fontSize: '32px', fill: '#FFF' })
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -138,6 +142,8 @@ class TitleScene extends Phaser.Scene {
                 playButton.destroy();
                 backButton.destroy();
                 nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
                 this.create();
             });
 
@@ -152,6 +158,8 @@ class TitleScene extends Phaser.Scene {
                 playButton.destroy();
                 backButton.destroy();
                 nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
                 this.showLevelSelectorPage2();
             });
     }
@@ -434,18 +442,10 @@ class TitleScene extends Phaser.Scene {
         if (tutorialButton) tutorialButton.destroy();
         if (this.subtext) this.subtext.destroy();
 
-        this.optionsTitle = this.add.text(
-            this.cameras.main.centerX, 
-            this.cameras.main.centerY - 150, 
-            '(these dont work rn, go back)', 
-            { fontSize: '32px', fill: '#FFF' }
-        )
-        .setOrigin(0.5);
-
 
         const soundVolumeButton = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 60, 
+            this.cameras.main.centerY - 120, 
             'Sound Volume', 
             { fontSize: '28px', fill: '#FFF' }
         )
@@ -463,12 +463,12 @@ class TitleScene extends Phaser.Scene {
 
         let soundBar = this.add.graphics();
         soundBar.fillStyle(0xFFFFFF, 1);
-        soundBar.fillRect(this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerY, barWidth, barHeight);
+        soundBar.fillRect(this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerY - 60, barWidth, barHeight);
 
-        let sphere = this.add.circle(this.cameras.main.centerX, this.cameras.main.centerY + barHeight / 2, sphereRadius, 0xFFD700).setInteractive();
+        let sphere = this.add.circle(this.cameras.main.centerX, this.cameras.main.centerY - 60 + barHeight / 2, sphereRadius, 0xFFD700).setInteractive();
         this.input.setDraggable(sphere);
 
-        let volumeText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 50, `Volume: ${gamevolume * 100}%`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
+        let volumeText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, `Volume: ${gamevolume * 100}%`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
 
         sphere.on('dragstart', (pointer, gameObject) => {
             lastDragX = gameObject.x;
