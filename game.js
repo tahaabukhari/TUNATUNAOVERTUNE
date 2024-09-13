@@ -458,7 +458,7 @@ class TitleScene extends Phaser.Scene {
         let sphereRadius = 10;
         let lastDragX = 0;
         let lastDragTime = 0;
-        let speedThreshold = 0.5;
+        let speedThreshold = 2;
         let isSphereOutOfBounds = false;
 
         let soundBar = this.add.graphics();
@@ -470,30 +470,59 @@ class TitleScene extends Phaser.Scene {
 
         let volumeText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, `Volume: ${gamevolume * 100}%`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
 
-        sphere.on('dragstart', (pointer, gameObject) => {
-            lastDragX = gameObject.x;
-            lastDragTime = this.time.now;
-        });
+        let dragHistory = [];
+        let maxDragHistoryLength = 2;
+        let directionChanges = 0;
+        let isSphereBeingDragged = false;
 
+        //bug here.
         sphere.on('dragstart', (pointer, gameObject) => {
             lastDragX = gameObject.x;
             lastDragTime = this.time.now;
+            isSphereOutOfBounds = false;
+            isSphereBeingDragged = true; 
+            dragHistory = [];
+            directionChanges = 0; 
         });
 
         sphere.on('drag', (pointer, dragX, dragY) => {
-            dragX = Phaser.Math.Clamp(dragX, 0, this.cameras.main.width);
-            dragY = Phaser.Math.Clamp(dragY, 0, this.cameras.main.height);
-
             let currentTime = this.time.now;
             let deltaTime = currentTime - lastDragTime;
             let deltaX = dragX - lastDragX;
             let dragSpeed = Math.abs(deltaX) / (deltaTime || 1);
 
-            if (!isSphereOutOfBounds && dragSpeed > speedThreshold) {
+            if (isSphereOutOfBounds) {
+                sphere.x += deltaX;
+                gamevolume = (sphere.x - (this.cameras.main.centerX - barWidth / 2)) / barWidth;
+                this.registry.set('gamevolume', gamevolume);
+                volumeText.setText(`Volume: ${Math.round(gamevolume * 100)}%`);
+            } else {
+                dragX = Phaser.Math.Clamp(dragX, this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerX + barWidth / 2);
+                sphere.x = dragX;
+                gamevolume = (dragX - (this.cameras.main.centerX - barWidth / 2)) / barWidth;
+                this.registry.set('gamevolume', gamevolume);
+                volumeText.setText(`Volume: ${Math.round(gamevolume * 100)}%`);
+            }
+
+            dragHistory.push(dragX);
+            if (dragHistory.length > maxDragHistoryLength) {
+                dragHistory.shift();
+            }
+
+            if (dragHistory.length > 0) {
+                let previousX = dragHistory[dragHistory.length - 1];
+                if ((previousX < this.cameras.main.centerX && dragX > this.cameras.main.centerX) ||
+                    (previousX > this.cameras.main.centerX && dragX < this.cameras.main.centerX)) {
+                    directionChanges++;
+                }
+            }
+
+            if (directionChanges >= 2 && dragSpeed > speedThreshold) {
                 isSphereOutOfBounds = true;
                 let direction = deltaX > 0 ? 1 : -1;
                 let popOutX = sphere.x + direction * 50;
-                popOutX = Phaser.Math.Clamp(popOutX, 0, this.cameras.main.width);
+                popOutX = Phaser.Math.Clamp(popOutX, this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerX + barWidth / 2);
+
                 this.tweens.add({
                     targets: sphere,
                     x: popOutX,
@@ -503,42 +532,32 @@ class TitleScene extends Phaser.Scene {
                 });
             }
 
-            if (!isSphereOutOfBounds) {
-                if (dragX >= this.cameras.main.centerX - barWidth / 2 && dragX <= this.cameras.main.centerX + barWidth / 2) {
-                    sphere.x = dragX;
-                    gamevolume = (dragX - (this.cameras.main.centerX - barWidth / 2)) / barWidth;
-                    this.registry.set('gamevolume', gamevolume);
-                    volumeText.setText(`Volume: ${Math.round(gamevolume * 100)}%`);
-                }
-            } else {
-                sphere.x = dragX;
-                sphere.y = dragY;
-            }
-
             lastDragX = dragX;
             lastDragTime = currentTime;
         });
 
         sphere.on('dragend', () => {
+            isSphereBeingDragged = false;
+
             if (isSphereOutOfBounds) {
-                let onBar = (
-                    sphere.x >= this.cameras.main.centerX - barWidth / 2 &&
-                    sphere.x <= this.cameras.main.centerX + barWidth / 2 &&
-                    sphere.y >= this.cameras.main.centerY &&
-                    sphere.y <= this.cameras.main.centerY + barHeight
-                );
-                if (onBar) {
-                    this.tweens.add({
-                        targets: sphere,
-                        x: Phaser.Math.Clamp(sphere.x, this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerX + barWidth / 2),
-                        y: this.cameras.main.centerY + barHeight / 2,
-                        duration: 500,
-                        ease: 'Power2',
-                        onComplete: () => {
-                            isSphereOutOfBounds = false;
-                        }
-                    });
-                }
+                this.tweens.add({
+                    targets: sphere,
+                    x: Phaser.Math.Clamp(sphere.x, this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerX + barWidth / 2),
+                    y: this.cameras.main.centerY - 60 + barHeight / 2,
+                    duration: 500,
+                    ease: 'Power2',
+                    onComplete: () => {
+                        isSphereOutOfBounds = false;
+                    }
+                });
+            } else {
+                this.tweens.add({
+                    targets: sphere,
+                    x: Phaser.Math.Clamp(sphere.x, this.cameras.main.centerX - barWidth / 2, this.cameras.main.centerX + barWidth / 2),
+                    y: this.cameras.main.centerY - 60 + barHeight / 2,
+                    duration: 300,
+                    ease: 'Power2'
+                });
             }
         });
         
@@ -1278,22 +1297,25 @@ class Usagiflap extends Phaser.Scene {
         });
     }
 
-    createSparkles(textObject, xposition = 0, yposition = 0, speed = 1000) {
-        for (let i = 0; i < 10; i++) {
-            let x = textObject.x + xposition + Phaser.Math.Between(-30, 30);
-            let y = textObject.y + yposition + Phaser.Math.Between(-30, 30);
+    createSparkles(textObject, xposition = 0, yposition = 0, speed = 1000) { 
+        const colors = [
+            0xFFB3BA, 0xFFDFBA, 0xFFFFBA, 0xBAFFC9, 0xBAE1FF,
+            0xF0E68C, 0xE6E6FA, 0xFFFACD, 0xFFDAB9, 0xD8BFD8
+        ];
+
+        for (let i = 0; i < 170; i++) {
+            let x = textObject.x + xposition + Phaser.Math.Between(-150, 150);
+            let y = textObject.y + yposition + Phaser.Math.Between(-15, 15);
 
             let sparkle = this.add.graphics();
-            sparkle.fillStyle(0xFFD700, 1);
+            let randomColor = Phaser.Utils.Array.GetRandom(colors);
+            sparkle.fillStyle(randomColor, 1);
             sparkle.fillCircle(0, 0, 2);
 
-            sparkle.setPosition(textObject.x + xposition, textObject.y + yposition);
+            sparkle.setPosition(x, y);
 
-            let angle = Phaser.Math.FloatBetween(-Math.PI / 4, Math.PI / 4);
-            let distance = Phaser.Math.Between(20, 50);
-
-            let targetX = x + distance * Math.cos(angle);
-            let targetY = y + distance * Math.sin(angle);
+            let targetX = x + Phaser.Math.Between(50, 450);
+            let targetY = y; 
 
             this.add.existing(sparkle);
 
@@ -1311,6 +1333,74 @@ class Usagiflap extends Phaser.Scene {
         }
     }
 
+    createStarPop(textObject, xposition = 0, yposition = 0, duration = 1000, starCount = 5) {
+
+        const pastelColors = [
+            0xFFB3BA, 0xFFDFBA, 0xFFFFBA, 0xBAFFC9, 0xBAE1FF,
+            0xF0E68C, 0xE6E6FA, 0xFFFACD, 0xFFDAB9, 0xD8BFD8
+        ];
+
+        for (let i = 0; i < starCount; i++) {
+            let star = this.add.graphics();
+            let randomColor = Phaser.Utils.Array.GetRandom(pastelColors);
+            let randomScale = Phaser.Math.FloatBetween(0.2, 1);
+
+            let starPath = this.getStarPath(0, 0, 5, 20 * randomScale, 40 * randomScale);
+            star.fillStyle(randomColor, 1);
+            star.beginPath();
+            star.moveTo(starPath[0].x, starPath[0].y);
+
+            for (let j = 1; j < starPath.length; j++) {
+                star.lineTo(starPath[j].x, starPath[j].y);
+            }
+
+            star.closePath();
+            star.fillPath();
+            
+            let randomX = Phaser.Math.Between(-600, 600);
+            let randomY = Phaser.Math.Between(-400, 400);
+            star.setPosition(textObject.x + xposition + randomX, textObject.y + yposition + randomY);
+
+            star.setScale(randomScale);
+            star.setAlpha(1);
+
+            this.tweens.add({
+                targets: star,
+                scaleX: randomScale * 2,
+                scaleY: randomScale * 2,
+                alpha: 0,
+                duration: duration,
+                delay: i * 100,
+                ease: 'Power3',
+                onComplete: () => {
+                    star.destroy();
+                }
+            });
+        }
+    }
+    
+    getStarPath(cx, cy, spikes, outerRadius, innerRadius) {
+        let path = [];
+        let rot = Math.PI / 2 * 3;
+        let step = Math.PI / spikes;
+
+        for (let i = 0; i < spikes; i++) {
+            let x = cx + Math.cos(rot) * outerRadius;
+            let y = cy + Math.sin(rot) * outerRadius;
+            path.push({ x, y });
+
+            rot += step;
+
+            x = cx + Math.cos(rot) * innerRadius;
+            y = cy + Math.sin(rot) * innerRadius;
+            path.push({ x, y });
+
+            rot += step;
+        }
+
+        return path;
+    }
+    
     createSparkleLoop(textObject, xposition = 0, yposition = 0, delay = 1000) {
         this.time.addEvent({
             delay: delay,
@@ -1353,25 +1443,41 @@ class Usagiflap extends Phaser.Scene {
     
     updateScoreAndStreak() {
         this.scoreNumber.setText(this.score);
+        const colors = [
+            0xFFB3BA, 0xFFDFBA, 0xFFFFBA, 0xBAFFC9, 0xBAE1FF,
+            0xF0E68C, 0xE6E6FA, 0xFFFACD, 0xFFDAB9, 0xD8BFD8
+        ];
+        let randomColor = Phaser.Utils.Array.GetRandom(pastelColors);
+        
         this.streakNumber.setText(this.currentStreak);
 
         this.createPoptext.call(this, this.scoreNumber);
         this.createPoptext.call(this, this.streakNumber);
 
-        if (this.currentStreak > 77) {
-            this.streakNumber.setFill('#FFD700');
-            this.createSparkles.call(this, this.streakNumber, 0, 15, 3000);
-        } else if (this.currentStreak > 47) {
-            this.streakNumber.setFill('#FFD700');
-            this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
-        } else if (this.currentStreak > 17) {
-            this.streakNumber.setFill('#FFD700');
-        } else if (this.currentStreak > 7) {
+        if (this.score >= 155){
+            this.createStarPop(this.character, 0, 0, 1000, 5);
+        } else if (this.currentStreak >= 77) {
+this.streakNumber.setFill(randomColor);
+            if (this.currentStreak === 77) {
+                this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
+            }
+        } else if (this.currentStreak >= 47) { this.streakNumber.setFill(randomColor);
+            if (this.currentStreak === 47) {
+                this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
+            }
+        } else if (this.currentStreak >= 17) {
+            this.streakNumber.setFill('0xBAE1FF');
+            if (this.currentStreak === 17) {
+                this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
+            }
+        } else if (this.currentStreak >= 7) {
             this.streakNumber.setFill('#FFFFE0');
+            if (this.currentStreak === 7) {
+                this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
+            }
         } else if (this.currentStreak < 1) {
             this.streakNumber.setFill('#FF0000');
-        }
-        else {
+        } else {
             this.streakNumber.setFill('#FFF');
         }
     }
@@ -1475,7 +1581,7 @@ class Usagiflap extends Phaser.Scene {
             return 'A';
         } else if (this.score >= 180) {
             return 'B';
-        } else if (this.score >= 150) {
+        } else if (this.score >= 155) {
             return 'C';
         } else {
             return 'D';
