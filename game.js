@@ -1447,7 +1447,7 @@ class Usagiflap extends Phaser.Scene {
             0xFFB3BA, 0xFFDFBA, 0xFFFFBA, 0xBAFFC9, 0xBAE1FF,
             0xF0E68C, 0xE6E6FA, 0xFFFACD, 0xFFDAB9, 0xD8BFD8
         ];
-        let randomColor = Phaser.Utils.Array.GetRandom(pastelColors);
+        let randomColor = Phaser.Utils.Array.GetRandom(colors);
         
         this.streakNumber.setText(this.currentStreak);
 
