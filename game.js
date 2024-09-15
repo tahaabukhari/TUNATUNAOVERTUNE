@@ -9,55 +9,73 @@ class TitleScene extends Phaser.Scene {
         this.load.image('asimslevel', 'Level3-cover.jpg');
         this.load.image('planetloop', 'Level4-cover.jpg');
         this.load.image('FINALBOSS', 'Level5-cover.jpg');
+        this.load.image('playbutton', 'playbutton.png');
+        this.load.image('tutorialbutton', 'tutorialbutton.png');
+        this.load.image('nextbutton', 'nextbutton.png');
+        this.load.image('backbutton', 'backbutton.png');
+        this.load.image('creditsbutton', 'creditsbutton.png');
+        this.load.image('optionsbutton', 'optionsbutton.png');
+        this.load.image('backbutton', 'backbutton.png');
+        this.load.image('nextbutton', 'nextbutton.png');
+        this.load.image('startbutton', 'startbutton.png');
     }
 
     create() {
 
         const title = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 100, 
+            this.cameras.main.centerY - 120, 
             'TUNATUNAOVERTUNE', 
             { fontSize: '46px', fill: '#FFF' }
         )
         .setOrigin(0.5)
         .setShadow(2, 2, '#000', 2, true, true);
 
-        const playButton = this.add.text(
+        const playButton = this.add.image(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 20, 
-            'Play', 
-            { fontSize: '32px', fill: '#FFF' }
+            'playbutton'
         )
         .setOrigin(0.5)
-        .setInteractive();
+        .setInteractive()
+        .setScale(0.35);
 
         playButton.on('pointerdown', () => {
-            this.showlevelselector(title, playButton, tutorialButton, optionsButton);
+            this.showlevelselector(title, playButton, tutorialButton, optionsButton, creditsButton);
         });
 
-        const tutorialButton = this.add.text(
+        const tutorialButton = this.add.image(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY + 40, 
-            'Tutorial', 
-            { fontSize: '32px', fill: '#FFF' }
+            this.cameras.main.centerY + 180, 
+            'tutorialbutton'
         )
         .setOrigin(0.5)
         .setInteractive()
+        .setScale(0.18)
         .on('pointerdown', () => {
-            this.showtutorial(title, playButton, tutorialButton, optionsButton);
+            this.showtutorial(title, playButton, tutorialButton, optionsButton, creditsButton);
         });
         
-        const optionsButton = this.add.text(
-            this.cameras.main.centerX, 
-            this.cameras.main.centerY + 100, 
-            'Options', 
-            { fontSize: '32px', fill: '#FFF' }
+        const optionsButton = this.add.image(
+            this.cameras.main.centerX - 40,
+            this.cameras.main.centerY + 80, 
+            'optionsbutton'
         )
         .setOrigin(0.5)
         .setInteractive()
+        .setScale(0.5)
         .on('pointerdown', () => {
-            this.showoptions(title, playButton, tutorialButton, optionsButton);
+            this.showoptions(title, playButton, tutorialButton, optionsButton, creditsButton);
         });
+
+        const creditsButton = this.add.image(
+            this.cameras.main.centerX + 40,
+            this.cameras.main.centerY + 80, 
+            'creditsbutton'
+        )
+        .setOrigin(0.5)
+        .setInteractive()
+        .setScale(0.25);
         
         const subtextOptions = [
             'waow grape game!',
@@ -81,8 +99,8 @@ class TitleScene extends Phaser.Scene {
         const randomSubtext = Phaser.Utils.Array.GetRandom(subtextOptions);
 
         this.subtext = this.add.text(
-            this.cameras.main.centerX + 240, 
-            this.cameras.main.centerY - 130, 
+            this.cameras.main.centerX + 200, 
+            this.cameras.main.centerY - 77, 
             randomSubtext, 
             {
                 fontSize: '20px', 
@@ -92,7 +110,7 @@ class TitleScene extends Phaser.Scene {
             }
         )
         .setOrigin(0.5)
-        .setAngle(40)
+        .setAngle(20)
         .setShadow(2, 2, '#000', 2, true, true);
 
         this.tweens.add({
@@ -106,34 +124,37 @@ class TitleScene extends Phaser.Scene {
         });
     }
 
-    showlevelselector(title, playButton, tutorialButton, optionsButton) {
+    showlevelselector(title, playButton, tutorialButton, optionsButton, creditsButton) {
     
         if (title) title.destroy();
         if (playButton) playButton.destroy();
         if (tutorialButton) tutorialButton.destroy();
         if (optionsButton) optionsButton.destroy();
+        if (creditsButton && creditsButton.destroy) {creditsButton.destroy();}
         if (this.subtext) this.subtext.destroy();
 
-        title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 170, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+        title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
         
-        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 350, 'Difficulty:', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
 
-        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 350, 'EASY', { fontSize: '28px', fill: '#90EE90', fontFamily: 'Courier New' }).setOrigin(0.5);
+        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, 'EASY', { fontSize: '28px', fill: '#90EE90', fontFamily: 'Courier New' }).setOrigin(0.5);
 
-        const previewImage = this.add.image(this.cameras.main.centerX, 190, 'usagiflap').setOrigin(0.5).setScale(0.3);
+        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'usagiflap').setOrigin(0.5).setScale(0.3);
 
-        const subtitle = this.add.text(this.cameras.main.centerX, 300, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
 
-        playButton = this.add.text(this.cameras.main.centerX, 405, 'PLAY', { fontSize: '32px', fill: '#FFF' })
+        playButton = this.add.image(this.cameras.main.centerX, 390, 'playbutton')
             .setOrigin(0.5)
             .setInteractive()
+            .setScale(0.25)
             .on('pointerdown', () => {
                 this.startGame();
             });
 
-        const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+        const backButton = this.add.image(100, 230, 'backbutton')
             .setOrigin(0.5)
             .setInteractive()
+            .setScale(0.7)
             .on('pointerdown', () => {
             
                 title.destroy();
@@ -147,9 +168,10 @@ class TitleScene extends Phaser.Scene {
                 this.create();
             });
 
-        const nextButton = this.add.text(this.cameras.main.width - 100, 230, 'NEXT', { fontSize: '28px', fill: '#FFF' })
+        const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
             .setOrigin(0.5)
             .setInteractive()
+            .setScale(0.7)
             .on('pointerdown', () => {
                 
                 title.destroy();
@@ -305,11 +327,12 @@ class TitleScene extends Phaser.Scene {
         });
     }
     
-    showtutorial(title, playButton, tutorialButton, optionsButton) {
+    showtutorial(title, playButton, tutorialButton, optionsButton, creditsButton) {
         if (title) title.destroy();
         if (playButton) playButton.destroy();
         if (tutorialButton) tutorialButton.destroy();
         if (optionsButton) optionsButton.destroy();
+        if (creditsButton) creditsButton.destroy();
         if (this.subtext) this.subtext.destroy();
 
         this.showTutorialPage1();
@@ -434,12 +457,13 @@ class TitleScene extends Phaser.Scene {
         });
     }
     
-    showoptions(title, playButton, tutorialButton, optionsButton) {
+    showoptions(title, playButton, tutorialButton, optionsButton, creditsButton) {
 
         if (title) title.destroy();
         if (playButton) playButton.destroy();
         if (optionsButton) optionsButton.destroy();
         if (tutorialButton) tutorialButton.destroy();
+        if (creditsButton) creditsButton.destroy();
         if (this.subtext) this.subtext.destroy();
 
 
@@ -561,9 +585,10 @@ class TitleScene extends Phaser.Scene {
             }
         });
         
-        const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+        const backButton = this.add.image(100, 230, 'backbutton')
         .setOrigin(0.5)
         .setInteractive()
+        .setScale(0.7)
         .on('pointerdown', () => {
             
             if (this.optionsTitle) this.optionsTitle.destroy();
@@ -610,6 +635,9 @@ class Usagiflap extends Phaser.Scene {
         this.load.image('characterImage2', 'usagi2.png');
         this.load.image('characterImage3', 'usagi3.png');
         this.load.image('characterImage4', 'usagi4.png');
+        this.load.image('pausebutton', 'pausebutton.png');
+        this.load.image('exitbutton', 'exitbutton.png');
+        this.load.image('unpausebutton', 'unpausebutton.png');
     }
 
     create() {
@@ -721,8 +749,9 @@ class Usagiflap extends Phaser.Scene {
         
         this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.3);
 
-        this.pauseButton = this.add.text(this.cameras.main.width - 120, 20, 'Pause', { fontSize: '24px', fill: '#FFF' })
+        this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton')
             .setInteractive()
+            .setScale(0.3)
             .on('pointerdown', () => this.pauseGame());
 
         const redBarHeight = 10;
@@ -1088,7 +1117,7 @@ class Usagiflap extends Phaser.Scene {
     }
 
     levelFailed() {
-        
+
         if (this.levelFailedTriggered) {
             return;
         }
@@ -1101,50 +1130,79 @@ class Usagiflap extends Phaser.Scene {
             this.music.stop();
         }
 
-        this.levelFailedText = this.add.text(
-            this.cameras.main.width / 2, 
-            this.cameras.main.height / 3, 
-            'Level Failed', 
-            { fontSize: '48px', fill: '#ff0000' }
-        ).setOrigin(0.5);
-        
-        const tips = [
-            'L bozo',
-            'git gud',
-            'noob',
-            'how did u even miss that',
-            'loser alert',
-        ];
-
-        const randomTip = Phaser.Utils.Array.GetRandom(tips);
-        this.tipText = this.add.text(
-            this.cameras.main.width / 2, 
-            this.cameras.main.height / 2, 
-            `${randomTip}`, 
-            { fontSize: '24px', fill: '#ffffff' }
+        this.blurOverlay = this.add.rectangle(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY, 
+            this.cameras.main.width, 
+            this.cameras.main.height, 
+            0x000000, 
+            0.5
         ).setOrigin(0.5);
 
-        this.FAILURESOUND.play();
+        const levelFailedMenu = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
+
+            const menuBackground = this.add.rectangle(
+                0, 0, 
+                400, 350, 
+                0x000000, 
+                0.8
+            ).setOrigin(0.5).setStrokeStyle(4, 0xFFFFFF);
+
+            this.levelFailedText = this.add.text(
+                0, 
+                -80, 
+                'Stage Failed', 
+                { fontSize: '48px', fill: '#ff0000' }
+            ).setOrigin(0.5);
+
+            const tips = [
+                'L bozo',
+                'git gud',
+                'noob',
+                'how did u even miss that',
+                'loser alert',
+            ];
+
+            const randomTip = Phaser.Utils.Array.GetRandom(tips);
+            this.tipText = this.add.text(
+                0, 
+                -20, 
+                `${randomTip}`, 
+                { fontSize: '24px', fill: '#ffffff' }
+            ).setOrigin(0.5);
+
+            this.FAILURESOUND.play();
+            this.pauseButton.destroy();
         
-        this.scoreText = this.add.text(
-            this.cameras.main.width / 2, 
-            this.cameras.main.height / 1.5, 
-            `Score: ${this.score}`, 
-            { fontSize: '32px', fill: '#ffffff' }
-        ).setOrigin(0.5);
-        
-        this.backButton = this.add.text(
-            this.cameras.main.width / 2, 
-            this.cameras.main.height / 1.2, 
-            'Back', 
-            { fontSize: '32px', fill: '#ffffff' }
-        ).setOrigin(0.5)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.cleanUpLevelFailed();
-                this.scene.start('TitleScene');
-            });
-    }
+            this.scoreText = this.add.text(
+                0, 
+                40, 
+                `Score: ${this.score}`, 
+                { fontSize: '32px', fill: '#ffffff' }
+            ).setOrigin(0.5);
+
+            this.backButton = this.add.image(
+                0, 
+                120, 
+                'exitbutton'
+            ).setOrigin(0.5)
+                .setInteractive()
+                .setScale(0.3)
+                .on('pointerdown', () => {
+                    this.cleanUpLevelFailed();
+                    this.scene.start('TitleScene');
+                });
+
+            levelFailedMenu.add([
+                menuBackground, 
+                this.levelFailedText, 
+                this.tipText, 
+                this.scoreText, 
+                this.backButton
+            ]);
+            this.children.bringToTop(this.blurOverlay);
+            this.children.bringToTop(levelFailedMenu);
+        }
 
     cleanUpLevelFailed() {
         if (this.levelFailedText) this.levelFailedText.destroy();
@@ -1484,18 +1542,31 @@ class Usagiflap extends Phaser.Scene {
         this.music?.pause();
         this.time.timeScale = 0;
         this.matter.world.pause();
+
+        this.blurOverlay = this.add.rectangle(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY, 
+            this.cameras.main.width, 
+            this.cameras.main.height, 
+            0x000000, 
+            0.5
+        ).setOrigin(0.5); 
         this.pauseMenu = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
 
-        const menuBackground = this.add.rectangle(0, 0, 200, 150, 0x000000, 0.7).setOrigin(0.5);
+        const menuBackground = this.add.rectangle(0, 0, 300, 400, 0x000000, 0.7)
+            .setStrokeStyle(4, 0xFFFFFF)
+            .setOrigin(0.5);
 
-        const resumeButton = this.add.text(0, -40, 'Resume', { fontSize: '24px', fill: '#FFF' })
+        const resumeButton = this.add.image(0, -70, 'unpausebutton')
             .setOrigin(0.5)
             .setInteractive()
+            .setScale(0.4)
             .on('pointerdown', () => this.resumeGame());
 
-        const backButton = this.add.text(0, 40, 'Back', { fontSize: '24px', fill: '#FFF' })
+        const backButton = this.add.image(0, 70, 'exitbutton')
             .setOrigin(0.5)
             .setInteractive()
+            .setScale(0.4)
             .on('pointerdown', () => {
                 this.music?.stop();
                 this.music = null;
@@ -1505,6 +1576,7 @@ class Usagiflap extends Phaser.Scene {
 
         this.pauseMenu.add([menuBackground, resumeButton, backButton]);
         this.children.bringToTop(this.pauseMenu);
+        this.pauseButton.destroy();
     }
 
     resumeGame() {
@@ -1513,8 +1585,13 @@ class Usagiflap extends Phaser.Scene {
         this.time.timeScale = 1;
         this.matter.world.resume();
         this.music?.resume();
-    
+
+        this.blurOverlay.destroy();
         this.pauseMenu.destroy();
+        this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton') 
+        .setInteractive()
+        .setScale(0.3)
+        .on('pointerdown', () => this.pauseGame());
     }
 
     showLevelClearMenu() {
@@ -1540,9 +1617,10 @@ class Usagiflap extends Phaser.Scene {
         const scoreText = this.add.text(0, 20, `SCORE: ${this.score}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
         const streakText = this.add.text(0, 60, `STREAK: ${this.highestStreak}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
 
-        const backButton = this.add.text(0, 100, 'Back', { fontSize: '24px', fill: '#FFF' })
+        const backButton = this.add.image(0, 100, 'exitbutton')
             .setOrigin(0.5)
             .setInteractive()
+            .setScale(0.5)
             .on('pointerdown', () => {
                 this.music?.stop();
                 this.music = null;
