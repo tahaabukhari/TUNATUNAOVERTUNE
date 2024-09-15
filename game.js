@@ -721,7 +721,7 @@ class Usagiflap extends Phaser.Scene {
         
         this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.3);
 
-        this.pauseButton = this.add.text(this.cameras.main.width - 80, 20, 'Pause', { fontSize: '24px', fill: '#FFF' })
+        this.pauseButton = this.add.text(this.cameras.main.width - 120, 20, 'Pause', { fontSize: '24px', fill: '#FFF' })
             .setInteractive()
             .on('pointerdown', () => this.pauseGame());
 
@@ -1401,16 +1401,6 @@ class Usagiflap extends Phaser.Scene {
         return path;
     }
     
-    createSparkleLoop(textObject, xposition = 0, yposition = 0, delay = 1000) {
-        this.time.addEvent({
-            delay: delay,
-            callback: () => {
-                this.createSparkles(textObject, xposition, yposition);
-            },
-            loop: true
-        });
-    }
-    
     createMissEffect(lane) {
         const platformWidth = this.cameras.main.width / 1.5;
         const partWidth = platformWidth / 4;
@@ -1445,43 +1435,47 @@ class Usagiflap extends Phaser.Scene {
         this.scoreNumber.setText(this.score);
         const colors = [
             0xFFB3BA, 0xFFDFBA, 0xFFFFBA, 0xBAFFC9, 0xBAE1FF,
-            0xF0E68C, 0xE6E6FA, 0xFFFACD, 0xFFDAB9, 0xD8BFD8
-        ];
+            0xF0E68C, 0xE6E6FA, 0xFFFACD, 0xFFDAB9, 0xD8BFD8 ];
+  
         let randomColor = Phaser.Utils.Array.GetRandom(colors);
-        
+        let randomColorHex = `#${randomColor.toString(16).padStart(6, '0')}`
         this.streakNumber.setText(this.currentStreak);
 
         this.createPoptext.call(this, this.scoreNumber);
         this.createPoptext.call(this, this.streakNumber);
 
-        if (this.score >= 155){
+        if (this.score >= 155) {
             this.createStarPop(this.character, 0, 0, 1000, 5);
-        } else if (this.currentStreak >= 77) {
-this.streakNumber.setFill(randomColor);
+        } else if (this.score >= 100) {
+            this.createStarPop(this.character, 0, 0, 1000, 3);
+        } else if (this.score >= 50) {
+            this.createStarPop(this.character, 0, 0, 1000, 1);
+        }
+
+        if (this.currentStreak >= 77) {
+            this.streakNumber.setFill(randomColorHex);
             if (this.currentStreak === 77) {
                 this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
             }
-        } else if (this.currentStreak >= 47) { this.streakNumber.setFill(randomColor);
+        } else if (this.currentStreak >= 47) {
+            this.streakNumber.setFill(randomColorHex);
             if (this.currentStreak === 47) {
                 this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
             }
         } else if (this.currentStreak >= 17) {
-            this.streakNumber.setFill('0xBAE1FF');
+            this.streakNumber.setFill('#BAE1FF');
             if (this.currentStreak === 17) {
                 this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
             }
         } else if (this.currentStreak >= 7) {
             this.streakNumber.setFill('#FFFFE0');
-            if (this.currentStreak === 7) {
-                this.createSparkles.call(this, this.streakNumber, 0, 15, 1000);
-            }
         } else if (this.currentStreak < 1) {
             this.streakNumber.setFill('#FF0000');
         } else {
             this.streakNumber.setFill('#FFF');
         }
     }
-
+    
     pauseGame() {
         if (this.isPaused) return;
 
@@ -1616,6 +1610,7 @@ this.streakNumber.setFill(randomColor);
     }
     
     update() {
+        
         if (this.isPaused) return;
     }
 }
