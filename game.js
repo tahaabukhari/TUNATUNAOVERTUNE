@@ -34,38 +34,38 @@ class TitleScene extends Phaser.Scene {
 
         const playButton = this.add.image(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY + 40, 
+            this.cameras.main.centerY + 20, 
             'playbutton'
         )
         .setOrigin(0.5)
-        .setInteractive()
         .setScale(0.35);
-
+        this.addButtonEffects(playButton);
+        
         playButton.on('pointerdown', () => {
             this.showlevelselector(title, playButton, optionsButton, creditsButton);
         });
 
         
         const optionsButton = this.add.image(
-            this.cameras.main.centerX - 40,
-            this.cameras.main.centerY + 120, 
+            this.cameras.main.centerX - 45,
+            this.cameras.main.centerY + 110, 
             'optionsbutton'
         )
         .setOrigin(0.5)
-        .setInteractive()
-        .setScale(0.5)
-        .on('pointerdown', () => {
+        .setScale(0.5);
+        this.addButtonEffects(optionsButton);
+        optionsButton.on('pointerdown', () => {
             this.showoptions(title, playButton, optionsButton, creditsButton);
         });
 
         const creditsButton = this.add.image(
-            this.cameras.main.centerX + 40,
-            this.cameras.main.centerY + 120, 
+            this.cameras.main.centerX + 45,
+            this.cameras.main.centerY + 110, 
             'creditsbutton'
         )
         .setOrigin(0.5)
-        .setInteractive()
         .setScale(0.25);
+        this.addButtonEffects(creditsButton);
         
         const subtextOptions = [
             'waow grape game!',
@@ -134,17 +134,17 @@ class TitleScene extends Phaser.Scene {
 
         playButton = this.add.image(this.cameras.main.centerX, 390, 'playbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.25)
-            .on('pointerdown', () => {
+            .setScale(0.25);
+            this.addButtonEffects(playButton);
+            playButton.on('pointerdown', () => {
                 this.startGame();
             });
 
         const backButton = this.add.image(100, 230, 'backbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(backButton);
+            backButton.on('pointerdown', () => {
             
                 title.destroy();
                 previewImage.destroy();
@@ -159,9 +159,9 @@ class TitleScene extends Phaser.Scene {
 
         const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(nextButton);
+            nextButton.on('pointerdown', () => {
                 
                 title.destroy();
                 previewImage.destroy();
@@ -190,9 +190,9 @@ class TitleScene extends Phaser.Scene {
 
         const backButton = this.add.image(100, 230, 'backbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(backButton);
+            backButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
@@ -206,9 +206,9 @@ class TitleScene extends Phaser.Scene {
 
         const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(nextButton);
+            nextButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
@@ -236,9 +236,9 @@ class TitleScene extends Phaser.Scene {
 
         const backButton = this.add.image(100, 230, 'backbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(backButton);
+            backButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
@@ -252,9 +252,9 @@ class TitleScene extends Phaser.Scene {
 
         const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(nextButton);
+            nextButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
@@ -281,10 +281,10 @@ class TitleScene extends Phaser.Scene {
 
 
         const backButton = this.add.image(100, 230, 'backbutton')
-            .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setOrigin(0.5)           
+            .setScale(0.7);
+            this.addButtonEffects(backButton);
+            backButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
@@ -298,9 +298,9 @@ class TitleScene extends Phaser.Scene {
 
         const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(nextButton);
+            nextButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
@@ -328,9 +328,9 @@ class TitleScene extends Phaser.Scene {
 
         const backButton = this.add.image(100, 230, 'backbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(backButton);
+            backButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
@@ -344,9 +344,9 @@ class TitleScene extends Phaser.Scene {
 
         const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(nextButton);
+            nextButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
@@ -371,26 +371,17 @@ class TitleScene extends Phaser.Scene {
 
         const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Omega Rythm', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
 
-        const playButton = this.add.image(this.cameras.main.centerX, 390, 'playbutton')
-        .setOrigin(0.5)
-        .setInteractive()
-        .setScale(0.25)
-        .on('pointerdown', () => {
-            this.startGame();
-        });
-
         const backButton = this.add.image(100, 230, 'backbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.7)
-            .on('pointerdown', () => {
+            .setScale(0.7);
+            this.addButtonEffects(backButton);
+            backButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
                 subtitle.destroy();
                 backButton.destroy();
                 nextButton.destroy();
-                playButton.destroy();
                 difficultyRate.destroy();
                 difficultyText.destroy();
                 this.showLevelSelectorPage5();
@@ -398,15 +389,14 @@ class TitleScene extends Phaser.Scene {
 
         const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'exitbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.35)
-            .on('pointerdown', () => {
+            .setScale(0.35);
+            this.addButtonEffects(nextButton);
+            nextButton.on('pointerdown', () => {
 
                 title.destroy();
                 previewImage.destroy();
                 subtitle.destroy();
                 backButton.destroy();
-                playButton.destroy();
                 nextButton.destroy();
                 difficultyRate.destroy();
                 difficultyText.destroy();
@@ -674,9 +664,9 @@ class TitleScene extends Phaser.Scene {
         
         const backButton = this.add.image(100, 230, 'backbutton')
         .setOrigin(0.5)
-        .setInteractive()
-        .setScale(0.7)
-        .on('pointerdown', () => {
+        .setScale(0.7);
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
             
             if (this.optionsTitle) this.optionsTitle.destroy();
             if (soundVolumeButton) soundVolumeButton.destroy();
@@ -688,6 +678,29 @@ class TitleScene extends Phaser.Scene {
             this.create();
         });
     }
+
+        addButtonEffects(image) {
+            image.setInteractive({ useHandCursor: true });
+
+            image.on('pointerover', () => {
+                image.setScale(image.scaleX * 1.05);
+                image.setTint(0xDDDDDD);
+            });
+
+            image.on('pointerout', () => {
+                image.setScale(image.scaleX / 1.05);
+                image.clearTint();
+            });
+
+            image.on('pointerdown', () => {
+                image.setScale(image.scaleX * 0.95);
+            });
+
+            image.on('pointerup', () => {
+                image.setScale(image.scaleX / 0.95);
+            });
+        }
+    
             startGame() {
                 this.scene.start('Usagiflap');
             }
@@ -831,15 +844,15 @@ class Usagiflap extends Phaser.Scene {
         this.streakText = this.add.text(25, 60, 'Streak: ', { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'});
 
         this.scoreNumber = this.add.text(120, 8, '0', { fontSize: '28px', fill: '#FFF', fontFamily: 'Comic Sans MS'});
-        this.streakNumber = this.add.text(140, 58, '0', { fontSize: '28px', fill: '#FFF', fontFamily: 'Comic Sans MS' });
+        this.streakNumber = this.add.text(140, 58, '0', { fontSize: '30px', fill: '#FFF', fontFamily: 'Comic Sans MS' });
 
         
         this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.3);
 
-        this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton')
-            .setInteractive()
-            .setScale(0.3)
-            .on('pointerdown', () => this.pauseGame());
+        const pauseButton = this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton')
+            .setScale(0.3);
+        this.addButtonEffects(pauseButton);
+            pauseButton.on('pointerdown', () => this.pauseGame());
 
         const redBarHeight = 10;
 
@@ -1267,14 +1280,14 @@ class Usagiflap extends Phaser.Scene {
                 { fontSize: '32px', fill: '#ffffff' }
             ).setOrigin(0.5);
 
-            this.backButton = this.add.image(
+            const backButton = this.backButton = this.add.image(
                 0, 
                 120, 
                 'exitbutton'
             ).setOrigin(0.5)
-                .setInteractive()
-                .setScale(0.3)
-                .on('pointerdown', () => {
+                .setScale(0.3);
+                this.addButtonEffects(backButton);
+                backButton.on('pointerdown', () => {
                     this.cleanUpLevelFailed();
                     this.scene.start('TitleScene');
                 });
@@ -1645,15 +1658,15 @@ class Usagiflap extends Phaser.Scene {
 
         const resumeButton = this.add.image(0, -70, 'unpausebutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.4)
-            .on('pointerdown', () => this.resumeGame());
+            .setScale(0.4);
+            this.addButtonEffects(resumeButton);
+            resumeButton.on('pointerdown', () => this.resumeGame());
 
         const backButton = this.add.image(0, 70, 'exitbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.4)
-            .on('pointerdown', () => {
+            .setScale(0.4);
+            this.addButtonEffects(backButton);
+            backButton.on('pointerdown', () => {
                 this.music?.stop();
                 this.music = null;
                 this.scene.stop('LevelScene');
@@ -1674,10 +1687,10 @@ class Usagiflap extends Phaser.Scene {
 
         this.blurOverlay.destroy();
         this.pauseMenu.destroy();
-        this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton') 
-        .setInteractive()
-        .setScale(0.3)
-        .on('pointerdown', () => this.pauseGame());
+        const pauseButton = this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton') 
+        .setScale(0.3);
+        this.addButtonEffects(pauseButton);
+        pauseButton.on('pointerdown', () => this.pauseGame());
     }
 
     showLevelClearMenu() {
@@ -1718,9 +1731,9 @@ class Usagiflap extends Phaser.Scene {
 
         const backButton = this.add.image(0, 130, 'exitbutton')
             .setOrigin(0.5)
-            .setInteractive()
-            .setScale(0.3)
-            .on('pointerdown', () => {
+            .setScale(0.3);
+            this.addButtonEffects(backButton);
+            backButton.on('pointerdown', () => {
                 this.music?.stop();
                 this.music = null;
                 this.scene.stop('LevelScene');
@@ -1784,6 +1797,28 @@ class Usagiflap extends Phaser.Scene {
                 rankGrade.setFill('#FFF');
                 break;
         }
+    }
+
+    addButtonEffects(image) {
+        image.setInteractive({ useHandCursor: true });
+
+        image.on('pointerover', () => {
+            image.setScale(image.scaleX * 1.05);
+            image.setTint(0xDDDDDD);
+        });
+
+        image.on('pointerout', () => {
+            image.setScale(image.scaleX / 1.05);
+            image.clearTint();
+        });
+
+        image.on('pointerdown', () => {
+            image.setScale(image.scaleX * 0.95);
+        });
+
+        image.on('pointerup', () => {
+            image.setScale(image.scaleX / 0.95);
+        });
     }
     
     update() {
