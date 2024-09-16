@@ -24,16 +24,16 @@ class TitleScene extends Phaser.Scene {
 
         const title = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 120, 
+            this.cameras.main.centerY - 100, 
             'TUNATUNAOVERTUNE', 
-            { fontSize: '46px', fill: '#FFF' }
+            { fontSize: '46px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif' }
         )
         .setOrigin(0.5)
         .setShadow(2, 2, '#000', 2, true, true);
 
         const playButton = this.add.image(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 20, 
+            this.cameras.main.centerY + 40, 
             'playbutton'
         )
         .setOrigin(0.5)
@@ -41,36 +41,25 @@ class TitleScene extends Phaser.Scene {
         .setScale(0.35);
 
         playButton.on('pointerdown', () => {
-            this.showlevelselector(title, playButton, tutorialButton, optionsButton, creditsButton);
+            this.showlevelselector(title, playButton, optionsButton, creditsButton);
         });
 
-        const tutorialButton = this.add.image(
-            this.cameras.main.centerX, 
-            this.cameras.main.centerY + 180, 
-            'tutorialbutton'
-        )
-        .setOrigin(0.5)
-        .setInteractive()
-        .setScale(0.18)
-        .on('pointerdown', () => {
-            this.showtutorial(title, playButton, tutorialButton, optionsButton, creditsButton);
-        });
         
         const optionsButton = this.add.image(
             this.cameras.main.centerX - 40,
-            this.cameras.main.centerY + 80, 
+            this.cameras.main.centerY + 120, 
             'optionsbutton'
         )
         .setOrigin(0.5)
         .setInteractive()
         .setScale(0.5)
         .on('pointerdown', () => {
-            this.showoptions(title, playButton, tutorialButton, optionsButton, creditsButton);
+            this.showoptions(title, playButton, optionsButton, creditsButton);
         });
 
         const creditsButton = this.add.image(
             this.cameras.main.centerX + 40,
-            this.cameras.main.centerY + 80, 
+            this.cameras.main.centerY + 120, 
             'creditsbutton'
         )
         .setOrigin(0.5)
@@ -100,7 +89,7 @@ class TitleScene extends Phaser.Scene {
 
         this.subtext = this.add.text(
             this.cameras.main.centerX + 200, 
-            this.cameras.main.centerY - 77, 
+            this.cameras.main.centerY - 55, 
             randomSubtext, 
             {
                 fontSize: '20px', 
@@ -124,24 +113,23 @@ class TitleScene extends Phaser.Scene {
         });
     }
 
-    showlevelselector(title, playButton, tutorialButton, optionsButton, creditsButton) {
+    showlevelselector(title, playButton, optionsButton, creditsButton) {
     
         if (title) title.destroy();
         if (playButton) playButton.destroy();
-        if (tutorialButton) tutorialButton.destroy();
         if (optionsButton) optionsButton.destroy();
         if (creditsButton && creditsButton.destroy) {creditsButton.destroy();}
         if (this.subtext) this.subtext.destroy();
 
-        title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+        title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
         
-        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#AAA', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
 
-        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, 'EASY', { fontSize: '28px', fill: '#90EE90', fontFamily: 'Courier New' }).setOrigin(0.5);
+        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, 'EASY', { fontSize: '28px', fill: '#90EE90', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
 
         const previewImage = this.add.image(this.cameras.main.centerX, 160, 'usagiflap').setOrigin(0.5).setScale(0.3);
 
-        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'DEMO Stage', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'DEMO Stage', { fontSize: '28px', fill: '#AAA', fontfamily: 'Geneva, Verdana, sans-serif'}).setOrigin(0.5);
 
         playButton = this.add.image(this.cameras.main.centerX, 390, 'playbutton')
             .setOrigin(0.5)
@@ -231,7 +219,7 @@ class TitleScene extends Phaser.Scene {
 
     const previewImage = this.add.image(this.cameras.main.centerX, 210, 'asimslevel').setOrigin(0.5).setScale(0.3);
 
-    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'Asims Level', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'Asims Level', { fontSize: '28px', fill: '#AAA', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
 
     const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
         .setOrigin(0.5)
@@ -326,8 +314,9 @@ class TitleScene extends Phaser.Scene {
             this.showLevelSelectorPage4();
         });
     }
-    
-    showtutorial(title, playButton, tutorialButton, optionsButton, creditsButton) {
+
+    //Tutorial to be merged with info
+    showtutorial(title, playButton, optionsButton, creditsButton) {
         if (title) title.destroy();
         if (playButton) playButton.destroy();
         if (tutorialButton) tutorialButton.destroy();
@@ -457,12 +446,11 @@ class TitleScene extends Phaser.Scene {
         });
     }
     
-    showoptions(title, playButton, tutorialButton, optionsButton, creditsButton) {
+    showoptions(title, playButton, optionsButton, creditsButton) {
 
         if (title) title.destroy();
         if (playButton) playButton.destroy();
         if (optionsButton) optionsButton.destroy();
-        if (tutorialButton) tutorialButton.destroy();
         if (creditsButton) creditsButton.destroy();
         if (this.subtext) this.subtext.destroy();
 
@@ -471,7 +459,7 @@ class TitleScene extends Phaser.Scene {
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 120, 
             'Sound Volume', 
-            { fontSize: '28px', fill: '#FFF' }
+            { fontSize: '28px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'}
         )
         .setOrigin(0.5)
         .setInteractive();
@@ -492,7 +480,7 @@ class TitleScene extends Phaser.Scene {
         let sphere = this.add.circle(this.cameras.main.centerX, this.cameras.main.centerY - 60 + barHeight / 2, sphereRadius, 0xFFD700).setInteractive();
         this.input.setDraggable(sphere);
 
-        let volumeText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, `Volume: ${gamevolume * 100}%`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
+        let volumeText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, `Volume: ${gamevolume * 100}%`, { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'}).setOrigin(0.5);
 
         let dragHistory = [];
         let maxDragHistoryLength = 2;
@@ -740,11 +728,11 @@ class Usagiflap extends Phaser.Scene {
         this.score = 0;
         this.moveMade = false;
 
-        this.scoreText = this.add.text(15, 10, 'Score: ', { fontSize: '24px', fill: '#FFF' });
-        this.streakText = this.add.text(15, 60, 'Streak: ', { fontSize: '24px', fill: '#FFF' });
+        this.scoreText = this.add.text(15, 10, 'Score: ', { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'});
+        this.streakText = this.add.text(15, 60, 'Streak: ', { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'});
 
-        this.scoreNumber = this.add.text(120, 8, '0', { fontSize: '28px', fill: '#FFF' });
-        this.streakNumber = this.add.text(140, 58, '0', { fontSize: '28px', fill: '#FFF' });
+        this.scoreNumber = this.add.text(120, 8, '0', { fontSize: '28px', fill: '#FFF', fontFamily: 'Comic Sans MS'});
+        this.streakNumber = this.add.text(140, 58, '0', { fontSize: '28px', fill: '#FFF', fontFamily: 'Comic Sans MS' });
 
         
         this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.3);
@@ -1152,9 +1140,8 @@ class Usagiflap extends Phaser.Scene {
                 0, 
                 -80, 
                 'Stage Failed', 
-                { fontSize: '48px', fill: '#ff0000' }
+                { fontSize: '48px', fill: '#ff0000', fontFamily: 'Comic Sans MS, sans-serif' }
             ).setOrigin(0.5);
-
             const tips = [
                 'L bozo',
                 'git gud',
@@ -1600,27 +1587,40 @@ class Usagiflap extends Phaser.Scene {
         this.physics.pause();
         this.isPaused = true;
 
+        this.blurOverlay = this.add.rectangle(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY, 
+            this.cameras.main.width, 
+            this.cameras.main.height, 
+            0x000000, 
+            0.5
+        ).setOrigin(0.5);
+
         const levelClearMenu = this.add.container(this.cameras.main.width / 2, this.cameras.main.height / 2);
 
-        const menuBackground = this.add.rectangle(0, 0, 300, 200, 0x000000, 0.8).setOrigin(0.5);
+        const menuBackground = this.add.rectangle(0, 0, 475, 375, 0x000000, 0.8)
+            .setOrigin(0.5)
+            .setStrokeStyle(4, 0xFFFFFF);
 
-        const titleText = this.add.text(0, -70, 'Level Cleared!', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+        const titleText = this.add.text(0, -100, 'Stage Cleared!', { fontSize: '48px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif' }).setOrigin(0.5);
 
-        const rankLabel = this.add.text(0, -20, 'RANK: ', { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
-        
-        const rankGrade = this.add.text(rankLabel.x + rankLabel.width / 2, -20, this.calculateRank(), { 
-            fontSize: '24px', 
-            fill: '#FFF' 
+        const rankLabel = this.add.text(0, -40, 'RANK: ', { fontSize: '32px', fill: '#FFF'}).setOrigin(0.5);
+
+        const rankGrade = this.add.text(rankLabel.x + rankLabel.width / 2, -40, this.calculateRank(), { 
+            fontSize: '32px', 
+            fill: '#FFF', 
+            fontFamily: 'Comic Sans MS, sans-serif'
         }).setOrigin(0, 0.5);
         this.updateRankText.call(this, rankGrade);
-        
-        const scoreText = this.add.text(0, 20, `SCORE: ${this.score}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
-        const streakText = this.add.text(0, 60, `STREAK: ${this.highestStreak}`, { fontSize: '24px', fill: '#FFF' }).setOrigin(0.5);
 
-        const backButton = this.add.image(0, 100, 'exitbutton')
+        const scoreText = this.add.text(0, 10, `SCORE: ${this.score}`, { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+
+        const streakText = this.add.text(0, 60, `STREAK: ${this.highestStreak}`, { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+
+        const backButton = this.add.image(0, 130, 'exitbutton')
             .setOrigin(0.5)
             .setInteractive()
-            .setScale(0.5)
+            .setScale(0.3)
             .on('pointerdown', () => {
                 this.music?.stop();
                 this.music = null;
