@@ -5,14 +5,15 @@ class TitleScene extends Phaser.Scene {
 
     preload() {
         this.load.image('usagiflap', 'Level1-cover.jpg');
-        this.load.image('crabrave', 'Level2-cover.jpg');
-        this.load.image('asimslevel', 'Level3-cover.jpg');
+        this.load.image('asimslevel', 'Level2-cover.jpg');
+        this.load.image('Henceforth', 'Level3-cover.jpg');
         this.load.image('planetloop', 'Level4-cover.jpg');
         this.load.image('FINALBOSS', 'Level5-cover.jpg');
+        this.load.image('Omega Rythm', 'Level6-cover.jpg');
         this.load.image('playbutton', 'playbutton.png');
         this.load.image('tutorialbutton', 'tutorialbutton.png');
         this.load.image('nextbutton', 'nextbutton.png');
-        this.load.image('backbutton', 'backbutton.png');
+        this.load.image('exitbutton', 'exitbutton.png');
         this.load.image('creditsbutton', 'creditsbutton.png');
         this.load.image('optionsbutton', 'optionsbutton.png');
         this.load.image('backbutton', 'backbutton.png');
@@ -72,12 +73,12 @@ class TitleScene extends Phaser.Scene {
             'INDEV',
             'bit bugged',
             'MINECRAFT TEXT',
-            'version 0.3!!!',
+            'version 0.4!!!',
             'tahaaagame?!?!',
-            'i am tuna',
-            'dont talk to d ranks',
+            'your refrencing a null pointer!',
+            'dont talk to D ranks',
             'tunaovertime!!',
-            'brrrrr',
+            'stobery',
             'CHATGPT HELP ME',
             'play when??',
             'better then before!',
@@ -123,13 +124,13 @@ class TitleScene extends Phaser.Scene {
 
         title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
         
-        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#AAA', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#FFF', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
 
         const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, 'EASY', { fontSize: '28px', fill: '#90EE90', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
 
         const previewImage = this.add.image(this.cameras.main.centerX, 160, 'usagiflap').setOrigin(0.5).setScale(0.3);
 
-        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'DEMO Stage', { fontSize: '28px', fill: '#AAA', fontfamily: 'Geneva, Verdana, sans-serif'}).setOrigin(0.5);
+        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Usagi Flap', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
 
         playButton = this.add.image(this.cameras.main.centerX, 390, 'playbutton')
             .setOrigin(0.5)
@@ -176,145 +177,243 @@ class TitleScene extends Phaser.Scene {
 
     showLevelSelectorPage2() {
 
-        const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
 
-        const previewImage = this.add.image(this.cameras.main.centerX, 210, 'crabrave').setOrigin(0.5).setScale(0.3);
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#FFF', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
 
-        const subtitle = this.add.text(this.cameras.main.centerX, 340, 'Crab Rave', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, 'EASY', { fontSize: '28px', fill: '#90EE90', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
 
-        const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
-            .setOrigin(0.5)
+        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'asimslevel').setOrigin(0.5).setScale(0.3);
 
-        const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
+        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Asim*s Level', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
+
+
+        const backButton = this.add.image(100, 230, 'backbutton')
             .setOrigin(0.5)
             .setInteractive()
+            .setScale(0.7)
             .on('pointerdown', () => {
+
                 title.destroy();
                 previewImage.destroy();
                 subtitle.destroy();
-                playButton.destroy();
                 backButton.destroy();
                 nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
                 this.showlevelselector();
             });
 
-        const nextButton = this.add.text(this.cameras.main.width - 100, 230, 'NEXT', { fontSize: '28px', fill: '#FFF' })
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
+        const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.7)
+            .on('pointerdown', () => {
 
-            title.destroy();
-            previewImage.destroy();
-            subtitle.destroy();
-            playButton.destroy();
-            backButton.destroy();
-            nextButton.destroy();
-            this.showLevelSelectorPage3();
-        });
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.showLevelSelectorPage3();
+            });
     }
-
+    
     showLevelSelectorPage3() {
 
-    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
 
-    const previewImage = this.add.image(this.cameras.main.centerX, 210, 'asimslevel').setOrigin(0.5).setScale(0.3);
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#FFF', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
 
-    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'Asims Level', { fontSize: '28px', fill: '#AAA', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
+        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, ' Normal', { fontSize: '28px', fill: '#FFFF00', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
 
-    const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
-        .setOrigin(0.5)
+        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'henceforth').setOrigin(0.5).setScale(0.3);
 
-    const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
-            title.destroy();
-            previewImage.destroy();
-            subtitle.destroy();
-            playButton.destroy();
-            backButton.destroy();
-            nextButton.destroy();
-            this.showLevelSelectorPage2();
-        });
+        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Null', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
 
-        const nextButton = this.add.text(this.cameras.main.width - 100, 230, 'NEXT', { fontSize: '28px', fill: '#FFF' })
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
 
-            title.destroy();
-            previewImage.destroy();
-            subtitle.destroy();
-            playButton.destroy();
-            backButton.destroy();
-            nextButton.destroy();
-            this.showLevelSelectorPage4();
-        });
+        const backButton = this.add.image(100, 230, 'backbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.7)
+            .on('pointerdown', () => {
+
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.showLevelSelectorPage2();
+            });
+
+        const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.7)
+            .on('pointerdown', () => {
+
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.showLevelSelectorPage4();
+            });
     }
 
     showLevelSelectorPage4() {
 
-    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
 
-    const previewImage = this.add.image(this.cameras.main.centerX, 210, 'planetloop').setOrigin(0.5).setScale(0.3);
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#FFF', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
 
-    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'Planet Loop', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, ' Normal', { fontSize: '28px', fill: '#FFFF00', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
 
-    const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
-        .setOrigin(0.5)
+        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'planetloop').setOrigin(0.5).setScale(0.3);
 
-    const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
-            title.destroy();
-            previewImage.destroy();
-            subtitle.destroy();
-            playButton.destroy();
-            backButton.destroy();
-            nextButton.destroy();
-            this.showLevelSelectorPage3();
-        });
+        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Planet Loop', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
 
-        const nextButton = this.add.text(this.cameras.main.width - 100, 230, 'NEXT', { fontSize: '28px', fill: '#FFF' })
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
-            
-            title.destroy();
-            previewImage.destroy();
-            subtitle.destroy();
-            playButton.destroy();
-            backButton.destroy();
-            nextButton.destroy();
-            this.showLevelSelectorPage5();
-        });
+
+        const backButton = this.add.image(100, 230, 'backbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.7)
+            .on('pointerdown', () => {
+
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.showLevelSelectorPage3();
+            });
+
+        const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.7)
+            .on('pointerdown', () => {
+
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.showLevelSelectorPage5();
+            });
     }
-    
+
     showLevelSelectorPage5() {
 
-    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF' }).setOrigin(0.5);
+    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
 
-    const previewImage = this.add.image(this.cameras.main.centerX, 210, 'FINALBOSS').setOrigin(0.5).setScale(0.3);
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#FFF', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
 
-    const subtitle = this.add.text(this.cameras.main.centerX, 340, 'FINALBOSS', { fontSize: '28px', fill: '#AAA' }).setOrigin(0.5);
+        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, 'Hard', { fontSize: '28px', fill: '#FF0000', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
 
-    const playButton = this.add.text(this.cameras.main.centerX, 400, 'not added yet', { fontSize: '32px', fill: '#FFF' })
-        .setOrigin(0.5)
+        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'FINALBOSS').setOrigin(0.5).setScale(0.3);
 
-    const backButton = this.add.text(100, 230, 'BACK', { fontSize: '28px', fill: '#FFF' })
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
-            title.destroy();
-            previewImage.destroy();
-            subtitle.destroy();
-            playButton.destroy();
-            backButton.destroy();
-            this.showLevelSelectorPage4();
-        });
+        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Final Boss', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
+
+
+        const backButton = this.add.image(100, 230, 'backbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.7)
+            .on('pointerdown', () => {
+
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.showLevelSelectorPage4();
+            });
+
+        const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.7)
+            .on('pointerdown', () => {
+
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.showLevelSelectorPage6();
+            });
     }
 
+    showLevelSelectorPage6() {
+
+    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
+
+        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#FFF', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
+
+        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, '        Undefined', { fontSize: '28px', fill: '#DC143C', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
+
+        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'omegarythm').setOrigin(0.5).setScale(0.3);
+
+        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Omega Rythm', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
+
+        const playButton = this.add.image(this.cameras.main.centerX, 390, 'playbutton')
+        .setOrigin(0.5)
+        .setInteractive()
+        .setScale(0.25)
+        .on('pointerdown', () => {
+            this.startGame();
+        });
+
+        const backButton = this.add.image(100, 230, 'backbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.7)
+            .on('pointerdown', () => {
+
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                nextButton.destroy();
+                playButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.showLevelSelectorPage5();
+            });
+
+        const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'exitbutton')
+            .setOrigin(0.5)
+            .setInteractive()
+            .setScale(0.35)
+            .on('pointerdown', () => {
+
+                title.destroy();
+                previewImage.destroy();
+                subtitle.destroy();
+                backButton.destroy();
+                playButton.destroy();
+                nextButton.destroy();
+                difficultyRate.destroy();
+                difficultyText.destroy();
+                this.create();
+            });
+    }
+    
     //Tutorial to be merged with info
     showtutorial(title, playButton, optionsButton, creditsButton) {
         if (title) title.destroy();
@@ -728,8 +827,8 @@ class Usagiflap extends Phaser.Scene {
         this.score = 0;
         this.moveMade = false;
 
-        this.scoreText = this.add.text(15, 10, 'Score: ', { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'});
-        this.streakText = this.add.text(15, 60, 'Streak: ', { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'});
+        this.scoreText = this.add.text(25, 10, 'Score: ', { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'});
+        this.streakText = this.add.text(25, 60, 'Streak: ', { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'});
 
         this.scoreNumber = this.add.text(120, 8, '0', { fontSize: '28px', fill: '#FFF', fontFamily: 'Comic Sans MS'});
         this.streakNumber = this.add.text(140, 58, '0', { fontSize: '28px', fill: '#FFF', fontFamily: 'Comic Sans MS' });
@@ -1586,7 +1685,7 @@ class Usagiflap extends Phaser.Scene {
         this.music.stop();
         this.physics.pause();
         this.isPaused = true;
-
+        this.pauseButton.destroy();
         this.blurOverlay = this.add.rectangle(
             this.cameras.main.centerX, 
             this.cameras.main.centerY, 
