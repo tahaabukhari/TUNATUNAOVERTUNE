@@ -18,7 +18,12 @@ class TitleScene extends Phaser.Scene {
         this.load.image('optionsbutton', 'optionsbutton.png');
         this.load.image('backbutton', 'backbutton.png');
         this.load.image('nextbutton', 'nextbutton.png');
+        this.load.image('englishbutton', 'englishbutton.png')
+        this.load.image('urdubutton', 'urdubutton.png')
         this.load.image('startbutton', 'startbutton.png');
+        this.load.image('englishtutorialimage1', 'englishtutorialimage1.jpg');
+        this.load.image('englishtutorialimage2', 'englishtutorialimage2.jpg');
+        this.load.image('englishtutorialimage3', 'englishtutorialimage3.jpg');
     }
 
     create() {
@@ -66,6 +71,9 @@ class TitleScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setScale(0.25);
         this.addButtonEffects(creditsButton);
+        creditsButton.on('pointerdown', () => {
+            this.showInfo(title, playButton, optionsButton, creditsButton);
+        });
         
         const subtextOptions = [
             'waow grape game!',
@@ -113,7 +121,7 @@ class TitleScene extends Phaser.Scene {
             repeat: -1
         });
     }
-
+    
     showlevelselector(title, playButton, optionsButton, creditsButton) {
     
         if (title) title.destroy();
@@ -140,9 +148,9 @@ class TitleScene extends Phaser.Scene {
                 this.startGame();
             });
 
-        const backButton = this.add.image(100, 230, 'backbutton')
+        const backButton = this.add.image(100, 230, 'exitbutton')
             .setOrigin(0.5)
-            .setScale(0.7);
+            .setScale(0.35);
             this.addButtonEffects(backButton);
             backButton.on('pointerdown', () => {
             
@@ -403,57 +411,155 @@ class TitleScene extends Phaser.Scene {
                 this.create();
             });
     }
-    
+
     //Tutorial to be merged with info
-    showtutorial(title, playButton, optionsButton, creditsButton) {
+    showInfo(title, playButton, optionsButton, creditsButton) {
+
         if (title) title.destroy();
         if (playButton) playButton.destroy();
-        if (tutorialButton) tutorialButton.destroy();
         if (optionsButton) optionsButton.destroy();
-        if (creditsButton) creditsButton.destroy();
+        if (creditsButton && creditsButton.destroy) {creditsButton.destroy();}
         if (this.subtext) this.subtext.destroy();
 
+        const backButton = this.add.image(100, 230, 'exitbutton')
+            .setOrigin(0.5)
+            .setScale(0.35);
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
+            if (backButton) backButton.destroy();
+            if (tutorialButton) tutorialButton.destroy();
+            if (creditsButton2) creditsButton2.destroy();
+            this.create();
+        });
+
+        const tutorialButton = this.add.image(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 20, 
+            'tutorialbutton'
+        )
+        .setOrigin(0.5)
+        .setScale(0.25);
+        this.addButtonEffects(tutorialButton);
+
+        tutorialButton.on('pointerdown', () => {
+            if (backButton) backButton.destroy();
+            if (tutorialButton) tutorialButton.destroy();
+            if (creditsButton2) creditsButton2.destroy();
+            this.tutorialLanguageSelector();
+        });
+
+        const creditsButton2 = this.add.image(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY + 110, 
+            'creditsbutton'
+        )
+        .setOrigin(0.5)
+        .setScale(0.25);
+        this.addButtonEffects(creditsButton2);
+    }
+
+    tutorialLanguageSelector() {
+        const backButton = this.add.image(100, 230, 'backbutton')
+            .setOrigin(0.5)
+            .setScale(0.7);
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
+            if (backButton) backButton.destroy();
+            if (titleText) titleText.destroy();
+            if (englishButton) englishButton.destroy();
+            if (urduButton) urduButton.destroy();
+            this.showInfo();
+        });
+
+        const titleText = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 130, 
+            'Select a Language', 
+            { fontSize: '32px', fill: '#ffffff', fontFamily: 'Comic Sans MS, sans-serif'}
+        ).setOrigin(0.5);
+
+        const englishButton = this.add.image(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 20, 
+            'englishbutton'
+        )
+        .setOrigin(0.5)
+        .setScale(0.2);
+        this.addButtonEffects(englishButton);
+        englishButton.on('pointerdown', () => {
+            if (backButton) backButton.destroy();
+            if (titleText) titleText.destroy();
+            if (englishButton) englishButton.destroy();
+            if (urduButton) urduButton.destroy();
+            this.showEnglishTutorial();
+        });
+
+        const urduButton = this.add.image(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY + 100, 
+            'urdubutton'
+        )
+        .setOrigin(0.5)
+        .setScale(0.2);
+        this.addButtonEffects(urduButton);
+    }
+    
+    showEnglishTutorial() {
         this.showTutorialPage1();
     }
 
     showTutorialPage1() {
         const title = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 150, 
-            'How to Play - Page 1', 
-            { fontSize: '32px', fill: '#FFF' }
+            this.cameras.main.centerY - 190, 
+            'Movement', 
+            { fontSize: '36px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'}
         ).setOrigin(0.5);
 
-        const previewImage = this.add.image(
+        const description = this.add.text(
             this.cameras.main.centerX, 
-            210, 
-            'imagePage1'
+            this.cameras.main.centerY - 130, 
+             'Notes will fall down to the platform\nwhich is divided into four lanes.',
+                 { fontSize: '18px', fill: '#FFF',fontFamily: 'Comic Sans MS', align: 'center', wordWrap: { width: 400 } }
+        ).setOrigin(0.5);
+
+        const description2 = this.add.text(
+            this.cameras.main.centerX - 170, 
+            this.cameras.main.centerY + 50, 
+             'Tap the platform segment\n to move the\n Player Tile between lanes.\n\nUse A S D F\n keys to move\nif you are playing\n on PC.', 
+                 { fontSize: '18px', fill: '#FFF',fontFamily: 'Comic Sans MS', align: 'center', wordWrap: { width: 400 } }
+        ).setOrigin(0.5);
+        
+        const previewImage = this.add.image(
+            this.cameras.main.centerX + 120, 
+            this.cameras.main.centerY + 80, 
+            'englishtutorialimage1'
         ).setOrigin(0.5).setScale(0.3);
 
-        const backButton = this.add.text(
-            100, 
-            230, 
-            'BACK', 
-            { fontSize: '28px', fill: '#FFF' }
-        ).setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
+        const backButton = this.add.image(100, 70, 'backbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
             title.destroy();
+            description.destroy();
+            description2.destroy();
             previewImage.destroy();
             backButton.destroy();
             nextButton.destroy();
-            this.create();
+            this.tutorialLanguageSelector();
         });
 
-        const nextButton = this.add.text(
-            this.cameras.main.width - 100, 
-            230, 
-            'NEXT', 
-            { fontSize: '28px', fill: '#FFF' }
-        ).setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
+        const nextButton = this.add.image(this.cameras.main.width - 100, 70, 'nextbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(nextButton);
+        nextButton.on('pointerdown', () => {
             title.destroy();
+            description.destroy();
+            description2.destroy();
             previewImage.destroy();
             backButton.destroy();
             nextButton.destroy();
@@ -464,42 +570,55 @@ class TitleScene extends Phaser.Scene {
     showTutorialPage2() {
         const title = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 150, 
-            'How to Play - Page 2', 
-            { fontSize: '32px', fill: '#FFF' }
+            this.cameras.main.centerY - 190, 
+            'Scoring', 
+            { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif' }
         ).setOrigin(0.5);
 
-        const previewImage = this.add.image(
+        const description = this.add.text(
             this.cameras.main.centerX, 
-            210, 
-            'imagePage2'
-        ).setOrigin(0.5).setScale(0.3);
+            this.cameras.main.centerY - 35, 
+            'You score when a note falls on an highlighted lane. (which means the highlighter is on that lane as the note hits the platform.)\n\nNote!: The Score counts only when\nthe note hits\nthe platform,\nnot the\nhighlighter.', 
+            { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
+        ).setOrigin(0.5);
 
-        const backButton = this.add.text(
-            100, 
-            230, 
-            'BACK', 
-            { fontSize: '28px', fill: '#FFF' }
-        ).setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
+        const image1 = this.add.image(
+            this.cameras.main.centerX - 190, 
+            this.cameras.main.centerY + 105, 
+            'englishtutorialimage2'
+        ).setOrigin(0.5).setScale(0.2);
+
+        const image2 = this.add.image(
+            this.cameras.main.centerX + 190, 
+            this.cameras.main.centerY + 105, 
+            'englishtutorialimage3'
+        ).setOrigin(0.5).setScale(0.2);
+
+        const backButton = this.add.image(100, 50, 'backbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
             title.destroy();
-            previewImage.destroy();
+            description.destroy();
+            image1.destroy();
+            image2.destroy();
             backButton.destroy();
             nextButton.destroy();
-            this.create();
+            this.showTutorialPage1();
         });
 
-        const nextButton = this.add.text(
-            this.cameras.main.width - 100, 
-            230, 
-            'NEXT', 
-            { fontSize: '28px', fill: '#FFF' }
-        ).setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
+        const nextButton = this.add.image(this.cameras.main.width - 100, 50, 'nextbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(nextButton);
+        nextButton.on('pointerdown', () => {
             title.destroy();
-            previewImage.destroy();
+            description.destroy();
+            image1.destroy();
+            image2.destroy();
             backButton.destroy();
             nextButton.destroy();
             this.showTutorialPage3();
@@ -510,28 +629,27 @@ class TitleScene extends Phaser.Scene {
         const title = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 150, 
-            'How to Play - Page 3', 
+            'tessrapage', 
             { fontSize: '32px', fill: '#FFF' }
         ).setOrigin(0.5);
 
-        const previewImage = this.add.image(
+        const description = this.add.text(
             this.cameras.main.centerX, 
-            210, 
-            'imagePage3'
-        ).setOrigin(0.5).setScale(0.3);
+            this.cameras.main.centerY - 80, 
+            'This is the final page of the tutorial.', 
+            { fontSize: '20px', fill: '#FFF' }
+        ).setOrigin(0.5);
 
-        const backButton = this.add.text(
-            100, 
-            230, 
-            'BACK', 
-            { fontSize: '28px', fill: '#FFF' }
-        ).setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
+        const backButton = this.add.image(100, 230, 'backbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
             title.destroy();
-            previewImage.destroy();
+            description.destroy();
             backButton.destroy();
-            this.create();
+            this.showTutorialPage2();
         });
     }
     
