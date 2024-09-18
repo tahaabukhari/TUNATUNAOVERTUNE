@@ -15,6 +15,7 @@ class TitleScene extends Phaser.Scene {
         this.load.image('nextbutton', 'nextbutton.png');
         this.load.image('exitbutton', 'exitbutton.png');
         this.load.image('creditsbutton', 'creditsbutton.png');
+        this.load.image('creditsbutton2', 'creditsbutton2.png');
         this.load.image('optionsbutton', 'optionsbutton.png');
         this.load.image('backbutton', 'backbutton.png');
         this.load.image('nextbutton', 'nextbutton.png');
@@ -25,6 +26,8 @@ class TitleScene extends Phaser.Scene {
         this.load.image('englishtutorialimage2', 'englishtutorialimage2.jpg');
         this.load.image('englishtutorialimage3', 'englishtutorialimage3.jpg');
         this.load.image('englishtutorialimage4', 'englishtutorialimage4.png');
+        this.load.image('urdututorialimage1', 'urdututorialimage1.png');
+        this.load.image('urdututorialimage2', 'urdututorialimage2.jpg');
     }
 
     create() {
@@ -413,7 +416,6 @@ class TitleScene extends Phaser.Scene {
             });
     }
 
-    //Tutorial to be merged with info
     showInfo(title, playButton, optionsButton, creditsButton) {
 
         if (title) title.destroy();
@@ -435,7 +437,7 @@ class TitleScene extends Phaser.Scene {
 
         const tutorialButton = this.add.image(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 20, 
+            this.cameras.main.centerY - 80, 
             'tutorialbutton'
         )
         .setOrigin(0.5)
@@ -451,8 +453,8 @@ class TitleScene extends Phaser.Scene {
 
         const creditsButton2 = this.add.image(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY + 110, 
-            'creditsbutton'
+            this.cameras.main.centerY + 80, 
+            'creditsbutton2'
         )
         .setOrigin(0.5)
         .setScale(0.25);
@@ -503,13 +505,20 @@ class TitleScene extends Phaser.Scene {
         .setOrigin(0.5)
         .setScale(0.2);
         this.addButtonEffects(urduButton);
+        urduButton.on('pointerdown', () => {
+            if (backButton) backButton.destroy();
+            if (titleText) titleText.destroy();
+            if (englishButton) englishButton.destroy();
+            if (urduButton) urduButton.destroy();
+            this.showUrduTutorial();
+        });
     }
     
     showEnglishTutorial() {
-        this.showTutorialPage1();
+        this.showeTutorialPage1();
     }
 
-    showTutorialPage1() {
+    showeTutorialPage1() {
         const title = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 190, 
@@ -564,11 +573,11 @@ class TitleScene extends Phaser.Scene {
             previewImage.destroy();
             backButton.destroy();
             nextButton.destroy();
-            this.showTutorialPage2();
+            this.showeTutorialPage2();
         });
     }
 
-    showTutorialPage2() {
+    showeTutorialPage2() {
         const title = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 190, 
@@ -607,7 +616,7 @@ class TitleScene extends Phaser.Scene {
             image2.destroy();
             backButton.destroy();
             nextButton.destroy();
-            this.showTutorialPage1();
+            this.showeTutorialPage1();
         });
 
         const nextButton = this.add.image(this.cameras.main.width - 100, 50, 'nextbutton')
@@ -622,11 +631,11 @@ class TitleScene extends Phaser.Scene {
             image2.destroy();
             backButton.destroy();
             nextButton.destroy();
-            this.showTutorialPage3();
+            this.showeTutorialPage3();
         });
     }
 
-    showTutorialPage3() {
+    showeTutorialPage3() {
         const title = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 170, 
@@ -672,7 +681,178 @@ class TitleScene extends Phaser.Scene {
             description1.destroy();
             backButton.destroy();
             nextButton.destroy();
-            this.showTutorialPage2();
+            this.showeTutorialPage2();
+        });
+    }
+
+    showUrduTutorial() {
+        this.showuTutorialPage1();
+    }
+
+    showuTutorialPage1() {
+        const title = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 190, 
+            'Movement', 
+            { fontSize: '36px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'}
+        ).setOrigin(0.5);
+
+        const description = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 130, 
+             'Notes neeche ayein ge\nplatform ki 4 lanes hein.',
+                 { fontSize: '18px', fill: '#FFF',fontFamily: 'Comic Sans MS', align: 'center', wordWrap: { width: 400 } }
+        ).setOrigin(0.5);
+
+        const description2 = this.add.text(
+            this.cameras.main.centerX - 170, 
+            this.cameras.main.centerY + 50, 
+             'Mobile pe platform segment\n ko sirf tap krna he\n us se highlighter us lane\n mein chala jaye ga.\n\nAgr PC pe ho to\n A S D F\n keys use kro movement\n ke liye.', 
+                 { fontSize: '18px', fill: '#FFF',fontFamily: 'Comic Sans MS', align: 'center', wordWrap: { width: 400 } }
+        ).setOrigin(0.5);
+
+        const previewImage = this.add.image(
+            this.cameras.main.centerX + 120, 
+            this.cameras.main.centerY + 80, 
+            'englishtutorialimage1'
+        ).setOrigin(0.5).setScale(0.3);
+
+        const backButton = this.add.image(100, 70, 'backbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
+            title.destroy();
+            description.destroy();
+            description2.destroy();
+            previewImage.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.tutorialLanguageSelector();
+        });
+
+        const nextButton = this.add.image(this.cameras.main.width - 100, 70, 'nextbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(nextButton);
+        nextButton.on('pointerdown', () => {
+            title.destroy();
+            description.destroy();
+            description2.destroy();
+            previewImage.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showuTutorialPage2();
+        });
+    }
+
+    showuTutorialPage2() {
+        const title = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 190, 
+            'Scoring', 
+            { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif' }
+        ).setOrigin(0.5);
+
+        const description = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 15, 
+            'Jb Highlighter \n(choti purple bar)\n us lane ke upr ho gi\n jis pe note gira, to tumhara score increase ho ga.\n\nNote!:\n Score sirf\n platform ko\nhit kr ke hi\ncount hota he.', 
+            { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
+        ).setOrigin(0.5);
+
+        const image1 = this.add.image(
+            this.cameras.main.centerX - 190, 
+            this.cameras.main.centerY + 105, 
+            'urdututorialimage2'
+        ).setOrigin(0.5).setScale(0.2);
+
+        const image2 = this.add.image(
+            this.cameras.main.centerX + 190, 
+            this.cameras.main.centerY + 105, 
+            'urdututorialimage1'
+        ).setOrigin(0.5).setScale(0.2);
+
+        const backButton = this.add.image(100, 50, 'backbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
+            title.destroy();
+            description.destroy();
+            image1.destroy();
+            image2.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showuTutorialPage1();
+        });
+
+        const nextButton = this.add.image(this.cameras.main.width - 100, 50, 'nextbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(nextButton);
+        nextButton.on('pointerdown', () => {
+            title.destroy();
+            description.destroy();
+            image1.destroy();
+            image2.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showuTutorialPage3();
+        });
+    }
+
+    showuTutorialPage3() {
+        const title = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY - 200, 
+            'Gameplay', 
+            { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif' }
+        ).setOrigin(0.5);
+
+        const previewImage2 = this.add.image(
+            this.cameras.main.centerX + 10, 
+            this.cameras.main.centerY - 100, 
+            'englishtutorialimage4'
+        ).setOrigin(0.5).setScale(0.3);
+
+        const description1 = this.add.text(
+            this.cameras.main.centerX, 
+            this.cameras.main.centerY + 95, 
+            'Lanes de thalle RythmBar he.\n Jab bhi galat lane pe move ya note miss kro ge to usse minus pre ga.\nBar khatam hone pe game over ho jati. Points score kr ke RythmBar ko recover kr sakte ho.\n Notes gane ke saath synced hein (bari mehnat wala kaam he) jb gana complete ho ga to notes ana band ho jain ge te level poora ho jaye ga.', 
+            { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
+        ).setOrigin(0.5);
+
+        const nextButton = this.add.image(this.cameras.main.width - 100, 70, 'exitbutton')
+            .setOrigin(0.5)
+            .setScale(0.34)
+            .setInteractive();
+        this.addButtonEffects(nextButton);
+        nextButton.on('pointerdown', () => {
+            title.destroy();
+            previewImage2.destroy();
+            description1.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.create();
+        });
+
+        const backButton = this.add.image(100, 70, 'backbutton')
+            .setOrigin(0.5)
+            .setScale(0.7)
+            .setInteractive();
+        this.addButtonEffects(backButton);
+        backButton.on('pointerdown', () => {
+            title.destroy();
+            previewImage2.destroy();
+            description1.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.showuTutorialPage2();
         });
     }
     
