@@ -24,6 +24,7 @@ class TitleScene extends Phaser.Scene {
         this.load.image('englishtutorialimage1', 'englishtutorialimage1.jpg');
         this.load.image('englishtutorialimage2', 'englishtutorialimage2.jpg');
         this.load.image('englishtutorialimage3', 'englishtutorialimage3.jpg');
+        this.load.image('englishtutorialimage4', 'englishtutorialimage4.png');
     }
 
     create() {
@@ -578,7 +579,7 @@ class TitleScene extends Phaser.Scene {
         const description = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 35, 
-            'You score when a note falls on an highlighted lane. (which means the highlighter is on that lane as the note hits the platform.)\n\nNote!: The Score counts only when\nthe note hits\nthe platform,\nnot the\nhighlighter.', 
+            'You score when a note falls on an highlighted lane. (You dont have to time it perfectly and only need to move once.)\n\nNote!: The Score counts only when\nthe note hits\nthe platform,\nnot the\nhighlighter.', 
             { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
         ).setOrigin(0.5);
 
@@ -628,27 +629,49 @@ class TitleScene extends Phaser.Scene {
     showTutorialPage3() {
         const title = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 150, 
-            'tessrapage', 
-            { fontSize: '32px', fill: '#FFF' }
+            this.cameras.main.centerY - 170, 
+            'Gameplay', 
+            { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif' }
         ).setOrigin(0.5);
 
-        const description = this.add.text(
+        const previewImage2 = this.add.image(
+            this.cameras.main.centerX + 10, 
+            this.cameras.main.centerY - 50, 
+            'englishtutorialimage4'
+        ).setOrigin(0.5).setScale(0.3);
+        
+        const description1 = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY - 80, 
-            'This is the final page of the tutorial.', 
-            { fontSize: '20px', fill: '#FFF' }
+            this.cameras.main.centerY + 95, 
+            'Under the platform there is a RythmBar. When you miss a note or if you make an invalid move, it gets smaller.\nOngoing level fails when your Rythmbar runs out. You can restore your Rythmbar by scoring more points!\n\n Notes will keep spawning until the song plays and when finished you will get a ranked result!', 
+            { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
         ).setOrigin(0.5);
 
-        const backButton = this.add.image(100, 230, 'backbutton')
+        const nextButton = this.add.image(this.cameras.main.width - 100, 70, 'exitbutton')
+            .setOrigin(0.5)
+            .setScale(0.34)
+            .setInteractive();
+        this.addButtonEffects(nextButton);
+        nextButton.on('pointerdown', () => {
+            title.destroy();
+            previewImage2.destroy();
+            description1.destroy();
+            backButton.destroy();
+            nextButton.destroy();
+            this.create();
+        });
+        
+        const backButton = this.add.image(100, 70, 'backbutton')
             .setOrigin(0.5)
             .setScale(0.7)
             .setInteractive();
         this.addButtonEffects(backButton);
         backButton.on('pointerdown', () => {
             title.destroy();
-            description.destroy();
+            previewImage2.destroy();
+            description1.destroy();
             backButton.destroy();
+            nextButton.destroy();
             this.showTutorialPage2();
         });
     }
