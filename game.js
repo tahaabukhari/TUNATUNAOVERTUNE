@@ -2366,16 +2366,16 @@ class Planetloop extends Phaser.Scene {
 
             switch (section) {
                 case 0:
-                    this.handlePlayerMove(0, 'characterImage1');
+                    this.handlePlayerMove(0, 'character4Image1');
                     break;
                 case 1:
-                    this.handlePlayerMove(1, 'characterImage3');
+                    this.handlePlayerMove(1, 'character4Image2');
                     break;
                 case 2:
-                    this.handlePlayerMove(2, 'characterImage2');
+                    this.handlePlayerMove(2, 'character4Image3');
                     break;
                 case 3:
-                    this.handlePlayerMove(3, 'characterImage4');
+                    this.handlePlayerMove(3, 'character4Image4');
                     break;
                 default:
                     break;
@@ -2394,7 +2394,7 @@ class Planetloop extends Phaser.Scene {
         this.streakNumber = this.add.text(140, 58, '0', { fontSize: '30px', fill: '#FFF', fontFamily: 'Comic Sans MS' });
 
 
-        this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.23);
+        this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'character4Image1').setScale(0.23);
 
         const pauseButton = this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton')
             .setScale(0.3);
