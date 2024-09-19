@@ -4,6 +4,31 @@ class TitleScene extends Phaser.Scene {
     }
 
     preload() {
+
+        let width = this.cameras.main.width;
+        let height = this.cameras.main.height;
+
+        let progressBar = this.add.graphics();
+        let progressBox = this.add.graphics();
+        progressBox.fillStyle(0xffffff, 0.2);
+        progressBox.fillRect(width / 4 - 10, height / 2 - 25, width / 2 + 20, 50);
+
+        let loadingText = this.make.text({
+            x: width / 2,
+            y: height / 2 - 50,
+            text: 'Loading...',
+            style: {
+                font: '20px monospace',
+                fill: '#ffffff'
+            }
+        }).setOrigin(0.5, 0.5);
+
+        this.load.on('progress', (value) => {
+            progressBar.clear();
+            progressBar.fillStyle(0x00b8ff, 1);
+            progressBar.fillRect(width / 4, height / 2 - 15, (width / 2) * value, 30);
+        });
+
         this.load.image('usagiflap', 'Level1-cover.jpg');
         this.load.image('asimslevel', 'Level2-cover.jpg');
         this.load.image('Henceforth', 'Level3-cover.jpg');
@@ -28,6 +53,12 @@ class TitleScene extends Phaser.Scene {
         this.load.image('englishtutorialimage4', 'englishtutorialimage4.png');
         this.load.image('urdututorialimage1', 'urdututorialimage1.png');
         this.load.image('urdututorialimage2', 'urdututorialimage2.jpg');
+        
+        this.load.on('complete', () => {
+            progressBar.destroy();
+            progressBox.destroy();
+            loadingText.destroy();
+        });
     }
 
     create() {
@@ -1048,6 +1079,31 @@ class Usagiflap extends Phaser.Scene {
 
 
     preload() {
+
+        let width = this.cameras.main.width;
+        let height = this.cameras.main.height;
+
+        let progressBar = this.add.graphics();
+        let progressBox = this.add.graphics();
+        progressBox.fillStyle(0xffffff, 0.2);
+        progressBox.fillRect(width / 4 - 10, height / 2 - 25, width / 2 + 20, 50);
+
+        let loadingText = this.make.text({
+            x: width / 2,
+            y: height / 2 - 50,
+            text: 'Loading...',
+            style: {
+                font: '20px monospace',
+                fill: '#ffffff'
+            }
+        }).setOrigin(0.5, 0.5);
+
+        this.load.on('progress', (value) => {
+            progressBar.clear();
+            progressBar.fillStyle(0x00b8ff, 1);
+            progressBar.fillRect(width / 4, height / 2 - 15, (width / 2) * value, 30);
+        });
+        
         this.load.audio('SRANKSOUND', 'Sranksound.mp3');
         this.load.audio('ARANKSOUND', 'Aranksound.mp3');
         this.load.audio('gamemusic', 'Level1-track.mp3');
@@ -1059,6 +1115,12 @@ class Usagiflap extends Phaser.Scene {
         this.load.image('pausebutton', 'pausebutton.png');
         this.load.image('exitbutton', 'exitbutton.png');
         this.load.image('unpausebutton', 'unpausebutton.png');
+
+        this.load.on('complete', () => {
+            progressBar.destroy();
+            progressBox.destroy();
+            loadingText.destroy();
+        });
     }
 
     create() {
