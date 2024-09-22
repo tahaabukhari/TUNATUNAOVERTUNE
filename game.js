@@ -18,7 +18,7 @@ class TitleScene extends Phaser.Scene {
             y: height / 2 - 50,
             text: 'Loading...',
             style: {
-                font: '20px monospace',
+                font: '24px Comic Sans MS',
                 fill: '#ffffff'
             }
         }).setOrigin(0.5, 0.5);
@@ -1615,7 +1615,6 @@ class Usagiflap extends Phaser.Scene {
             return;
         }
         this.levelFailedTriggered = true;
-
         this.isPaused = true;
         this.time.timeScale = 0;
         this.matter.world.pause();
@@ -1623,6 +1622,24 @@ class Usagiflap extends Phaser.Scene {
             this.music.stop();
         }
 
+        if (this.platformGraphics) {
+                this.platformGraphics.destroy();
+            }
+        
+            this.platforms.forEach(platform => {
+                if (platform) {
+                    this.matter.world.remove(platform);
+                }
+            });
+        
+            if (this.playerGraphics) {
+                this.playerGraphics.destroy();
+            }
+
+            if (this.player) {
+                this.matter.world.remove(this.player);
+            }
+    
         this.blurOverlay = this.add.rectangle(
             this.cameras.main.centerX, 
             this.cameras.main.centerY, 
@@ -1958,16 +1975,27 @@ class Usagiflap extends Phaser.Scene {
 
         const platformX = partWidth * lane + partWidth / 2;
 
+        const redShades = ['#8B0000', '#A52A2A', '#B22222', '#FF0000', '#FF4D4D', '#FF9999'];
+
         const missText = this.add.text(
             platformX, 
             platformY - 50,
             'MISS', 
             {
                 fontSize: '32px', 
-                fill: '#FF0000', 
+                fill: Phaser.Utils.Array.GetRandom(redShades), 
                 fontFamily: 'Courier New',
+                fontStyle: 'bold'
             }
         ).setOrigin(0.5);
+
+        const colorTween = this.time.addEvent({
+            delay: 100, 
+            callback: () => {
+                missText.setColor(Phaser.Utils.Array.GetRandom(redShades));
+            },
+            loop: true
+        });
 
         this.tweens.add({
             targets: missText,
@@ -1976,6 +2004,7 @@ class Usagiflap extends Phaser.Scene {
             duration: 1000,
             ease: 'Power1',
             onComplete: () => {
+                colorTween.remove();
                 missText.destroy();
             }
         });
@@ -2034,7 +2063,6 @@ class Usagiflap extends Phaser.Scene {
         this.music?.pause();
         this.time.timeScale = 0;
         this.matter.world.pause();
-
         this.blurOverlay = this.add.rectangle(
             this.cameras.main.centerX, 
             this.cameras.main.centerY, 
@@ -2092,6 +2120,15 @@ class Usagiflap extends Phaser.Scene {
         this.physics.pause();
         this.isPaused = true;
         this.pauseButton.destroy();
+        this.platforms.forEach(platform => {
+            if (platform) {
+                this.matter.world.remove(platform);
+            }
+        });
+
+        if (this.player) {
+            this.matter.world.remove(this.player);
+        }
         this.blurOverlay = this.add.rectangle(
             this.cameras.main.centerX, 
             this.cameras.main.centerY, 
@@ -2215,6 +2252,11 @@ class Usagiflap extends Phaser.Scene {
     }
     
     update() {
+            if (document.hidden) {
+                if (this.music && this.music.isPlaying && this.musicStarted && !this.isPaused) {
+                    this.pauseGame();
+                }
+            }
         
         if (this.isPaused) return;
     }
@@ -2660,51 +2702,357 @@ class Planetloop extends Phaser.Scene {
           { time: 112.5 * beatInterval, lane: 0 },
           { time: 113 * beatInterval, lane: 1 },
           { time: 113.5 * beatInterval, lane: 1 },
-          { time: 114 * beatInterval, lane: 3 },
+          { time: 114 * beatInterval, lane: 0 },
           { time: 114.5 * beatInterval, lane: 0 },
-          { time: 115 * beatInterval, lane: 3 },
-          { time: 115.5 * beatInterval, lane: 0 },
-          { time: 116 * beatInterval, lane: 1 },
-          { time: 116.5 * beatInterval, lane: 3 },
-          { time: 117 * beatInterval, lane: 0 },
+          { time: 115 * beatInterval, lane: 1 },
+          { time: 115.5 * beatInterval, lane: 1 },
+          { time: 116 * beatInterval, lane: 0 },
+          { time: 116.5 * beatInterval, lane: 0 },
+          { time: 117 * beatInterval, lane: 1 },
           { time: 117.5 * beatInterval, lane: 2 },
-          { time: 161.5 * beatInterval, lane: 3 },
-          { time: 162 * beatInterval, lane: 0 },
-          { time: 162.2 * beatInterval, lane: 1 },
-          { time: 162.5 * beatInterval, lane: 3 },
-          { time: 163 * beatInterval, lane: 0 },
-          { time: 163.2 * beatInterval, lane: 2 },
-          { time: 163.5 * beatInterval, lane: 3 },
-          { time: 164 * beatInterval, lane: 0 },
-          { time: 164.2 * beatInterval, lane: 1 },
-          { time: 164.5 * beatInterval, lane: 3 },
-          { time: 165 * beatInterval, lane: 0 },
-          { time: 165.2 * beatInterval, lane: 1 },
-          { time: 165.5 * beatInterval, lane: 3 },
-          { time: 166 * beatInterval, lane: 0 },
-          { time: 166.2 * beatInterval, lane: 2 },
-          { time: 166.5 * beatInterval, lane: 3 },
-          { time: 167 * beatInterval, lane: 0 },
-          { time: 167.2 * beatInterval, lane: 1 },
-          { time: 167.5 * beatInterval, lane: 3 },
-          { time: 168 * beatInterval, lane: 0 },
-          { time: 168.2 * beatInterval, lane: 1 },
-          { time: 168.5 * beatInterval, lane: 3 },
-          { time: 169 * beatInterval, lane: 0 },
-          { time: 169.2 * beatInterval, lane: 2 },
-          { time: 169.5 * beatInterval, lane: 3 },
+          { time: 118 * beatInterval, lane: 3 },
+          { time: 118.5 * beatInterval, lane: 2 },
+          { time: 119 * beatInterval, lane: 1 },
+          { time: 119.5 * beatInterval, lane: 1 },
+          { time: 120 * beatInterval, lane: 3 },
+          { time: 120.5 * beatInterval, lane: 3 },
+          { time: 121 * beatInterval, lane: 0 },
+          { time: 121.5 * beatInterval, lane: 0 },
+          { time: 122 * beatInterval, lane: 1 },
+          { time: 122.5 * beatInterval, lane: 1 },
+          { time: 123 * beatInterval, lane: 0 },
+          { time: 123.5 * beatInterval, lane: 0 },
+          { time: 124 * beatInterval, lane: 1 },
+          { time: 124.5 * beatInterval, lane: 1 },
+          { time: 125 * beatInterval, lane: 2 },
+          { time: 125.5 * beatInterval, lane: 2 },
+          { time: 126. * beatInterval, lane: 3 },
+          { time: 126.5 * beatInterval, lane: 2 },
+          { time: 127 * beatInterval, lane: 1 },
+          { time: 127.4 * beatInterval, lane: 3 },
+          { time: 127.7 * beatInterval, lane: 2 },
+          { time: 128 * beatInterval, lane: 1 },
+          { time: 128.3 * beatInterval, lane: 0 },
+          { time: 128.6 * beatInterval, lane: 0 },
+          { time: 128.9 * beatInterval, lane: 1 },
+          { time: 129.2 * beatInterval, lane: 2 },
+          { time: 129.5 * beatInterval, lane: 3 },
+          { time: 129.8 * beatInterval, lane: 3 },
+          { time: 130.1 * beatInterval, lane: 2 },
+          { time: 130.4 * beatInterval, lane: 1 },
+          { time: 130.7 * beatInterval, lane: 0 },
+          { time: 131 * beatInterval, lane: 0 },
+          { time: 131.3 * beatInterval, lane: 1 },
+          { time: 131.6 * beatInterval, lane: 2 },
+          { time: 131.9 * beatInterval, lane: 3 },
+          { time: 132.2 * beatInterval, lane: 3 },
+          { time: 132.5 * beatInterval, lane: 2 },
+          { time: 132.8 * beatInterval, lane: 1 },
+          { time: 133.1 * beatInterval, lane: 0 },
+          { time: 133.4 * beatInterval, lane: 0 },
+          { time: 133.7 * beatInterval, lane: 1 },
+          { time: 134 * beatInterval, lane: 2 },
+          { time: 134.2 * beatInterval, lane: 3 },
+          { time: 134.5 * beatInterval, lane: 3 },
+          { time: 134.8 * beatInterval, lane: 2 },
+          { time: 135.1 * beatInterval, lane: 1 },
+          { time: 135.4 * beatInterval, lane: 0 },
+          { time: 135.7 * beatInterval, lane: 0 },
+          { time: 136 * beatInterval, lane: 1 },
+          { time: 136.3 * beatInterval, lane: 2 },
+          { time: 136.6 * beatInterval, lane: 3 },
+          { time: 136.9 * beatInterval, lane: 3 },
+          { time: 137.2 * beatInterval, lane: 2 },
+          { time: 137.5 * beatInterval, lane: 1 },
+          { time: 137.8 * beatInterval, lane: 0 },
+          { time: 138.1 * beatInterval, lane: 0 },
+          { time: 138.4 * beatInterval, lane: 1 },
+          { time: 138.7 * beatInterval, lane: 2 },
+          { time: 139 * beatInterval, lane: 3 },
+          { time: 139.3 * beatInterval, lane: 3 },
+          { time: 139.6 * beatInterval, lane: 2 },
+          { time: 139.9 * beatInterval, lane: 1 },
+          { time: 140.2 * beatInterval, lane: 0 },
+          { time: 140.5 * beatInterval, lane: 0 },
+          { time: 140.8 * beatInterval, lane: 1 },
+          { time: 141.1 * beatInterval, lane: 2 },
+          { time: 141.4 * beatInterval, lane: 3 },
+          { time: 141.7 * beatInterval, lane: 3 },
+          { time: 142 * beatInterval, lane: 0 },
+          { time: 142.3 * beatInterval, lane: 0 },
+          { time: 142.6 * beatInterval, lane: 2 },
+          { time: 142.9 * beatInterval, lane: 3 },
+          { time: 143.2 * beatInterval, lane: 1 },
+          { time: 143.5 * beatInterval, lane: 0 },
+          { time: 143.8 * beatInterval, lane: 2 },
+          { time: 144.1 * beatInterval, lane: 3 },
+          { time: 144.4 * beatInterval, lane: 1 },
+          { time: 144.7 * beatInterval, lane: 0 },
+          { time: 145 * beatInterval, lane: 2 },
+          { time: 145.3 * beatInterval, lane: 3 },
+          { time: 145.6 * beatInterval, lane: 1 },
+          { time: 145.9 * beatInterval, lane: 0 },
+          { time: 146.2 * beatInterval, lane: 1 },
+          { time: 146.5 * beatInterval, lane: 0 },
+          { time: 146.8 * beatInterval, lane: 1 },
+          { time: 147.1 * beatInterval, lane: 0 },
+          { time: 147.4 * beatInterval, lane: 2 },
+          { time: 147.7 * beatInterval, lane: 3 },
+          { time: 148 * beatInterval, lane: 2 },
+          { time: 148.3 * beatInterval, lane: 3 },
+          { time: 148.6 * beatInterval, lane: 2 },
+          { time: 148.9 * beatInterval, lane: 3 },
+          { time: 149.2 * beatInterval, lane: 0 },
+          { time: 149.5 * beatInterval, lane: 1 },
+          { time: 149.8 * beatInterval, lane: 2 },
+          { time: 150.1 * beatInterval, lane: 3 },
+          { time: 150.4 * beatInterval, lane: 0 },
+          { time: 150.7 * beatInterval, lane: 1 },
+          { time: 151 * beatInterval, lane: 2 },
+          { time: 151.3 * beatInterval, lane: 3 },
+          { time: 151.6 * beatInterval, lane: 0 },
+          { time: 151.9 * beatInterval, lane: 1 },
+          { time: 152.2 * beatInterval, lane: 2 },
+          { time: 152.5 * beatInterval, lane: 3 },
+          { time: 152.8 * beatInterval, lane: 0 },
+          { time: 153.1 * beatInterval, lane: 1 },
+          { time: 153.4 * beatInterval, lane: 2 },
+          { time: 153.7 * beatInterval, lane: 3 },
+          { time: 154 * beatInterval, lane: 0 },
+          { time: 154.3 * beatInterval, lane: 1 },
+          { time: 154.6 * beatInterval, lane: 2 },
+          { time: 154.9 * beatInterval, lane: 3 },
+          { time: 155.2 * beatInterval, lane: 0 },
+          { time: 155.5 * beatInterval, lane: 0 },
+          { time: 155.8 * beatInterval, lane: 0 },
+          { time: 156.1 * beatInterval, lane: 0 },
+          { time: 156.4 * beatInterval, lane: 0 },
+          { time: 156.7 * beatInterval, lane: 2 },
+          { time: 157 * beatInterval, lane: 3 },
+          { time: 157.5 * beatInterval, lane: 0 },
+          { time: 158 * beatInterval, lane: 1 },
+          { time: 158.5 * beatInterval, lane: 0 },
+          { time: 159 * beatInterval, lane: 2 },
+          { time: 159.5 * beatInterval, lane: 0 },
+          { time: 160 * beatInterval, lane: 3 },
+          { time: 160.5 * beatInterval, lane: 1 },
+          { time: 161 * beatInterval, lane: 3 },
+          { time: 161.5 * beatInterval, lane: 0 },
+          { time: 162 * beatInterval, lane: 2 },
+          { time: 162.5 * beatInterval, lane: 0 },
+          { time: 163 * beatInterval, lane: 3 },
+          { time: 163.5 * beatInterval, lane: 1 },
+          { time: 164 * beatInterval, lane: 3 },
+          { time: 164.5 * beatInterval, lane: 0 },
+          { time: 165 * beatInterval, lane: 2 },
+          { time: 165.5 * beatInterval, lane: 0 },
+          { time: 166 * beatInterval, lane: 3 },
+          { time: 166.5 * beatInterval, lane: 1 },
+          { time: 167 * beatInterval, lane: 3 },
+          { time: 167.5 * beatInterval, lane: 0 },
+          { time: 168 * beatInterval, lane: 2 },
+          { time: 168.5 * beatInterval, lane: 0 },
+          { time: 169 * beatInterval, lane: 3 },
+          { time: 169.5 * beatInterval, lane: 1 },
           { time: 170 * beatInterval, lane: 0 },
-          { time: 170.2 * beatInterval, lane: 2 },
           { time: 170.5 * beatInterval, lane: 3 },
           { time: 171 * beatInterval, lane: 0 },
-          { time: 171.2 * beatInterval, lane: 1 },
-          { time: 171.5 * beatInterval, lane: 3 },
+          { time: 171.5 * beatInterval, lane: 2 },
           { time: 172 * beatInterval, lane: 3 },
-          { time: 172.2 * beatInterval, lane: 1 },
-          { time: 172.5 * beatInterval, lane: 0 },
-          { time: 173 * beatInterval, lane: 2 },
-          { time: 174 * beatInterval, lane: 2 },
-          { time: 175 * beatInterval, lane: 2 },
+          { time: 173.5 * beatInterval, lane: 0 },
+          { time: 174 * beatInterval, lane: 0 },
+          { time: 174.5 * beatInterval, lane: 1 },
+          { time: 175 * beatInterval, lane: 1 },
+          { time: 175.5 * beatInterval, lane: 0 },
+          { time: 176 * beatInterval, lane: 0 },
+          { time: 176.5 * beatInterval, lane: 2 },
+          { time: 177 * beatInterval, lane: 2 },
+          { time: 177.5 * beatInterval, lane: 0 },
+          { time: 178 * beatInterval, lane: 0 },
+          { time: 178.5 * beatInterval, lane: 3 },
+          { time: 179 * beatInterval, lane: 3 },
+          { time: 179.5 * beatInterval, lane: 0 },
+          { time: 180 * beatInterval, lane: 0 },
+          { time: 180.5 * beatInterval, lane: 3 },
+          { time: 181 * beatInterval, lane: 3 },
+          { time: 181.5 * beatInterval, lane: 0 },
+          { time: 182 * beatInterval, lane: 0 },
+          { time: 182.5 * beatInterval, lane: 2 },
+          { time: 183 * beatInterval, lane: 2 },
+          { time: 183.5 * beatInterval, lane: 0 },
+          { time: 184 * beatInterval, lane: 0 },
+          { time: 184.5 * beatInterval, lane: 1 },
+          { time: 185 * beatInterval, lane: 1 },
+          { time: 185.5 * beatInterval, lane: 0 },
+          { time: 186 * beatInterval, lane: 0 },
+          { time: 186.5 * beatInterval, lane: 2 },
+          { time: 187 * beatInterval, lane: 3 },
+          { time: 187.5 * beatInterval, lane: 3 },
+          { time: 188 * beatInterval, lane: 2 },
+          { time: 188.5 * beatInterval, lane: 2 },
+          { time: 189 * beatInterval, lane: 3 },
+          { time: 189.5 * beatInterval, lane: 3 },
+          { time: 190 * beatInterval, lane: 2 },
+          { time: 190.5 * beatInterval, lane: 2 },
+          { time: 191 * beatInterval, lane: 3 },
+          { time: 191.5 * beatInterval, lane: 3 },
+          { time: 192 * beatInterval, lane: 2 },
+          { time: 192.5 * beatInterval, lane: 2 },
+          { time: 193 * beatInterval, lane: 3 },
+          { time: 193.5 * beatInterval, lane: 3 },
+          { time: 194 * beatInterval, lane: 2 },
+          { time: 194.5 * beatInterval, lane: 2 },
+          { time: 195 * beatInterval, lane: 3 },
+          { time: 195.5 * beatInterval, lane: 3 },
+          { time: 196 * beatInterval, lane: 2 },
+          { time: 196.5 * beatInterval, lane: 2 },
+          { time: 197 * beatInterval, lane: 3 },
+          { time: 197.5 * beatInterval, lane: 3 },
+          { time: 198 * beatInterval, lane: 2 },
+          { time: 198.5 * beatInterval, lane: 2 },
+          { time: 199 * beatInterval, lane: 3 },
+          { time: 199.5 * beatInterval, lane: 3 },
+          { time: 200 * beatInterval, lane: 2 },
+          { time: 200.5 * beatInterval, lane: 2 },
+          { time: 201 * beatInterval, lane: 3 },
+          { time: 201.5 * beatInterval, lane: 3 },
+          { time: 202 * beatInterval, lane: 2 },
+          { time: 202.5 * beatInterval, lane: 2 },
+          { time: 203 * beatInterval, lane: 3 },
+          { time: 203.5 * beatInterval, lane: 2 },
+          { time: 204 * beatInterval, lane: 1 },
+          { time: 204.5 * beatInterval, lane: 2 },
+          { time: 205 * beatInterval, lane: 3 },
+          { time: 205.5 * beatInterval, lane: 0 },
+          { time: 205 * beatInterval, lane: 1 },
+          { time: 205.5 * beatInterval, lane: 0 },
+          { time: 206 * beatInterval, lane: 1 },
+          { time: 206.5 * beatInterval, lane: 2 },
+          { time: 207 * beatInterval, lane: 2 },
+          { time: 207.5 * beatInterval, lane: 1 },
+          { time: 208 * beatInterval, lane: 0 },
+          { time: 208.5 * beatInterval, lane: 1 },
+          { time: 209 * beatInterval, lane: 2 },
+          { time: 209.5 * beatInterval, lane: 2 },
+          { time: 210 * beatInterval, lane: 2 },
+          { time: 210.5 * beatInterval, lane: 0 },
+          { time: 211 * beatInterval, lane: 1 },
+          { time: 211.5 * beatInterval, lane: 0 },
+          { time: 212 * beatInterval, lane: 1 },
+          { time: 212.5 * beatInterval, lane: 0 },
+          { time: 213 * beatInterval, lane: 1 },
+          { time: 213.5 * beatInterval, lane: 0 },
+          { time: 214 * beatInterval, lane: 1 },
+          { time: 214.5 * beatInterval, lane: 2 },
+          { time: 215 * beatInterval, lane: 2 },
+          { time: 215.5 * beatInterval, lane: 1 },
+          { time: 216 * beatInterval, lane: 0 },
+          { time: 216.5 * beatInterval, lane: 1 },
+          { time: 217 * beatInterval, lane: 2 },
+          { time: 217.5 * beatInterval, lane: 2 },
+          { time: 218 * beatInterval, lane: 2 },
+          { time: 218.5 * beatInterval, lane: 3 },
+          { time: 219 * beatInterval, lane: 2 },
+          { time: 219.5 * beatInterval, lane: 3 },
+          { time: 220 * beatInterval, lane: 2 },
+          { time: 220.5 * beatInterval, lane: 3 },
+          { time: 221 * beatInterval, lane: 2 },
+          { time: 221.5 * beatInterval, lane: 3 },
+          { time: 222 * beatInterval, lane: 2 },
+          { time: 222.5 * beatInterval, lane: 2 },
+          { time: 223 * beatInterval, lane: 1 },
+          { time: 223.5 * beatInterval, lane: 0 },
+          { time: 224 * beatInterval, lane: 1 },
+          { time: 224.5 * beatInterval, lane: 2 },
+          { time: 225 * beatInterval, lane: 2 },
+          { time: 225.5 * beatInterval, lane: 2 },
+          { time: 226 * beatInterval, lane: 0 },
+          { time: 226.5 * beatInterval, lane: 1 },
+          { time: 227 * beatInterval, lane: 0 },
+          { time: 227.5 * beatInterval, lane: 1 },
+          { time: 228 * beatInterval, lane: 0 },
+          { time: 228.5 * beatInterval, lane: 1 },
+          { time: 229 * beatInterval, lane: 0 },
+          { time: 229.5 * beatInterval, lane: 2 },
+          { time: 230 * beatInterval, lane: 2 },
+          { time: 230.5 * beatInterval, lane: 1 },
+          { time: 231 * beatInterval, lane: 0 },
+          { time: 231.5 * beatInterval, lane: 1 },
+          { time: 232 * beatInterval, lane: 2 },
+          { time: 232.5 * beatInterval, lane: 2 },
+          { time: 233 * beatInterval, lane: 2 },
+          { time: 233.5 * beatInterval, lane: 3 },
+          { time: 234 * beatInterval, lane: 2 },
+          { time: 234.5 * beatInterval, lane: 3 },
+          { time: 235 * beatInterval, lane: 2 },
+          { time: 235.5 * beatInterval, lane: 3 },
+          { time: 236 * beatInterval, lane: 2 },
+          { time: 236.5 * beatInterval, lane: 3 },
+          { time: 237 * beatInterval, lane: 2 },
+          { time: 237.5 * beatInterval, lane: 2 },
+          { time: 238 * beatInterval, lane: 1 },
+          { time: 238.5 * beatInterval, lane: 0 },
+          { time: 239 * beatInterval, lane: 1 },
+          { time: 239.5 * beatInterval, lane: 2 },
+          { time: 240 * beatInterval, lane: 2 },
+          { time: 240.5 * beatInterval, lane: 2 },
+          { time: 241 * beatInterval, lane: 0 },
+          { time: 241.5 * beatInterval, lane: 1 },
+          { time: 242 * beatInterval, lane: 0 },
+          { time: 242.5 * beatInterval, lane: 1 },
+          { time: 243 * beatInterval, lane: 0 },
+          { time: 243.5 * beatInterval, lane: 1 },
+          { time: 244 * beatInterval, lane: 2 },
+          { time: 244.5 * beatInterval, lane: 2 },
+          { time: 245 * beatInterval, lane: 1 },
+          { time: 245.5 * beatInterval, lane: 0 },
+          { time: 246 * beatInterval, lane: 1 },
+          { time: 246.5 * beatInterval, lane: 2 },
+          { time: 247 * beatInterval, lane: 2 },
+          { time: 247.5 * beatInterval, lane: 2 },
+          { time: 248 * beatInterval, lane: 3 },
+          { time: 248.5 * beatInterval, lane: 2 },
+          { time: 249 * beatInterval, lane: 3 },
+          { time: 249.5 * beatInterval, lane: 2 },
+          { time: 250 * beatInterval, lane: 3 },
+          { time: 250.5 * beatInterval, lane: 2 },
+          { time: 251 * beatInterval, lane: 3 },
+          { time: 251.5 * beatInterval, lane: 2 },
+          { time: 252 * beatInterval, lane: 2 },
+          { time: 252.5 * beatInterval, lane: 2 },
+          { time: 253 * beatInterval, lane: 1 },
+          { time: 253.5 * beatInterval, lane: 0 },
+          { time: 254 * beatInterval, lane: 1 },
+          { time: 254.5 * beatInterval, lane: 2 },
+          { time: 255 * beatInterval, lane: 2 },
+          { time: 255.5 * beatInterval, lane: 2 },
+          { time: 256 * beatInterval, lane: 0 },
+          { time: 256.5 * beatInterval, lane: 1 },
+          { time: 257 * beatInterval, lane: 0 },
+          { time: 257.5 * beatInterval, lane: 1 },
+          { time: 258 * beatInterval, lane: 0 },
+          { time: 258.5 * beatInterval, lane: 1 },
+          { time: 259 * beatInterval, lane: 0 },
+          { time: 259.5 * beatInterval, lane: 1 },
+          { time: 260 * beatInterval, lane: 2 },
+          { time: 260.5 * beatInterval, lane: 2 },
+          { time: 261 * beatInterval, lane: 1 },
+          { time: 261.5 * beatInterval, lane: 0 },
+          { time: 262 * beatInterval, lane: 1 },
+          { time: 262.5 * beatInterval, lane: 2 },
+          { time: 263 * beatInterval, lane: 2 },
+          { time: 263.5 * beatInterval, lane: 2 },
+          { time: 264 * beatInterval, lane: 3 },
+          { time: 264.5 * beatInterval, lane: 2 },
+          { time: 265 * beatInterval, lane: 3 },
+          { time: 265.5 * beatInterval, lane: 2 },
+          { time: 266 * beatInterval, lane: 3 },
+          { time: 266.5 * beatInterval, lane: 2 },
+          { time: 267 * beatInterval, lane: 1 },
+          { time: 270 * beatInterval, lane: 3 },
+          { time: 270.2 * beatInterval, lane: 3 },
+          { time: 270.5 * beatInterval, lane: 2 },
+          { time: 270.7 * beatInterval, lane: 2 }, 
         ];
 
         this.notes = [];
@@ -2769,6 +3117,24 @@ class Planetloop extends Phaser.Scene {
             this.music.stop();
         }
 
+        if (this.platformGraphics) {
+            this.platformGraphics.destroy();
+        }
+
+        this.platforms.forEach(platform => {
+            if (platform) {
+                this.matter.world.remove(platform);
+            }
+        });
+
+        if (this.playerGraphics) {
+            this.playerGraphics.destroy();
+        }
+
+        if (this.player) {
+            this.matter.world.remove(this.player);
+        }
+        
         this.blurOverlay = this.add.rectangle(
             this.cameras.main.centerX, 
             this.cameras.main.centerY, 
@@ -3105,16 +3471,27 @@ class Planetloop extends Phaser.Scene {
 
         const platformX = partWidth * lane + partWidth / 2;
 
+        const redShades = ['#8B0000', '#A52A2A', '#B22222', '#FF0000', '#FF4D4D', '#FF9999'];
+
         const missText = this.add.text(
             platformX, 
             platformY - 50,
             'MISS', 
             {
                 fontSize: '32px', 
-                fill: '#FF0000', 
-                fontFamily: 'Courier New',
+                fill: Phaser.Utils.Array.GetRandom(redShades), 
+            fontFamily: 'Courier New',
+            fontStyle: 'bold'
             }
         ).setOrigin(0.5);
+
+        const colorTween = this.time.addEvent({
+            delay: 100, 
+            callback: () => {
+                missText.setColor(Phaser.Utils.Array.GetRandom(redShades));
+            },
+            loop: true
+        });
 
         this.tweens.add({
             targets: missText,
@@ -3123,6 +3500,7 @@ class Planetloop extends Phaser.Scene {
             duration: 1000,
             ease: 'Power1',
             onComplete: () => {
+                colorTween.remove();
                 missText.destroy();
             }
         });
@@ -3243,6 +3621,15 @@ class Planetloop extends Phaser.Scene {
         this.physics.pause();
         this.isPaused = true;
         this.pauseButton.destroy();
+        this.platforms.forEach(platform => {
+            if (platform) {
+                this.matter.world.remove(platform);
+            }
+        });
+
+        if (this.player) {
+            this.matter.world.remove(this.player);
+        }
         this.blurOverlay = this.add.rectangle(
             this.cameras.main.centerX, 
             this.cameras.main.centerY, 
@@ -3303,13 +3690,13 @@ class Planetloop extends Phaser.Scene {
 
     calculateRank() {
 
-        if (this.score >= 250) {
+        if (this.score >= 580) {
             return 'S';
-        } else if (this.score >= 200) {
+        } else if (this.score >= 500) {
             return 'A';
-        } else if (this.score >= 180) {
+        } else if (this.score >= 420) {
             return 'B';
-        } else if (this.score >= 155) {
+        } else if (this.score >= 320) {
             return 'C';
         } else {
             return 'D';
