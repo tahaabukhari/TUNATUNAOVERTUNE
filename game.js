@@ -2924,8 +2924,6 @@ class Planetloop extends Phaser.Scene {
           { time: 204.5 * beatInterval, lane: 2 },
           { time: 205 * beatInterval, lane: 3 },
           { time: 205.5 * beatInterval, lane: 0 },
-          { time: 205 * beatInterval, lane: 1 },
-          { time: 205.5 * beatInterval, lane: 0 },
           { time: 206 * beatInterval, lane: 1 },
           { time: 206.5 * beatInterval, lane: 2 },
           { time: 207 * beatInterval, lane: 2 },
