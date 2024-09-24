@@ -2288,7 +2288,12 @@ class Counting extends Phaser.Scene {
                 }
             }
         });
-        this.laneColors = [0x00b8ff, 0x32cd32, 0x00719c, 0x5500FF];
+        this.laneColors = [
+                0x8B0000,
+                0xFFD700,
+                0x4682B4,
+                0x006400 
+            ];
         this.isPaused = false;
         this.pauseMenu = null;
         this.music = null;
@@ -2326,10 +2331,10 @@ class Counting extends Phaser.Scene {
         this.load.audio('ARANKSOUND', 'Aranksound.mp3');
         this.load.audio('gamemusic', 'Level0-track.mp3');
         this.load.audio('LevelFailed', 'LEVELFAILED.mp3');
-        this.load.image('characterImage1', 'usagi1.png');
-        this.load.image('characterImage2', 'usagi2.png');
-        this.load.image('characterImage3', 'usagi3.png');
-        this.load.image('characterImage4', 'usagi4.png');
+        this.load.image('characterImage1', 'kazuma1.png');
+        this.load.image('characterImage2', 'kazuma2.png');
+        this.load.image('characterImage3', 'kazuma3.png');
+        this.load.image('characterImage4', 'kazuma4.png');
         this.load.image('pausebutton', 'pausebutton.png');
         this.load.image('exitbutton', 'exitbutton.png');
         this.load.image('unpausebutton', 'unpausebutton.png');
@@ -2346,13 +2351,14 @@ class Counting extends Phaser.Scene {
         this.isPaused = false;
         this.time.timeScale = 1;
         this.matter.world.resume();
-
+        this.backgroundUpdateNeeded = false;
+        
         if (this.music && this.music.isPlaying) {
             this.music.stop();
         }
 
         this.musicStarted = false;
-
+        
         const platformWidth = this.cameras.main.width / 1.5;
         const platformHeight = 20;
         const platformY = this.cameras.main.height - 100;
@@ -2439,6 +2445,8 @@ class Counting extends Phaser.Scene {
         });
 
         this.score = 0;
+        this.noteCount = 0;
+        this.bchangeflag = false;
         this.moveMade = false;
 
         this.scoreText = this.add.text(25, 10, 'Score: ', { fontSize: '24px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif'});
@@ -2448,7 +2456,7 @@ class Counting extends Phaser.Scene {
         this.streakNumber = this.add.text(140, 58, '0', { fontSize: '30px', fill: '#FFF', fontFamily: 'Comic Sans MS' });
 
 
-        this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.3);
+        this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.35);
 
         const pauseButton = this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton')
             .setScale(0.3);
@@ -2790,18 +2798,18 @@ class Counting extends Phaser.Scene {
           { time: 317 * beatInterval, lane: 0 },
           { time: 318 * beatInterval, lane: 0 },
           { time: 319 * beatInterval, lane: 0 }
-        ];test
+        ];
         this.notes = [];
         this.highestStreak = 0;
         this.currentStreak = 0;
-
         this.beatmap.forEach((note, index) => {
             this.time.addEvent({
                 delay: note.time,
                 callback: () => {
                     const spawnedNote = this.spawnNote(note);
                     this.notes.push(spawnedNote);
-
+                    this.noteCount++;
+                    
                     if (!this.musicStarted && index === 0) {
 
                         this.time.delayedCall(2000, () => {
@@ -3030,6 +3038,7 @@ class Counting extends Phaser.Scene {
             this.updateScoreAndStreak();
             this.increaseRedBar();
             this.noteScored = true;
+            this.bchangeflag = true;
             this.createLanePop(lane);
 
             if (!this.musicStarted && note === this.beatmap[0]) {
@@ -3048,8 +3057,8 @@ class Counting extends Phaser.Scene {
     }
 
     playerpop() {
-        const originalScale = 0.3; 
-        const popScale = 0.31;
+        const originalScale = 0.35; 
+        const popScale = 0.36;
 
         this.tweens.add({
             targets: this.character,
@@ -3419,13 +3428,13 @@ class Counting extends Phaser.Scene {
 
     calculateRank() {
 
-        if (this.score >= 250) {
+        if (this.score >= 300) {
             return 'S';
-        } else if (this.score >= 200) {
+        } else if (this.score >= 240) {
             return 'A';
-        } else if (this.score >= 180) {
+        } else if (this.score >= 200) {
             return 'B';
-        } else if (this.score >= 155) {
+        } else if (this.score >= 170) {
             return 'C';
         } else {
             return 'D';
@@ -3481,15 +3490,40 @@ class Counting extends Phaser.Scene {
         });
     }
 
+    changeBackground() {
+        const backgroundcolors = [
+                    0xA8D7F5,
+                    0xE5C9B6,
+                    0x87C5B3,
+                    0xD7BDE2,
+                    0x7BAFCC,
+                    0xC5C3C8
+        ];
+
+        let backColor = Phaser.Utils.Array.GetRandom(backgroundcolors);
+        let backColorHex = `#${backColor.toString(16).padStart(6, '0')}`;
+        this.cameras.main.setBackgroundColor(backColorHex);
+        this.backgroundUpdateNeeded = false;
+    }
+    
     update() {
             if (document.hidden) {
                 if (this.music && this.music.isPlaying && this.musicStarted && !this.isPaused) {
                     this.pauseGame();
                 }
             }
+        
+        if (this.noteCount >= 33 && this.noteCount <= 284) {
+                if (this.bchangeflag) {
+                    this.changeBackground();
+                    this.bchangeflag = false;
+                }
+            } else if (this.noteCount > 286) {
+                this.cameras.main.setBackgroundColor(0x000000);
+            }
 
-        if (this.isPaused) return;
-    }
+            if (this.isPaused) return;
+        }
 }
 
 class Planetloop extends Phaser.Scene {
