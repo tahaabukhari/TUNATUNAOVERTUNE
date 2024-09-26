@@ -132,8 +132,7 @@ class TitleScene extends Phaser.Scene {
             'CHATGPT HELP ME',
             'play when??',
             'better then before!',
-            'its rly good!',
-            'rythm game!?!'
+            'rythm gaem'
         ];
 
         const randomSubtext = Phaser.Utils.Array.GetRandom(epicgamermotivationalsubtitlelistthing);
