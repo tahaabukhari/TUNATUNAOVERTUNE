@@ -110,11 +110,17 @@ class TitleScene extends Phaser.Scene {
             this.showInfo(title, playButton, optionsButton, creditsButton);
         });
         
-        const subtextOptions = [
+        const epicgamermotivationalsubtitlelistthing = [
             'waow grape game!',
             'moosic gaem',
             'nihon banzai!!',
             'INDEV',
+            'BARISH KYUN NAI A RHI',
+            'bruh september mein 40*C',
+            'mujhe bhi javascript ati he \n(cool emoji)',
+            'barish ata he to pani ata he',
+            '2 null pointers!',
+            '4 NULL POINTERS!?',
             'bit bugged',
             'MINECRAFT TEXT',
             'version 0.4!!!',
@@ -130,7 +136,7 @@ class TitleScene extends Phaser.Scene {
             'rythm game!?!'
         ];
 
-        const randomSubtext = Phaser.Utils.Array.GetRandom(subtextOptions);
+        const randomSubtext = Phaser.Utils.Array.GetRandom(epicgamermotivationalsubtitlelistthing);
 
         this.subtext = this.add.text(
             this.cameras.main.centerX + 200, 
@@ -147,6 +153,12 @@ class TitleScene extends Phaser.Scene {
         .setAngle(20)
         .setShadow(2, 2, '#000', 2, true, true);
 
+        const maxWidth = this.cameras.main.width - 40;
+        while (this.subtext.width > maxWidth) {
+            let currentFontSize = parseInt(this.subtext.style.fontSize);
+            this.subtext.setFontSize(currentFontSize - 1);
+        }
+        
         this.tweens.add({
             targets: this.subtext,
             scaleX: 1.2,
@@ -1773,7 +1785,7 @@ class Usagiflap extends Phaser.Scene {
 
         this.tweens.add({
             targets: note,
-            y: this.cameras.main.height - 100,
+            y: this.player.position.y,
             duration: 2000,
             paused: this.isPaused,
             onComplete: () => {
@@ -1801,9 +1813,10 @@ class Usagiflap extends Phaser.Scene {
         const platformWidth = this.cameras.main.width / 1.5;
         const partWidth = platformWidth / 4;
         const playerX = this.player.position.x;
+        const playerY = this.player.position.y;
         const playerLane = Math.floor(playerX / partWidth);
 
-        if (playerLane === lane && note.y >= this.cameras.main.height - 100) {
+        if (playerLane === lane && note.y >= playerY) {
             this.score++;
             this.playerpop();
             this.currentStreak++;
@@ -1981,48 +1994,70 @@ class Usagiflap extends Phaser.Scene {
 
         return path;
     }
-    
+
     createMissEffect(lane) {
-        const platformWidth = this.cameras.main.width / 1.5;
-        const partWidth = platformWidth / 4;
-        const platformY = this.cameras.main.height - 100;
+            const platformWidth = this.cameras.main.width / 1.5;
+            const partWidth = platformWidth / 4;;
+            const platformY = this.cameras.main.height - 100;
+            const platformX = partWidth * lane;
+            const redShades = ['#8B0000', '#A52A2A', '#B22222', '#FF0000', '#FF4D4D', '#FF9999'];
 
-        const platformX = partWidth * lane + partWidth / 2;
+            const missText = this.add.text(
+                platformX + partWidth / 2,
+                platformY - 50,
+                'MISS', 
+                {
+                    fontSize: '32px', 
+                    fill: Phaser.Utils.Array.GetRandom(redShades), 
+                    fontFamily: 'Courier New',
+                    fontStyle: 'bold'
+                }
+            ).setOrigin(0.5);
 
-        const redShades = ['#8B0000', '#A52A2A', '#B22222', '#FF0000', '#FF4D4D', '#FF9999'];
+            const colorTween = this.time.addEvent({
+                delay: 100, 
+                callback: () => {
+                    missText.setColor(Phaser.Utils.Array.GetRandom(redShades));
+                },
+                loop: true
+            });
 
-        const missText = this.add.text(
-            platformX, 
-            platformY - 50,
-            'MISS', 
-            {
-                fontSize: '32px', 
-                fill: Phaser.Utils.Array.GetRandom(redShades), 
-                fontFamily: 'Courier New',
-                fontStyle: 'bold'
+            this.tweens.add({
+                targets: missText,
+                y: platformY - 100,
+                alpha: 0,
+                duration: 1000,
+                ease: 'Power1',
+                onComplete: () => {
+                    colorTween.remove();
+                    missText.destroy();
+                }
+            });
+
+            const platformRect = this.add.rectangle(platformX + partWidth / 2, platformY, partWidth, 15, Phaser.Utils.Array.GetRandom(redShades))
+                    .setOrigin(0.5)
+                    .setAlpha(0);
+        
+            const colorTweenRect = this.time.addEvent({
+                    delay: 50,
+                    callback: () => {
+                    const randomColor = Phaser.Display.Color.HexStringToColor(Phaser.Utils.Array.GetRandom(redShades)).color;
+                    platformRect.setFillStyle(randomColor);
+                    },
+                    loop: true
+                });
+
+                this.tweens.add({
+                    targets: platformRect,
+                    alpha: 0.9,
+                    duration: 300,
+                    yoyo: true,
+                    onComplete: () => {
+                        colorTweenRect.remove();
+                        platformRect.destroy();
+                    }
+                });
             }
-        ).setOrigin(0.5);
-
-        const colorTween = this.time.addEvent({
-            delay: 100, 
-            callback: () => {
-                missText.setColor(Phaser.Utils.Array.GetRandom(redShades));
-            },
-            loop: true
-        });
-
-        this.tweens.add({
-            targets: missText,
-            y: platformY - 100,
-            alpha: 0,
-            duration: 1000,
-            ease: 'Power1',
-            onComplete: () => {
-                colorTween.remove();
-                missText.destroy();
-            }
-        });
-    }
     
     updateScoreAndStreak() {
         this.scoreNumber.setText(this.score);
@@ -2997,7 +3032,7 @@ class Counting extends Phaser.Scene {
 
         this.tweens.add({
             targets: note,
-            y: this.cameras.main.height - 100,
+            y: this.player.position.y,
             duration: 2000,
             paused: this.isPaused,
             onComplete: () => {
@@ -3027,7 +3062,7 @@ class Counting extends Phaser.Scene {
         const playerX = this.player.position.x;
         const playerLane = Math.floor(playerX / partWidth);
 
-        if (playerLane === lane && note.y >= this.cameras.main.height - 100) {
+        if (playerLane === lane && note.y >= this.player.position.y) {
             this.score++;
             this.playerpop();
             this.currentStreak++;
@@ -3208,43 +3243,65 @@ class Counting extends Phaser.Scene {
     }
 
     createMissEffect(lane) {
-        const platformWidth = this.cameras.main.width / 1.5;
-        const partWidth = platformWidth / 4;
-        const platformY = this.cameras.main.height - 100;
+    const platformWidth = this.cameras.main.width / 1.5;
+    const partWidth = platformWidth / 4;;
+    const platformY = this.cameras.main.height - 100;
+    const platformX = partWidth * lane;
+    const redShades = ['#8B0000', '#A52A2A', '#B22222', '#FF0000', '#FF4D4D', '#FF9999'];
 
-        const platformX = partWidth * lane + partWidth / 2;
+    const missText = this.add.text(
+        platformX + partWidth / 2,
+        platformY - 50,
+        'MISS', 
+        {
+            fontSize: '32px', 
+            fill: Phaser.Utils.Array.GetRandom(redShades), 
+            fontFamily: 'Courier New',
+            fontStyle: 'bold'
+        }
+    ).setOrigin(0.5);
 
-        const redShades = ['#8B0000', '#A52A2A', '#B22222', '#FF0000', '#FF4D4D', '#FF9999'];
+    const colorTween = this.time.addEvent({
+        delay: 100, 
+        callback: () => {
+            missText.setColor(Phaser.Utils.Array.GetRandom(redShades));
+        },
+        loop: true
+    });
 
-        const missText = this.add.text(
-            platformX, 
-            platformY - 50,
-            'MISS', 
-            {
-                fontSize: '32px', 
-                fill: Phaser.Utils.Array.GetRandom(redShades), 
-                fontFamily: 'Courier New',
-                fontStyle: 'bold'
-            }
-        ).setOrigin(0.5);
+    this.tweens.add({
+        targets: missText,
+        y: platformY - 100,
+        alpha: 0,
+        duration: 1000,
+        ease: 'Power1',
+        onComplete: () => {
+            colorTween.remove();
+            missText.destroy();
+        }
+    });
 
-        const colorTween = this.time.addEvent({
-            delay: 100, 
+    const platformRect = this.add.rectangle(platformX + partWidth / 2, platformY, partWidth, 15, Phaser.Utils.Array.GetRandom(redShades))
+            .setOrigin(0.5)
+            .setAlpha(0);
+
+    const colorTweenRect = this.time.addEvent({
+            delay: 50,
             callback: () => {
-                missText.setColor(Phaser.Utils.Array.GetRandom(redShades));
+            const randomColor = Phaser.Display.Color.HexStringToColor(Phaser.Utils.Array.GetRandom(redShades)).color;
+            platformRect.setFillStyle(randomColor);
             },
             loop: true
         });
 
         this.tweens.add({
-            targets: missText,
-            y: platformY - 100,
-            alpha: 0,
-            duration: 1000,
-            ease: 'Power1',
+            targets: platformRect,
+            alpha: 0.9,
+            duration: 300,
+            yoyo: true,
             onComplete: () => {
-                colorTween.remove();
-                missText.destroy();
+                colorTweenRect.remove();
+                platformRect.destroy();
             }
         });
     }
@@ -4311,10 +4368,10 @@ class Planetloop extends Phaser.Scene {
           { time: 266 * beatInterval, lane: 3 },
           { time: 266.5 * beatInterval, lane: 2 },
           { time: 267 * beatInterval, lane: 1 },
-          { time: 270 * beatInterval, lane: 3 },
-          { time: 270.2 * beatInterval, lane: 3 },
-          { time: 270.5 * beatInterval, lane: 2 },
-          { time: 270.7 * beatInterval, lane: 2 }, 
+          { time: 270 * beatInterval, lane: 2 },
+          { time: 270.2 * beatInterval, lane: 2 },
+          { time: 270.5 * beatInterval, lane: 3 },
+          { time: 270.7 * beatInterval, lane: 3 }, 
         ];
 
         this.notes = [];
@@ -4516,7 +4573,7 @@ class Planetloop extends Phaser.Scene {
 
         this.tweens.add({
             targets: note,
-            y: this.cameras.main.height - 100,
+            y: this.player.position.y,
             duration: 2000,
             paused: this.isPaused,
             onComplete: () => {
@@ -4546,7 +4603,7 @@ class Planetloop extends Phaser.Scene {
         const playerX = this.player.position.x;
         const playerLane = Math.floor(playerX / partWidth);
 
-        if (playerLane === lane && note.y >= this.cameras.main.height - 100) {
+        if (playerLane === lane && note.y >= this.player.position.y) {
             this.score++;
             this.playerpop();
             this.currentStreak++;
@@ -4727,43 +4784,65 @@ class Planetloop extends Phaser.Scene {
     }
 
     createMissEffect(lane) {
-        const platformWidth = this.cameras.main.width / 1.5;
-        const partWidth = platformWidth / 4;
-        const platformY = this.cameras.main.height - 100;
+    const platformWidth = this.cameras.main.width / 1.5;
+    const partWidth = platformWidth / 4;;
+    const platformY = this.cameras.main.height - 100;
+    const platformX = partWidth * lane;
+    const redShades = ['#8B0000', '#A52A2A', '#B22222', '#FF0000', '#FF4D4D', '#FF9999'];
 
-        const platformX = partWidth * lane + partWidth / 2;
-
-        const redShades = ['#8B0000', '#A52A2A', '#B22222', '#FF0000', '#FF4D4D', '#FF9999'];
-
-        const missText = this.add.text(
-            platformX, 
-            platformY - 50,
-            'MISS', 
-            {
-                fontSize: '32px', 
-                fill: Phaser.Utils.Array.GetRandom(redShades), 
+    const missText = this.add.text(
+        platformX + partWidth / 2,
+        platformY - 50,
+        'MISS', 
+        {
+            fontSize: '32px', 
+            fill: Phaser.Utils.Array.GetRandom(redShades), 
             fontFamily: 'Courier New',
             fontStyle: 'bold'
-            }
-        ).setOrigin(0.5);
+        }
+    ).setOrigin(0.5);
 
-        const colorTween = this.time.addEvent({
-            delay: 100, 
+    const colorTween = this.time.addEvent({
+        delay: 100, 
+        callback: () => {
+            missText.setColor(Phaser.Utils.Array.GetRandom(redShades));
+        },
+        loop: true
+    });
+
+    this.tweens.add({
+        targets: missText,
+        y: platformY - 100,
+        alpha: 0,
+        duration: 1000,
+        ease: 'Power1',
+        onComplete: () => {
+            colorTween.remove();
+            missText.destroy();
+        }
+    });
+
+    const platformRect = this.add.rectangle(platformX + partWidth / 2, platformY, partWidth, 15, Phaser.Utils.Array.GetRandom(redShades))
+            .setOrigin(0.5)
+            .setAlpha(0);
+
+    const colorTweenRect = this.time.addEvent({
+            delay: 50,
             callback: () => {
-                missText.setColor(Phaser.Utils.Array.GetRandom(redShades));
+            const randomColor = Phaser.Display.Color.HexStringToColor(Phaser.Utils.Array.GetRandom(redShades)).color;
+            platformRect.setFillStyle(randomColor);
             },
             loop: true
         });
 
         this.tweens.add({
-            targets: missText,
-            y: platformY - 100,
-            alpha: 0,
-            duration: 1000,
-            ease: 'Power1',
+            targets: platformRect,
+            alpha: 0.9,
+            duration: 300,
+            yoyo: true,
             onComplete: () => {
-                colorTween.remove();
-                missText.destroy();
+                colorTweenRect.remove();
+                platformRect.destroy();
             }
         });
     }
