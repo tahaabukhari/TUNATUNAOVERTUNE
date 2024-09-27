@@ -2365,10 +2365,10 @@ class Counting extends Phaser.Scene {
         this.load.audio('ARANKSOUND', 'Aranksound.mp3');
         this.load.audio('gamemusic', 'Level0-track.mp3');
         this.load.audio('LevelFailed', 'LEVELFAILED.mp3');
-        this.load.image('characterImage1', 'kazuma1.png');
-        this.load.image('characterImage2', 'kazuma2.png');
-        this.load.image('characterImage3', 'kazuma3.png');
-        this.load.image('characterImage4', 'kazuma4.png');
+        this.load.image('character2Image1', 'kazuma1.png');
+        this.load.image('character2Image2', 'kazuma2.png');
+        this.load.image('character2Image3', 'kazuma3.png');
+        this.load.image('character2Image4', 'kazuma4.png');
         this.load.image('pausebutton', 'pausebutton.png');
         this.load.image('exitbutton', 'exitbutton.png');
         this.load.image('unpausebutton', 'unpausebutton.png');
@@ -2444,16 +2444,16 @@ class Counting extends Phaser.Scene {
         }
 
         this.input.keyboard.on('keydown-A', () => {
-            this.handlePlayerMove(0, 'characterImage1');
+            this.handlePlayerMove(0, 'character2Image1');
         });
         this.input.keyboard.on('keydown-S', () => {
-            this.handlePlayerMove(1, 'characterImage3');
+            this.handlePlayerMove(1, 'character2Image3');
         });
         this.input.keyboard.on('keydown-D', () => {
-            this.handlePlayerMove(2, 'characterImage2');
+            this.handlePlayerMove(2, 'character2Image2');
         });
         this.input.keyboard.on('keydown-F', () => {
-            this.handlePlayerMove(3, 'characterImage4');
+            this.handlePlayerMove(3, 'character2Image4');
         });
 
         this.input.on('pointerdown', (pointer) => {
@@ -2462,16 +2462,16 @@ class Counting extends Phaser.Scene {
 
             switch (section) {
                 case 0:
-                    this.handlePlayerMove(0, 'characterImage1');
+                    this.handlePlayerMove(0, 'character2Image1');
                     break;
                 case 1:
-                    this.handlePlayerMove(1, 'characterImage3');
+                    this.handlePlayerMove(1, 'character2Image3');
                     break;
                 case 2:
-                    this.handlePlayerMove(2, 'characterImage2');
+                    this.handlePlayerMove(2, 'character2Image2');
                     break;
                 case 3:
-                    this.handlePlayerMove(3, 'characterImage4');
+                    this.handlePlayerMove(3, 'character2Image4');
                     break;
                 default:
                     break;
