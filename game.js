@@ -2490,7 +2490,7 @@ class Counting extends Phaser.Scene {
         this.streakNumber = this.add.text(140, 58, '0', { fontSize: '30px', fill: '#FFF', fontFamily: 'Comic Sans MS' });
 
 
-        this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'characterImage1').setScale(0.35);
+        this.character = this.add.image(this.cameras.main.width - 100, this.cameras.main.height - 200, 'character2Image1').setScale(0.3);
 
         const pauseButton = this.pauseButton = this.add.image(this.cameras.main.width - 120, 80, 'pausebutton')
             .setScale(0.3);
@@ -2861,7 +2861,7 @@ class Counting extends Phaser.Scene {
                         });
                     });
     }
-
+    
     reduceRedBar(reductionAmount = 20) {
         this.redBarWidth -= reductionAmount;
         if (this.redBarWidth < 0) this.redBarWidth = 0;
@@ -3091,8 +3091,8 @@ class Counting extends Phaser.Scene {
     }
 
     playerpop() {
-        const originalScale = 0.35; 
-        const popScale = 0.36;
+        const originalScale = 0.3; 
+        const popScale = 0.31;
 
         this.tweens.add({
             targets: this.character,
@@ -3173,7 +3173,7 @@ class Counting extends Phaser.Scene {
         }
     }
 
-    createStarPop(textObject, xposition = 0, yposition = 0, duration = 1000, starCount = 5) {
+    createStarPop(textobject, xposition = 0, yposition = 0, duration = 1000, starCount = 5) {
 
         const pastelColors = [
             0xFFB3BA, 0xFFDFBA, 0xFFFFBA, 0xBAFFC9, 0xBAE1FF,
@@ -3197,24 +3197,34 @@ class Counting extends Phaser.Scene {
             star.closePath();
             star.fillPath();
 
-            let randomX = Phaser.Math.Between(-600, 600);
-            let randomY = Phaser.Math.Between(-400, 400);
-            star.setPosition(textObject.x + xposition + randomX, textObject.y + yposition + randomY);
+            let randomX = Phaser.Math.Between(-400, 400);
+            let randomY = Phaser.Math.Between(50, 150);
+            star.setPosition(this.cameras.main.centerX + xposition + randomX, this.cameras.main.centerY + yposition + randomY);
 
             star.setScale(randomScale);
             star.setAlpha(1);
 
+            let randomUpwardSpeed = Phaser.Math.FloatBetween(50, 100);
+            let randomRotationSpeed = Phaser.Math.FloatBetween(0.01, 0.05);
+            
             this.tweens.add({
                 targets: star,
-                scaleX: randomScale * 2,
-                scaleY: randomScale * 2,
-                alpha: 0,
+                y: star.y - randomUpwardSpeed,
+                alpha: 0, 
+                angle: star.angle + Phaser.Math.Between(10, 360),
                 duration: duration,
-                delay: i * 100,
                 ease: 'Power3',
                 onComplete: () => {
                     star.destroy();
                 }
+            });
+
+            this.tweens.add({
+                targets: star,
+                angle: star.angle + Phaser.Math.Between(10, 360),
+                duration: duration,
+                ease: 'Linear',
+                repeat: -1
             });
         }
     }
@@ -3569,12 +3579,12 @@ class Counting extends Phaser.Scene {
                 }
             }
         
-        if (this.noteCount >= 33 && this.noteCount <= 284) {
+        if (this.noteCount >= 35 && this.noteCount <= 317) {
                 if (this.bchangeflag) {
                     this.changeBackground();
                     this.bchangeflag = false;
                 }
-            } else if (this.noteCount > 286) {
+            } else if (this.noteCount > 318) {
                 this.cameras.main.setBackgroundColor(0x000000);
             }
 
