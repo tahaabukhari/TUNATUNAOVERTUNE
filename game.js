@@ -5645,6 +5645,7 @@ class FinalBoss extends Phaser.Scene {
           { time: 190.1 * beatInterval, lane: 1 },
           { time: 190.2 * beatInterval, lane: 1 },
           { time: 190.3 * beatInterval, lane: 1 },
+            //FIGHT!!
         ];
 
         this.notes = [];
