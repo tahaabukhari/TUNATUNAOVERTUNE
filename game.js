@@ -1,11 +1,13 @@
-function adjustHeight() {
+function adjustViewport() {
   const vh = window.innerHeight * 0.01;
+  const vw = window.innerWidth * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
+  document.documentElement.style.setProperty('--vw', `${vw}px`);
 }
 
-window.addEventListener('resize', adjustHeight);
-window.addEventListener('orientationchange', adjustHeight);
-window.addEventListener('load', adjustHeight);
+window.addEventListener('resize', adjustViewport);
+window.addEventListener('orientationchange', adjustViewport);
+window.addEventListener('load', adjustViewport);
 
 class TitleScene extends Phaser.Scene {
     constructor() {
