@@ -5,9 +5,9 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: calc(var(--vw, 1vw) * 100); /* Adjust width dynamically */
-  height: calc(var(--vh, 1vh) * 100); /* Adjust height dynamically */
-  overflow: hidden; /* Prevent scrolling */
+  width: calc(var(--vw, 1vw) * 100);
+  height: calc(var(--vh, 1vh) * 100); 
+  overflow: hidden;
 }
 
 #game-container {
@@ -15,7 +15,7 @@ body, html {
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: 100%; /* Dynamically adjusted */
+  height: 100%;
   overflow: hidden;
 }
 
