@@ -5280,8 +5280,13 @@ class FinalBoss extends Phaser.Scene {
         });
 
         this.input.on('pointerdown', (pointer) => {
-            const partWidth = this.cameras.main.width / 1.5 / 4;
-            const section = Math.floor(pointer.x / partWidth);
+            const platformWidth = this.cameras.main.width / 1.5;
+            const partWidth = platformWidth / 4;
+            const offsetX = (this.cameras.main.width - platformWidth) / 2;
+
+            const adjustedX = pointer.x - offsetX;
+            const section = Math.floor(adjustedX / partWidth);
+
 
             switch (section) {
                 case 0:
@@ -6501,6 +6506,18 @@ class FinalBoss extends Phaser.Scene {
                         this.musicStarted = true;
                     }
 
+                    if (index === 1) {
+                        this.boxPop(160, 3500);  
+                    }
+
+                    if (index === 1140) {
+                        this.boxPop(380, 3500);
+                    }
+
+                    if (index === 249 || index === 260 || index === 270 || index === 277 || index === 287 || index === 297 || index === 307 || index === 317){
+                        this.boxPop(180, 3500);
+                    }
+                    
                     if (index === this.beatmap.length - 1) {
                                     this.time.delayedCall(5000, () => {
                                         this.checkLevelCompletion();
