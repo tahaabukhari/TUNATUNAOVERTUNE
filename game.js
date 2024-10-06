@@ -1,20 +1,3 @@
-function adjustViewport() {
-  const vh = window.innerHeight * 0.01;
-  const vw = window.innerWidth * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
-  document.documentElement.style.setProperty('--vw', `${vw}px`);
-}
-
-window.addEventListener('resize', () => {
-  setTimeout(adjustViewport, 300);
-});
-
-window.addEventListener('orientationchange', () => {
-  setTimeout(adjustViewport, 300);
-});
-
-window.addEventListener('load', adjustViewport);
-
 class TitleScene extends Phaser.Scene {
     constructor() {
         super({ key: 'TitleScene' });

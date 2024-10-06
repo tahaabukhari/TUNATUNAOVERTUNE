@@ -45,7 +45,35 @@
 <body>
   <div id="game-container">
     <div id="game"></div>
-  </div>
+    </div>
+    <script>
+        function adjustGameSize() {
+            const container = document.getElementById('game-container');
+            const game = document.getElementById('game');
+
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            const gameAspectRatio = 650 / 450; 
+
+            const screenAspectRatio = screenWidth / screenHeight;
+
+            if (screenAspectRatio > gameAspectRatio) {
+                
+                game.style.width = `${screenHeight * gameAspectRatio}px`;
+                game.style.height = `${screenHeight}px`;
+            } else {
+                
+                game.style.width = `${screenWidth}px`;
+                game.style.height = `${screenWidth / gameAspectRatio}px`;
+            }
+        }
+
+        window.addEventListener('resize', adjustGameSize);
+        window.addEventListener('orientationchange', adjustGameSize);
+
+        adjustGameSize();
+    </script>
   <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
   <script src="game.js"></script>
 </body>
