@@ -28,7 +28,7 @@ class TitleScene extends Phaser.Scene {
             progressBar.fillStyle(0x00b8ff, 1);
             progressBar.fillRect(width / 4, height / 2 - 15, (width / 2) * value, 30);
         });
-
+        this.load.image('nekopic1', 'catpic1.png');
         this.load.image('usagiflap', 'Level1-cover.jpg');
         this.load.image('asimslevel', 'Level2-cover.jpg');
         this.load.image('counting', 'Level3-cover.jpg');
@@ -38,6 +38,7 @@ class TitleScene extends Phaser.Scene {
         this.load.image('playbutton', 'playbutton.png');
         this.load.image('tutorialbutton', 'tutorialbutton.png');
         this.load.image('nextbutton', 'nextbutton.png');
+        this.load.image('gamblebutton', 'gamblebutton.png');
         this.load.image('exitbutton', 'exitbutton.png');
         this.load.image('creditsbutton', 'creditsbutton.png');
         this.load.image('creditsbutton2', 'creditsbutton2.png');
@@ -46,6 +47,7 @@ class TitleScene extends Phaser.Scene {
         this.load.image('nextbutton', 'nextbutton.png');
         this.load.image('englishbutton', 'englishbutton.png')
         this.load.image('urdubutton', 'urdubutton.png')
+        this.load.image('gametitle', 'chummaqualitylogo.png')
         this.load.image('startbutton', 'startbutton.png');
         this.load.image('englishtutorialimage1', 'englishtutorialimage1.jpg');
         this.load.image('englishtutorialimage2', 'englishtutorialimage2.jpg');
@@ -63,17 +65,16 @@ class TitleScene extends Phaser.Scene {
 
     create() {
 
-        const title = this.add.text(
+        const title = this.add.image(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 100, 
-            'TUNATUNAOVERTUNE', 
-            { fontSize: '46px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif' }
+            'gametitle'
         )
         .setOrigin(0.5)
-        .setShadow(2, 2, '#000', 2, true, true);
+        .setScale(0.5);
 
         const playButton = this.add.image(
-            this.cameras.main.centerX, 
+            this.cameras.main.centerX - 110 , 
             this.cameras.main.centerY + 20, 
             'playbutton'
         )
@@ -82,12 +83,12 @@ class TitleScene extends Phaser.Scene {
         this.addButtonEffects(playButton);
         
         playButton.on('pointerdown', () => {
-            this.showlevelselector(title, playButton, optionsButton, creditsButton);
+            this.showlevelselector(title, playButton, optionsButton, creditsButton, catto, gambleButton);
         });
 
         
         const optionsButton = this.add.image(
-            this.cameras.main.centerX - 45,
+            this.cameras.main.centerX - 155,
             this.cameras.main.centerY + 110, 
             'optionsbutton'
         )
@@ -95,11 +96,31 @@ class TitleScene extends Phaser.Scene {
         .setScale(0.5);
         this.addButtonEffects(optionsButton);
         optionsButton.on('pointerdown', () => {
-            this.showoptions(title, playButton, optionsButton, creditsButton);
+            this.showoptions(title, playButton, optionsButton, creditsButton, catto, gambleButton);
         });
 
+        const catto = this.add.image(
+            this.cameras.main.centerX + 150, 
+            this.cameras.main.centerY + 43, 
+            'nekopic1'
+        )
+        .setOrigin(0.5)
+        .setScale(0.13);
+        
+        const gambleButton = this.add.image(
+            this.cameras.main.centerX + 150,
+            this.cameras.main.centerY + 110, 
+            'gamblebutton'
+        )
+        .setOrigin(0.5)
+        .setScale(0.2);
+        this.addButtonEffects(gambleButton);
+        gambleButton.on('pointerdown', () => {
+            //function to be here
+        });
+        
         const creditsButton = this.add.image(
-            this.cameras.main.centerX + 45,
+            this.cameras.main.centerX - 55,
             this.cameras.main.centerY + 110, 
             'creditsbutton'
         )
@@ -107,7 +128,7 @@ class TitleScene extends Phaser.Scene {
         .setScale(0.25);
         this.addButtonEffects(creditsButton);
         creditsButton.on('pointerdown', () => {
-            this.showInfo(title, playButton, optionsButton, creditsButton);
+            this.showInfo(title, playButton, optionsButton, creditsButton, catto, gambleButton);
         });
         
         const epicgamermotivationalsubtitlelistthing = [
@@ -116,7 +137,7 @@ class TitleScene extends Phaser.Scene {
             'nihon banzai!!',
             'INDEV',
             'BARISH KYUN NAI A RHI',
-            'bruh september mein 40*C',
+            'bruh october mein 40*C',
             'mujhe bhi javascript ati he \n(cool emoji)',
             'barish ata he to pani ata he',
             '2 null pointers!',
@@ -138,7 +159,7 @@ class TitleScene extends Phaser.Scene {
         const randomSubtext = Phaser.Utils.Array.GetRandom(epicgamermotivationalsubtitlelistthing);
 
         this.subtext = this.add.text(
-            this.cameras.main.centerX + 200, 
+            this.cameras.main.centerX + 150, 
             this.cameras.main.centerY - 55, 
             randomSubtext, 
             {
@@ -149,7 +170,7 @@ class TitleScene extends Phaser.Scene {
             }
         )
         .setOrigin(0.5)
-        .setAngle(20)
+        .setAngle(357)
         .setShadow(2, 2, '#000', 2, true, true);
 
         const maxWidth = this.cameras.main.width - 40;
@@ -169,9 +190,11 @@ class TitleScene extends Phaser.Scene {
         });
     }
     
-    showlevelselector(title, playButton, optionsButton, creditsButton) {
+    showlevelselector(title, playButton, optionsButton, creditsButton, catto, gambleButton) {
     
         if (title) title.destroy();
+        if (catto) catto.destroy();
+        if (gambleButton) gambleButton.destroy();
         if (playButton) playButton.destroy();
         if (optionsButton) optionsButton.destroy();
         if (creditsButton && creditsButton.destroy) {creditsButton.destroy();}
@@ -389,7 +412,7 @@ class TitleScene extends Phaser.Scene {
 
     showLevelSelectorPage5() {
 
-    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
+        const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
 
         const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#FFF', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
 
@@ -406,7 +429,7 @@ class TitleScene extends Phaser.Scene {
         playButton.on('pointerdown', () => {
             this.startlevel5();
         });
-        
+
         const backButton = this.add.image(100, 230, 'backbutton')
             .setOrigin(0.5)
             .setScale(0.7);
@@ -418,56 +441,10 @@ class TitleScene extends Phaser.Scene {
                 subtitle.destroy();
                 backButton.destroy();
                 nextButton.destroy();
-                playButton.destroy();
                 difficultyRate.destroy();
                 difficultyText.destroy();
+                playButton.destroy();
                 this.showLevelSelectorPage4();
-            });
-
-        const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'nextbutton')
-            .setOrigin(0.5)
-            .setScale(0.7);
-            this.addButtonEffects(nextButton);
-            nextButton.on('pointerdown', () => {
-
-                title.destroy();
-                previewImage.destroy();
-                subtitle.destroy();
-                playButton.destroy();
-                backButton.destroy();
-                nextButton.destroy();
-                difficultyRate.destroy();
-                difficultyText.destroy();
-                this.showLevelSelectorPage6();
-            });
-    }
-
-    showLevelSelectorPage6() {
-
-    const title = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 190, 'LEVEL SELECTOR', { fontSize: '32px', fill: '#FFF', fontFamily: 'Comic Sans MS, sans-serif',}).setOrigin(0.5);
-
-        const difficultyText = this.add.text(this.cameras.main.centerX - 70, 330, 'Difficulty:', { fontSize: '28px', fill: '#FFF', fontfamily: 'Geneva, Verdana, sans-serif' }).setOrigin(0.5);
-
-        const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, '        Undefined', { fontSize: '28px', fill: '#DC143C', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
-
-        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'omegarythm').setOrigin(0.5).setScale(0.3);
-
-        const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Omega Rythm', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
-
-        const backButton = this.add.image(100, 230, 'backbutton')
-            .setOrigin(0.5)
-            .setScale(0.7);
-            this.addButtonEffects(backButton);
-            backButton.on('pointerdown', () => {
-
-                title.destroy();
-                previewImage.destroy();
-                subtitle.destroy();
-                backButton.destroy();
-                nextButton.destroy();
-                difficultyRate.destroy();
-                difficultyText.destroy();
-                this.showLevelSelectorPage5();
             });
 
         const nextButton = this.add.image(this.cameras.main.width - 100, 230, 'exitbutton')
@@ -480,6 +457,7 @@ class TitleScene extends Phaser.Scene {
                 previewImage.destroy();
                 subtitle.destroy();
                 backButton.destroy();
+                playButton.destroy();
                 nextButton.destroy();
                 difficultyRate.destroy();
                 difficultyText.destroy();
@@ -487,9 +465,11 @@ class TitleScene extends Phaser.Scene {
             });
     }
 
-    showInfo(title, playButton, optionsButton, creditsButton) {
+    showInfo(title, playButton, optionsButton, creditsButton, catto, gambleButton) {
 
         if (title) title.destroy();
+        if (catto) catto.destroy();
+        if (gambleButton) gambleButton.destroy();
         if (playButton) playButton.destroy();
         if (optionsButton) optionsButton.destroy();
         if (creditsButton && creditsButton.destroy) {creditsButton.destroy();}
@@ -927,9 +907,11 @@ class TitleScene extends Phaser.Scene {
         });
     }
     
-    showoptions(title, playButton, optionsButton, creditsButton) {
+    showoptions(title, playButton, optionsButton, creditsButton, catto, gambleButton) {
 
         if (title) title.destroy();
+        if (gambleButton) gambleButton.destroy();
+        if (catto) catto.destroy();
         if (playButton) playButton.destroy();
         if (optionsButton) optionsButton.destroy();
         if (creditsButton) creditsButton.destroy();
@@ -5181,7 +5163,7 @@ class FinalBoss extends Phaser.Scene {
             },
             loop: true
         });
-        
+
         this.load.on('progress', (value) => {
             progressBar.clear();
             progressBar.fillStyle(gradientColors[colorIndex], 1);
