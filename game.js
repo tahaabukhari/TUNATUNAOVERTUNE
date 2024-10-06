@@ -6,11 +6,11 @@ function adjustViewport() {
 }
 
 window.addEventListener('resize', () => {
-  setTimeout(adjustViewport, 100);
+  setTimeout(adjustViewport, 300);
 });
 
 window.addEventListener('orientationchange', () => {
-  setTimeout(adjustViewport, 600);
+  setTimeout(adjustViewport, 300);
 });
 
 window.addEventListener('load', adjustViewport);
