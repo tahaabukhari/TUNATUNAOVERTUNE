@@ -933,7 +933,7 @@ class TitleScene extends Phaser.Scene {
         let barWidth = 200;
         let barHeight = 10;
         let sphereRadius = 10;
-        let maxVolume = 1.2;
+        let maxVolume = 1;
 
         let soundBarBackground = this.add.graphics();
         soundBarBackground.fillStyle(0x2C2C2C, 1);
