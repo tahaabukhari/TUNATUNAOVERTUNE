@@ -28,7 +28,7 @@ class TitleScene extends Phaser.Scene {
             progressBar.fillStyle(0x00b8ff, 1);
             progressBar.fillRect(width / 4, height / 2 - 15, (width / 2) * value, 30);
         });
-        this.load.image('nekopic1', 'catpic1.png');
+        this.load.image('Barracuda', 'Level0-cover.jpg');
         this.load.image('usagiflap', 'Level1-cover.jpg');
         this.load.image('asimslevel', 'Level2-cover.jpg');
         this.load.image('counting', 'Level3-cover.jpg');
@@ -203,7 +203,7 @@ class TitleScene extends Phaser.Scene {
 
         const difficultyRate = this.add.text(this.cameras.main.centerX + 70, 330, ' Easy', { fontSize: '28px', fill: '#90EE90', fontFamily: 'Comic Sans MS'}).setOrigin(0.5);
 
-        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'pyramid').setOrigin(0.5).setScale(0.7);
+        const previewImage = this.add.image(this.cameras.main.centerX, 160, 'Barracuda').setOrigin(0.5).setScale(0.25);
 
         const subtitle = this.add.text(this.cameras.main.centerX, 280, 'Barracuda', { fontSize: '28px', fill: '#FFF', fontfamily: 'Comic Sans MS'}).setOrigin(0.5);
 
@@ -2269,7 +2269,6 @@ class Barracuda extends Phaser.Scene {
         let height = this.cameras.main.height;
 
         let progressBar = this.add.graphics();
-
         let progressBox = this.add.graphics();
         progressBox.fillStyle(0xffffff, 0.2);
         progressBox.fillRect(width / 4 - 10, height / 2 - 25, width / 2 + 20, 50);
@@ -2279,25 +2278,14 @@ class Barracuda extends Phaser.Scene {
             y: height / 2 - 50,
             text: 'Loading...',
             style: {
-                font: '20px monospace',
+                font: '24px Comic Sans MS',
                 fill: '#ffffff'
             }
         }).setOrigin(0.5, 0.5);
 
-        const gradientColors = [0x800080, 0x4B0082, 0x9932CC, 0x8A2BE2];
-        let colorIndex = 0;
-
-        this.time.addEvent({
-            delay: 200,
-            callback: () => {
-                colorIndex = (colorIndex + 1) % gradientColors.length;
-            },
-            loop: true
-        });
-
         this.load.on('progress', (value) => {
             progressBar.clear();
-            progressBar.fillStyle(gradientColors[colorIndex], 1);
+            progressBar.fillStyle(0x00b8ff, 1);
             progressBar.fillRect(width / 4, height / 2 - 15, (width / 2) * value, 30);
         });
 
