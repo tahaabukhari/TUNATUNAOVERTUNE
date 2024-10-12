@@ -1,6 +1,7 @@
 class TitleScene extends Phaser.Scene {
     constructor() {
         super({ key: 'TitleScene' });
+        this.triangleEffectEventId = null;
     }
 
     preload() {
@@ -64,7 +65,7 @@ class TitleScene extends Phaser.Scene {
     }
 
     create() {
-
+        this.toggleBlueTriangleEffect()
         const title = this.add.image(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 100, 
@@ -74,7 +75,7 @@ class TitleScene extends Phaser.Scene {
         .setScale(0.5);
 
         const playButton = this.add.image(
-            this.cameras.main.centerX - 110 , 
+            this.cameras.main.centerX - 70 , 
             this.cameras.main.centerY + 20, 
             'playbutton'
         )
@@ -83,12 +84,13 @@ class TitleScene extends Phaser.Scene {
         this.addButtonEffects(playButton);
         
         playButton.on('pointerdown', () => {
+            this.toggleBlueTriangleEffect()
             this.showlevelselector(title, playButton, optionsButton, creditsButton);
         });
 
         
         const optionsButton = this.add.image(
-            this.cameras.main.centerX - 155,
+            this.cameras.main.centerX - 120,
             this.cameras.main.centerY + 110, 
             'optionsbutton'
         )
@@ -96,11 +98,12 @@ class TitleScene extends Phaser.Scene {
         .setScale(0.5);
         this.addButtonEffects(optionsButton);
         optionsButton.on('pointerdown', () => {
+            this.toggleBlueTriangleEffect()
             this.showoptions(title, playButton, optionsButton, creditsButton);
         });
         
         const creditsButton = this.add.image(
-            this.cameras.main.centerX - 55,
+            this.cameras.main.centerX - 20,
             this.cameras.main.centerY + 110, 
             'creditsbutton'
         )
@@ -108,6 +111,7 @@ class TitleScene extends Phaser.Scene {
         .setScale(0.25);
         this.addButtonEffects(creditsButton);
         creditsButton.on('pointerdown', () => {
+            this.toggleBlueTriangleEffect()
             this.showInfo(title, playButton, optionsButton, creditsButton);
         });
         
@@ -115,7 +119,7 @@ class TitleScene extends Phaser.Scene {
             'waow grape game!',
             'moosic gaem',
             'nihon banzai!!',
-            'INDEV',
+            'game done!',
             'BARISH KYUN NAI A RHI',
             'bruh october mein 40*C',
             'mujhe bhi javascript ati he',
@@ -124,7 +128,7 @@ class TitleScene extends Phaser.Scene {
             '4 NULL POINTERS!?',
             'bit bugged',
             'MINECRAFT TEXT',
-            'version 0.4!!!',
+            'version 1!!!',
             'tahaaaaaaaaaaaa',
             'a null pointer!',
             'dont talk to D ranks',
@@ -134,13 +138,13 @@ class TitleScene extends Phaser.Scene {
             'play when??',
             'better then before!',
             'rythm gaem',
-            'absolute say gex',
+            'absolute say',
             'struggle ni krni chahye',
             'sir game se gpa bn jaye gi?',
             'kal assaignment kya thi?',
             'shahzaibchan best n- around',
             'absolute cinema',
-            'waow iphone!',
+            'waow eye-phone!',
             'send money for free',
             'HOE MERA YASSU YASSU',
             'juice pila doo',
@@ -152,7 +156,8 @@ class TitleScene extends Phaser.Scene {
             'its in the game',
             'like share and subscribe tyty',
             'we live in a society',
-            'pop-in-three next!',
+            'next stop -!',
+            'bubblearcade..'
         ];
 
         const randomSubtext = Phaser.Utils.Array.GetRandom(epicgamermotivationalsubtitlelistthing);
@@ -187,6 +192,51 @@ class TitleScene extends Phaser.Scene {
             yoyo: true,
             repeat: -1
         });
+    }
+
+    createBlueTriangleEffect() {
+        const createBlueTriangle = () => {
+            let triangle = this.add.polygon(
+                Phaser.Math.Between(0, this.cameras.main.width), 
+                this.cameras.main.height, 
+                [0, 20, 10, 0, 20, 20], 
+                Phaser.Utils.Array.GetRandom([0x1E90FF, 0x00BFFF, 0xADD8E6, 0x87CEFA, 0x4682B4])
+            );
+
+            let randomUpwardDistance = Phaser.Math.Between(100, 400);
+            this.tweens.add({
+                targets: triangle,
+                y: triangle.y - randomUpwardDistance,
+                angle: triangle.angle + Phaser.Math.Between(90, 360),
+                alpha: 0, 
+                duration: 1000,
+                ease: 'Power3',
+                onComplete: () => {
+                    triangle.destroy();
+                }
+            });
+        };
+
+        this.triangleEffectEventId = this.time.addEvent({
+                delay: 100,
+                callback: createBlueTriangle,
+                loop: true
+            });
+        }
+
+    stopBlueTriangleEffect() {
+         if (this.triangleEffectEventId) {
+             this.time.removeEvent(this.triangleEffectEventId); 
+             this.triangleEffectEventId = null;
+         }
+     }
+
+    toggleBlueTriangleEffect() {
+    if (this.triangleEffectEventId) {
+        this.stopBlueTriangleEffect();
+    } else {
+        this.createBlueTriangleEffect();
+    }
     }
     
     showlevelselector(title, playButton, optionsButton, creditsButton) {
@@ -594,7 +644,7 @@ class TitleScene extends Phaser.Scene {
         const description = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 35, 
-            'You score when a note falls on the playertile! (You dont have to move it again if its already there)\n\n The Score counts only when\nthe note hits\nthe tile,\non time!\n.', 
+            'Move the tile to make notes fall on it!\n\n The Score counts only when\nthe note hits\nthe tile\non time!\n', 
             { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
         ).setOrigin(0.5);
 
@@ -657,8 +707,8 @@ class TitleScene extends Phaser.Scene {
         
         const description1 = this.add.text(
             this.cameras.main.centerX, 
-            this.cameras.main.centerY + 95, 
-            'Under the platform there is a RythmBar. When you miss a note or if you make an invalid move, it gets smaller.\nOngoing level fails when your Rythmbar runs out. You can restore your Rythmbar by scoring more points!\n\n Notes will keep spawning until the song plays and when finished you will get a ranked result!', 
+            this.cameras.main.centerY + 115, 
+            'Below the platform, you will find a RythmBar. If you miss a note or make an invalid move, the bar will shrink.\nThe level fails when your RythmBar runs out. You can restore your RythmBar by scoring more points!\nNotes will continue to spawn while the song is playing, and once it finishes, you will receive a ranked result!', 
             { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
         ).setOrigin(0.5);
 
@@ -706,14 +756,14 @@ class TitleScene extends Phaser.Scene {
         const description = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 130, 
-             'Notes neeche ayein ge\nplatform ki 4 lanes hein.',
+             'نوٹس نیچے آئیں گے\nپلیٹ فارم کی 4 لینز ہیں',
                  { fontSize: '18px', fill: '#FFF',fontFamily: 'Comic Sans MS', align: 'center', wordWrap: { width: 400 } }
         ).setOrigin(0.5);
 
         const description2 = this.add.text(
             this.cameras.main.centerX - 170, 
             this.cameras.main.centerY + 50, 
-             'Mobile pe platform segment\n ko sirf tap krna he\n us se highlighter us lane\n mein chala jaye ga.\n\nAgr PC pe ho to\n A S D F\n keys use kro movement\n ke liye.', 
+            'پلیٹ فارم کے حصے پر ٹیپ کریں \nتاکہ پلیئر ٹائل کو لینز\n کے درمیان حرکت دی جا سکے۔ \nاگر آپ پی سی پر کھیل رہے ہیں، \nتو حرکت کرنے کے لیے ا س د ف کیز کا\n استعمال کریں۔', 
                  { fontSize: '18px', fill: '#FFF',fontFamily: 'Comic Sans MS', align: 'center', wordWrap: { width: 400 } }
         ).setOrigin(0.5);
 
@@ -765,7 +815,7 @@ class TitleScene extends Phaser.Scene {
         const description = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY - 15, 
-            'Jb playertile, \n(choti purple bar)\n pe note girta he to score count hota\n playertile ko hila ke notes ko pakrna he\n\nNote!:\n Movement\n slow kro\nto score \nmiss hota he.', 
+            'جب پلیئر ٹائل\n (چھوٹی جامنی بار)\n پر نوٹ گرتا ہے تو اسکور شمار ہوتا ہے۔\n پلیئر ٹائل کو حرکت دے کر نوٹس کو پکڑنا ہے۔\n\nنوٹ:\n اگر حرکت آہستہ کریں\n تو اسکور ضائع ہو جاتا ہے۔', 
             { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
         ).setOrigin(0.5);
 
@@ -829,7 +879,7 @@ class TitleScene extends Phaser.Scene {
         const description1 = this.add.text(
             this.cameras.main.centerX, 
             this.cameras.main.centerY + 95, 
-            'Lanes de thalle RythmBar he.\n Jab bhi galat lane pe move ya note miss kro ge to usse minus pre ga.\nBar khatam hone pe game over ho jati. Points score kr ke RythmBar ko recover kr sakte ho.\n Notes gane ke saath synced hein (bari mehnat wala kaam he) jb gana complete ho ga to notes ana band ho jain ge te level poora ho jaye ga.', 
+            'لینز کے نیچے رِدھم بار ہے۔\n جب بھی غلط لین پر حرکت کریں یا نوٹ مس کریں گے، تو اس سے اسکور کم ہو جائے گا۔\n بار ختم ہونے پر گیم اوور ہو جاتی ہے۔ پوائنٹس اسکور کر کے رِدھم بار کو بحال کر سکتے ہیں۔\n نوٹس گانے کے ساتھ مطابقت رکھتے ہیں (یہ بہت محنت والا کام ہے)۔ جب گانا مکمل ہو گا، تو نوٹس آنا بند ہو جائیں گے اور لیول مکمل ہو جائے گا۔', 
             { fontSize: '20px', fill: '#FFF', fontFamily: 'Comic Sans MS',  align: 'center', wordWrap: { width: 400 }}
         ).setOrigin(0.5);
 
