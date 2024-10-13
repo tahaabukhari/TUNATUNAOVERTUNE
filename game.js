@@ -935,6 +935,7 @@ class TitleScene extends Phaser.Scene {
         let sphereRadius = 10;
         let maxVolume = 1;
 
+      
         let soundBarBackground = this.add.graphics();
         soundBarBackground.fillStyle(0x2C2C2C, 1);
         soundBarBackground.fillRect(
@@ -951,7 +952,6 @@ class TitleScene extends Phaser.Scene {
             barWidth + barWidth * 0.4, 
             barHeight + 50
         );
-
 
         let soundBar = this.add.graphics();
         soundBar.fillStyle(0xFFFFFF, 1);
@@ -986,18 +986,20 @@ class TitleScene extends Phaser.Scene {
 
             this.registry.set('gamevolume', gamevolume);
             volumeText.setText(`Volume: ${Math.round(gamevolume * 100)}%`);
+
+            this.sound.setVolume(gamevolume);
         });
 
         sphere.on('dragend', () => {
             this.registry.set('gamevolume', gamevolume);
         });
-        
+
         const backButton = this.add.image(100, 175, 'backbutton')
-        .setOrigin(0.5)
-        .setScale(0.7);
+            .setOrigin(0.5)
+            .setScale(0.7);
         this.addButtonEffects(backButton);
+
         backButton.on('pointerdown', () => {
-            
             if (this.optionsTitle) this.optionsTitle.destroy();
             if (soundBarBackground) soundBarBackground.destroy();
             if (soundVolumeButton) soundVolumeButton.destroy();
@@ -1005,11 +1007,11 @@ class TitleScene extends Phaser.Scene {
             if (soundBar) soundBar.destroy();
             if (sphere) sphere.destroy();
             if (volumeText) volumeText.destroy();
-            
+
             this.create();
         });
     }
-
+    
     showcredits() {
 
         let creditText = this.add.text(
@@ -5004,42 +5006,46 @@ class FinalBoss extends Phaser.Scene {
 
 
     preload() {
+    let width = this.cameras.main.width;
+    let height = this.cameras.main.height;
 
-        let width = this.cameras.main.width;
-        let height = this.cameras.main.height;
+    let progressBar = this.add.graphics();
+    let progressBox = this.add.graphics();
+    progressBox.fillStyle(0xffffff, 0.2);
+    progressBox.fillRect(width / 4 - 10, height / 2 - 25, width / 2 + 20, 50);
 
-        let progressBar = this.add.graphics();
-        
-        let progressBox = this.add.graphics();
-        progressBox.fillStyle(0xffffff, 0.2);
-        progressBox.fillRect(width / 4 - 10, height / 2 - 25, width / 2 + 20, 50);
+    let loadingText = this.make.text({
+        x: width / 2,
+        y: height / 2 - 50,
+        text: 'Loading...',
+        style: {
+            font: '20px monospace',
+            fill: '#ffffff'
+        }
+    }).setOrigin(0.5, 0.5);
 
-        let loadingText = this.make.text({
-            x: width / 2,
-            y: height / 2 - 50,
-            text: 'Loading...',
-            style: {
-                font: '20px monospace',
-                fill: '#ffffff'
-            }
-        }).setOrigin(0.5, 0.5);
+    const gradientColors = [0x800080, 0x4B0082, 0x9932CC, 0x8A2BE2];
+    let colorIndex = 0;
 
-        const gradientColors = [0x800080, 0x4B0082, 0x9932CC, 0x8A2BE2];
-        let colorIndex = 0;
-        
-        this.time.addEvent({
-            delay: 200,
-            callback: () => {
-                colorIndex = (colorIndex + 1) % gradientColors.length;
-            },
-            loop: true
-        });
+    this.time.addEvent({
+        delay: 200,
+        callback: () => {
+            colorIndex = (colorIndex + 1) % gradientColors.length;
+        },
+        loop: true
+    });
 
-        this.load.on('progress', (value) => {
-            progressBar.clear();
-            progressBar.fillStyle(gradientColors[colorIndex], 1);
-            progressBar.fillRect(width / 4, height / 2 - 15, (width / 2) * value, 30);
-        });
+    this.load.on('progress', (value) => {
+        progressBar.clear();
+        progressBar.fillStyle(gradientColors[colorIndex], 1);
+        progressBar.fillRect(width / 4, height / 2 - 15, (width / 2) * value, 30);
+    });
+
+    this.load.on('complete', () => {
+        progressBar.destroy();
+        progressBox.destroy();
+        loadingText.destroy();
+    });
 
         this.load.audio('SRANKSOUND', 'Sranksound.mp3');
         this.load.audio('ARANKSOUND', 'Aranksound.mp3');
