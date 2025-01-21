@@ -1,80 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TUNATUNAOVERTUNE</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      background: #030303;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TUNATUNAOVERTUNE</title>
+    <style>
+        /* Reset default margins and ensure full viewport coverage */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #030303;
+        }
 
-    #game-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-    }
+        /* Main container for centering the game */
+        #game-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    #game {
-      width: 100%;
-      max-width: 650px;
-      height: 100%;
-      max-height: 450px;
-      background-color: #000;
-    }
+        /* Game canvas container */
+        #game {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
 
-    #game canvas {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-  </style>
+        /* Canvas styling */
+        canvas {
+            display: block;
+            margin: 0 auto;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+        }
+    </style>
 </head>
 <body>
-  <div id="game-container">
-    <div id="game"></div>
+    <div id="game-container">
+        <div id="game"></div>
     </div>
+
     <script>
-        function adjustGameSize() {
-            const container = document.getElementById('game-container');
+        // Handle resize and orientation changes
+        function resizeGame() {
+            const gameContainer = document.getElementById('game-container');
             const game = document.getElementById('game');
+            const canvas = document.querySelector('canvas');
+            
+            if (!canvas) return; // Exit if canvas isn't ready yet
 
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const targetAspectRatio = 650 / 450; // Your game's target aspect ratio
+            
+            let gameWidth, gameHeight;
 
-            const gameAspectRatio = 650 / 450; 
-
-            const screenAspectRatio = screenWidth / screenHeight;
-
-            if (screenAspectRatio > gameAspectRatio) {
-                
-                game.style.width = `${screenHeight * gameAspectRatio}px`;
-                game.style.height = `${screenHeight}px`;
+            // Calculate new dimensions maintaining aspect ratio
+            if (windowWidth / windowHeight > targetAspectRatio) {
+                // Window is wider than needed
+                gameHeight = windowHeight;
+                gameWidth = gameHeight * targetAspectRatio;
             } else {
-                
-                game.style.width = `${screenWidth}px`;
-                game.style.height = `${screenWidth / gameAspectRatio}px`;
+                // Window is taller than needed
+                gameWidth = windowWidth;
+                gameHeight = gameWidth / targetAspectRatio;
+            }
+
+            // Update game container size
+            game.style.width = `${gameWidth}px`;
+            game.style.height = `${gameHeight}px`;
+
+            // Force canvas to maintain aspect ratio
+            canvas.style.width = `${gameWidth}px`;
+            canvas.style.height = `${gameHeight}px`;
+
+            // Update Phaser game scale if it exists
+            if (window.game && window.game.scale) {
+                window.game.scale.resize(gameWidth, gameHeight);
             }
         }
 
-        window.addEventListener('resize', adjustGameSize);
-        window.addEventListener('orientationchange', adjustGameSize);
+        // Initial sizing
+        window.addEventListener('load', () => {
+            resizeGame();
+            // Set up resize listeners
+            window.addEventListener('resize', resizeGame);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(resizeGame, 100); // Small delay for orientation changes
+            });
+        });
 
-        adjustGameSize();
+        // Prevent default touch behaviors
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Prevent pinch zoom
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
     </script>
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
-  <script src="game.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+    <script src="game.js"></script>
 </body>
 </html>
